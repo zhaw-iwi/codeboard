@@ -8,7 +8,7 @@
   </div>
 
   <div class="row" ng-show="userVersionSet.length > 0">
-    <div class="col-md-4 pull-right">
+    <div class="col-md-4 float-right">
       <input type="text" placeholder="Filter by username / name / project" ng-model="usernameFilter" uib-typeahead="request.username as request.username for request in userVersionSet | filter:{username:$viewValue} | limitTo:8" class="form-control">
     </div>
   </div>

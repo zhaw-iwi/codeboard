@@ -25,11 +25,11 @@
     <div class="sendRequest mt-4 pt-4">
 
         <button ng-show="currentRoleIsUser()" ng-disabled="requestTipDisabled" class="btn btn-success btn-100" ng-click="askForTip()">
-            <span class="glyphicon glyphicon-info-sign"></span>Tipp anfordern
+            <i class="fas fa-info"></i>Tipp anfordern
         </button>
 
         <button ng-show="!sendRequestFormVisible" class="btn btn-info btn-100" ng-click="showSendRequestForm()">
-            <span class="glyphicon glyphicon-question-sign"></span>Frage stellen
+            <i class="fas fa-question"></i>Frage stellen
         </button>
 
         <!-- Add Message Form -->
@@ -42,7 +42,7 @@
             </div>
             <div class="form-group w-100">
                 <button ng-show="currentRoleIsUser()" class="btn btn-info btn-100">
-                    <span class="glyphicon glyphicon-question-sign"></span>Frage senden
+                    <i class="fas fa-question"></i>Frage senden
                 </button>
                 <button ng-hide="currentRoleIsUser()" class="btn btn-info btn-100">Nachricht an den Studenten</button>
             </div>

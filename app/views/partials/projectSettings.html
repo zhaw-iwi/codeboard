@@ -63,7 +63,7 @@
 
                   <span ng-repeat="owner in data.ownerSet" class="label label-default" style="margin: 3px ; font-size: 14px; display: inline-block">
                     <a href="users/{{owner.username}}" style="color: white">{{owner.username}}</a>
-                    <span class="glyphicon glyphicon-remove" ng-click="removeMember(data.ownerSet, owner.username)" style="cursor: pointer"></span>
+                    <i class="fas fa-times" ng-click="removeMember(data.ownerSet, owner.username)" style="cursor: pointer"></i>
                   </span>
 
                 </div>
@@ -86,7 +86,7 @@
                 <div class="panel-body">
                   <span ng-show="data.isPrivate" ng-repeat="user in data.userSet" class="label label-default" style="margin: 3px ; font-size: 14px; display: inline-block">
                     <a href="/{{user.username}}" style="color: white">{{user.username}}</a>
-                    <span class="glyphicon glyphicon-remove" ng-click="removeMember(data.userSet, user.username)" style="cursor: pointer"></span>
+                    <i class="fas fa-times" ng-click="removeMember(data.userSet, user.username)" style="cursor: pointer"></i>
                   </span>
                 </div>
                 <div class="panel-footer">
@@ -132,7 +132,7 @@
 
             <button type="submit" class="btn btn-primary">Save changes</button>
             <button type="button" class="btn btn-default" ng-click="discardChanges()">Discard changes</button>
-            <button type="button" class="btn btn-danger pull-right" ng-click="openDeletionModal()">Delete project</button>
+            <button type="button" class="btn btn-danger float-right" ng-click="openDeletionModal()">Delete project</button>
           </form>
 
           <div ng-show="server.saveSuccess" class="alert alert-success" role="alert">

@@ -14,8 +14,9 @@
                        ng-model="fromDate" is-open="datePickerFromOpen" max-date="{{datePickerMaxSelectableDate}}"
                        ng-required="true" ng-change="updateFromDate()" close-text="Close"/>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="openDatePickerFrom($event)" style="height: 34px;"><i
-                    class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="openDatePickerFrom($event)" style="height: 34px;">
+                <i class="far fa-calendar-alt"></i>
+            </button>
           </span>
             </p>
         </div>
@@ -28,7 +29,7 @@
                        ng-required="true" ng-change="updateUntilDate()" close-text="Close"/>
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="openDatePickerUntil($event)" style="height: 34px;">
-                <i class="glyphicon glyphicon-calendar"></i></button>
+                <i class="far fa-calendar-alt"></i></button>
           </span>
             </p>
         </div>
@@ -40,7 +41,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         Compilations {{totalCompilationsDay}} and Runs {{totalRunsDay}}
-            <span class="glyphicon glyphicon-question-sign pull-right" aria-hidden="true"
+            <span class=fas fa-question float-right" aria-hidden="true"
                   tooltip-placement="left" uib-tooltip="Shows the number of compilations and runs per day.">
             </span>
                     </h3>
@@ -49,7 +50,8 @@
 
                     <div>
                         <div ng-show="isLoadingCompilationRunGraphData">
-                            <h4><span class="glyphicon glyphicon-refresh projectStats-load-icon-animate"></span>
+                            <h4>
+                                <i class="fas fa-sync-alt projectStats-load-icon-animate"></i>
                                 Loading...
                             </h4>
                         </div>
@@ -70,7 +72,8 @@
                         <div ng-show="compilationRunTableVisible">
 
                             <div ng-show="isLoadingCompilationRunDetails">
-                                <h4><span class="glyphicon glyphicon-refresh projectStats-load-icon-animate"></span>
+                                <h4>
+                                    <span class="fas fa-sync-alt projectStats-load-icon-animate"></span>
                                     Loading...
                                 </h4>
                             </div>
@@ -151,16 +154,14 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         Project accesses {{totalAccessPerDay}}
-            <span class="glyphicon glyphicon-question-sign pull-right" aria-hidden="true"
-                  tooltip-placement="left"
-                  uib-tooltip="Shows the number of project accesses per day. Each access, including multiple by the same user, is counted.">
-            </span>
+                        <i class="fas fa-question float-right" aria-hidden="true" tooltip-placement="left" uib-tooltip="Shows the number of project accesses per day. Each access, including multiple by the same user, is counted."></i>
                     </h3>
                 </div>
                 <div class="panel-body">
 
                     <div ng-show="isLoadingUserAccessGraphData">
-                        <h4><span class="glyphicon glyphicon-refresh projectStats-load-icon-animate"></span>
+                        <h4>
+                            <i class="fas fa-sync-alt projectStats-load-icon-animate"></i>
                             Loading...
                         </h4>
                     </div>
@@ -182,7 +183,8 @@
                         <div ng-show="projectAccessTableVisible">
 
                             <div ng-show="isLoadingProjectAccessDetails">
-                                <h4><span class="glyphicon glyphicon-refresh projectStats-load-icon-animate"></span>
+                                <h4>
+                                    <i class="fas fa-sync-alt projectStats-load-icon-animate"></i>
                                     Loading...
                                 </h4>
                             </div>
@@ -242,7 +244,8 @@
                         <div ng-show="submissionTableVisible">
 
                             <div ng-show="isLoadingSubmissionsDetails">
-                                <h4><span class="glyphicon glyphicon-refresh projectStats-load-icon-animate"></span>
+                                <h4>
+                                    <i class="fas fa-sync-alt projectStats-load-icon-animate"></i>
                                     Loading...
                                 </h4>
                             </div>

@@ -151,8 +151,15 @@ body {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.ideHeader .projectTitle span.glyphicon {
+.ideHeader .projectTitle i {
   font-size: 0.8em;
+}
+
+.ideHeader .projectTitleSm {
+  color: #666;
+  font-size: 0.75em;
+  white-space: nowrap;
+  padding: 0 8px;
 }
 
 #ideNavBar {
@@ -451,11 +458,9 @@ body {
   border-bottom: 4px solid #d0d0d0;
 }
 
-.ideAdditionalTabs .tab .glyphicon {
+.ideAdditionalTabs .tab i {
   margin-bottom: 8px;
 }
-
-/** todo nachfolgenden css-Angaben in separates File **/
 
 /* - - - Footer Status Bar - - - */
 .ideFooterStatusBar {
@@ -471,54 +476,8 @@ body {
 }
 
 
-/** Spinninc Glyphicons **/
-.gly-spin {
-    -webkit-animation: spin 2s infinite linear;
-    -moz-animation: spin 2s infinite linear;
-    -o-animation: spin 2s infinite linear;
-    animation: spin 2s infinite linear;
-}
-@-moz-keyframes spin {
-    0% {
-        -moz-transform: rotate(0deg);
-    }
-    100% {
-        -moz-transform: rotate(359deg);
-    }
-}
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-    }
-}
-@-o-keyframes spin {
-    0% {
-        -o-transform: rotate(0deg);
-    }
-    100% {
-        -o-transform: rotate(359deg);
-    }
-}
-@keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
-}
-
-
-
-
 /** todo CSS-Angaben zu Test in separates File? */
-/* ioTests */
-
+/* Navbar Right Tests */
 .modal-content {
   border-radius: 0;
 }

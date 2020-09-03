@@ -54,18 +54,20 @@
       </div>
     </div>
 
-  <div class="row" ng-show="ownerSet.length > 0">
+  <div class="row mt-4" ng-show="ownerSet.length > 0">
     <div class="col-md-12">
       <div class="page-header">
         <h1>Owns projects</h1>
       </div>
 
 
-      <div class="panel panel-default" ng-repeat="prj in ownerSet">
-        <div class="panel-heading">
-          <h3 class="panel-title"><a ng-href="/projects/{{prj.id}}/summary">{{prj.projectname}}</a></h3>
+      <div class="card card-default my-3" ng-repeat="prj in ownerSet">
+        <div class="card-header">
+          <h5 class="card-title m-0"><a ng-href="/projects/{{prj.id}}/summary">{{prj.projectname}}</a></h5>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
+
+
           <div class="row">
             <div class="col-md-6">
               <label>Description</label>
@@ -109,12 +111,12 @@
           <div class="row">
             <div class="col-md-12">
               <a class="btn btn-default" href="/projects/{{prj.id}}" role="button">Open in IDE</a>
-              <div class="btn-group pull-right" role="group">
-                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/settings" role="button" class="btn btn-default" title="Edit project settings"><span class="glyphicon glyphicon-wrench"></span></a>
-                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/stats" role="button" class="btn btn-default" title="Show project statistics"><span class="glyphicon glyphicon-stats"></span></a>
-                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/userprojects" role="button" class="btn btn-default" title="Show user versions of project"><span class="glyphicon glyphicon-user"></span></a>
-                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/submissions" role="button" class="btn btn-default" title="Show project submissions"><span class="glyphicon glyphicon-education"></span></a>
-                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/helprequests" role="button" class="btn btn-default" title="Show project help requests"><span class="glyphicon glyphicon-bell"></span></a>
+              <div class="btn-group float-right" role="group">
+                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/settings" role="button" class="btn btn-default" title="Edit project settings"><i class="fas fa-wrench"></i></a>
+                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/stats" role="button" class="btn btn-default" title="Show project statistics"><i class="fas fa-chart-line"></i></a>
+                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/userprojects" role="button" class="btn btn-default" title="Show user versions of project"><i class="fas fa-user"></i></a>
+                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/submissions" role="button" class="btn btn-default" title="Show project submissions"><i class="fas fa-graduation-cap"></i></a>
+                <a ng-show="currentUserIsSelf" href="/projects/{{prj.id}}/helprequests" role="button" class="btn btn-default" title="Show project help requests"><i class="fas fa-bell"></i></a>
               </div>
             </div>
           </div>
@@ -130,11 +132,11 @@
       </div>
 
 
-      <div class="panel panel-default" ng-repeat="prj in userSet">
-        <div class="panel-heading">
-          <h3 class="panel-title"><a ng-href="/projects/{{prj.id}}/summary">{{prj.projectname}}</a></h3>
+      <div class="card card-default" ng-repeat="prj in userSet">
+        <div class="card-header">
+          <h4 class="card-title"><a ng-href="/projects/{{prj.id}}/summary">{{prj.projectname}}</a></h4>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           <div class="row">
             <div class="col-md-6">
               <label>Description</label>

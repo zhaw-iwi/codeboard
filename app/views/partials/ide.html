@@ -188,9 +188,9 @@
                 <div ng-controller="TabCtrl" id="ideTabArea"> <!-- the tabs -->
                   <ul class="ideTabs">
                     <li ng-repeat="tab in tabs" ng-class="{ideTabActive: tab.isActive, ideTabStatic: tab.isStatic}" ng-click="selectClick(tab.arrayIndex)" style="float: left;">
-                      <i ng-show="tab.isStatic" title="Dieser Tab kann nicht bearbeitet werden" class="isStatic-icon glyphicon glyphicon-eye-open"></i>
+                      <i ng-show="tab.isStatic" title="Dieser Tab kann nicht bearbeitet werden" class="isStatic-icon fas fa-eye"></i>
                       <span title="{{tab.title}}">{{tab.name}}</span>
-                      <span class="remove glyphicon glyphicon-remove" ng-click="closeClick(tab.arrayIndex)"></span>
+                      <i class="remove fas fa-times" ng-click="closeClick(tab.arrayIndex)"></i>
                     </li>
                   </ul>
                 </div>
@@ -247,7 +247,7 @@
             <div id="ideRightestPartOfMiddlePart" ng-if="isNavBarRightActive()" class="ideSplitterFullHeight">
                 <div class="ideAdditionalTabs">
                     <a tab-click ng-repeat="tab in rightBarTabs" ng-hide="tab.disabled" ng-click="rightBarTabClick(tab.slug)" class="tab tab-{{tab.slug}}" id="rightBarTabs{{tab.slug}}">
-                        <span class="glyphicon {{tab.icon}}"></span>{{tab.title}}
+                        <i class="{{tab.icon}}"></i>{{tab.title}}
                     </a>
                 </div>
             </div>
@@ -262,7 +262,7 @@
       <span ng-bind-html="getUsername()"></span>
       <span style="margin-left: 20px;">Role: {{getRole()}}</span>
       <span style="margin-left: 20px;" ng-show="isUsingLti()">Info: Submissions are forwarded to external platform</span>
-      <span class="pull-right"><a style="margin-left: 20px;" href="/">Codeboard</a></span>
+      <span class="float-right"><a style="margin-left: 20px;" href="/">Codeboard</a></span>
     </div>
 
     <div id="modalAppendTo"></div>
@@ -382,7 +382,7 @@
                   </div>
                   <div class="progress-bar" style="background: #ab5c5c" role="progressbar" ng-style="{'width': (100 - progress) + '%'}" aria-valuenow="{{(100 - progress)}}" aria-valuemin="0" aria-valuemax="100">
                     <span ng-show="hasResult" class="numTestsFailed"><b>{{numTestsFailed}}</b> X</span>
-                    <span ng-hide="hasResult" class="progress-loading-icon glyphicon glyphicon-repeat gly-spin" aria-hidden="true"></span>
+                    <i ng-hide="hasResult" class="progress-loading-icon fa fa-spinner fa-spin" aria-hidden="true"></i>
                   </div>
                 </div>
 
@@ -569,7 +569,7 @@
             <div class="panel-heading {{test.status}}">
               <a data-target="#ioTest{{$index}}" data-toggle="collapse" data-parent="#ioTestsAccordion">
                 <span class="title" title="{{test.name}}">{{test.name}}</span>
-                <span ng-class="{'gly-spin': (test.status === 'processing')}" class="pull-right flag glyphicon {{test.status}}" aria-hidden="true"></span>
+                <i ng-class="{'fa-spin': (test.status === 'processing')}" class="float-right flag fa fa-spinner {{test.status}}" aria-hidden="true"></i>
               </a>
             </div>
 
@@ -586,11 +586,11 @@
         </button>
 
         <button ng-show="(testResult !== 1)" class="btn btn-info" ng-disabled="disabledActions.help" ng-click="closeModal(); helpAfterTest()" title="Hilfe anfordern">
-          <span class="glyphicon glyphicon-question-sign"></span> Ich brauche Hilfe
+          <i class="fas fa-question"></i> Ich brauche Hilfe
         </button>
 
         <button ng-show="(testResult === 1)" class="btn btn-primary" ng-disabled="disabledActions.submit" ng-click="closeModal(); submitAfterTest()" title="Submit this project" disabled="disabled">
-          <span class="glyphicon glyphicon-send"></span> Submit
+          <i class="far fa-paper-plane"></i> Submit
         </button>
       </div>
     </script>
