@@ -2154,7 +2154,7 @@ app.controller('RightBarCtrl', ['$scope', '$rootScope', '$http', '$uibModal', 'P
         slug: "description",
         title: "Aufgabe",
         disabled: false,
-        icon: "glyphicon-education",
+        icon: "fas fa-graduation-cap",
         contentURL: "partials/navBarRight/navBarRightProjectDescription"
       };
     }
@@ -2164,7 +2164,7 @@ app.controller('RightBarCtrl', ['$scope', '$rootScope', '$http', '$uibModal', 'P
       $scope.rightBarTabs.test = {
           slug: "test",
           title: "Test",
-          icon: "glyphicon-list-alt",
+          icon: "fas fa-clipboard-list",
           contentURL: "partials/navBarRight/navBarRightTest"
       };
     }
@@ -2174,7 +2174,7 @@ app.controller('RightBarCtrl', ['$scope', '$rootScope', '$http', '$uibModal', 'P
       $scope.rightBarTabs.help = {
           slug: "help",
           title: "Hilfe",
-          icon: "glyphicon-comment",
+          icon: "fas fa-comments",
           contentURL: "partials/navBarRight/navBarRightHelp"
       };
     }
@@ -2184,7 +2184,7 @@ app.controller('RightBarCtrl', ['$scope', '$rootScope', '$http', '$uibModal', 'P
       $scope.rightBarTabs.sampleSolution = {
           slug: "sampleSolution",
           title: "Musterlösung",
-          icon: "glyphicon-screenshot",
+          icon: "fas fa-crosshairs",
           contentURL: "partials/navBarRight/navBarRightSampleSolution"
       };
     }
