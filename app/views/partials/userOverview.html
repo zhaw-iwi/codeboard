@@ -1,0 +1,46 @@
+<div ng-include="'partials/navbar.html'"></div>
+
+<div class="container">
+
+  <style>
+    .add-course-icon:hover {
+      color: #0d8fa4
+    }
+
+  </style>
+
+  <div class="row my-4">
+    <div class="col-6">
+      <h3>Meine Kurse</h3>
+      <p class="text-muted">Alle Kurse in denen ich eine Funktion habe.</p>
+    </div>
+    <div class="col-6 text-right pt-3">
+      <a class="btn btn-success btn-sm" href="courses/new" alt="Neuen Kurs erstellen">
+        <i class="fas fa-plus pr-1"></i> Kurs erstellen
+      </a>
+    </div>
+
+    <div class="col-12">
+      <user-course-list class="w-100 user-course-list" />
+    </div>
+  </div>
+
+  <hr class="my-4"/>
+
+  <div class="row my-4">
+    <div class="col-6">
+      <h3>Meine Projekte</h3>
+      <p class="text-muted">Alle Projekte bei denen ich Owner bin.</p>
+    </div>
+    <div class="col-6 text-right pt-3">
+      <a class="btn btn-success btn-sm" href="projects/new" alt="Neues Projekt erstellen erstellen">
+        <i class="fas fa-plus pr-1"></i> Projekt erstellen
+      </a>
+    </div>
+
+      <user-project-list class="w-100 user-project-list" />
+
+    </div>
+  </div>
+
+</div> <!-- end of container -->

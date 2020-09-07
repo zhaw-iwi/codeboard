@@ -82,12 +82,6 @@ fieldset[disabled] .btn:hover {
     opacity: 0.5;
 }
 
-/* Button small */
-.btn-group-sm > .btn,
-.btn-sm {
-    font-size: 11px;
-}
-
 .btn-100 {
     width: 100%;
     margin-bottom: 8px;
@@ -136,6 +130,29 @@ fieldset[disabled] .btn:hover {
 .list-unstyled {
     padding-left: 0;
     list-style: none;
+}
+
+.link-unstyled,
+.link-unstyled:visited,
+.link-unstyled:hover,
+.link-unstyled:active,
+.link-unstyled:focus,
+.link-unstyled:active:hover {
+    font-style: inherit;
+    color: inherit;
+    background-color: transparent;
+    font-size: inherit;
+    text-decoration: none;
+    font-variant: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    border-radius: inherit;
+    border: inherit;
+    outline: inherit;
+    box-shadow: inherit;
+    padding: inherit;
+    vertical-align: inherit;
 }
 
 

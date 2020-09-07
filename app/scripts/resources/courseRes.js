@@ -9,6 +9,13 @@
 
 angular.module('codeboardApp')
 
+    .factory('CourseSettingsRes', ['$resource', function($resource) {
+        return $resource(
+            '/api/courses/:courseId/settings',
+            {projectId: '@id'} // when doing non-post request, the :projectId is filled in through the id property of the project-object
+        );
+    }])
+
     .factory('CourseRes', ['$resource', function($resource) {
         return $resource(
             '/api/courses/:courseId/',

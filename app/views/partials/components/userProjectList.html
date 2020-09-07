@@ -1,0 +1,71 @@
+<div class="col-12">
+    <div class="row" ng-show="ownerSet.length > 0">
+        <div class="col-12 px-2" ng-repeat="prj in ownerSet">
+            <div class="card card-default my-3">
+                <div class="card-header">
+                    <h6 class="card-title m-0"><a ng-href="/projects/{{prj.id}}/summary" class="link-unstyled">{{prj.projectname}}</a></h6>
+                </div>
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Description</label>
+                            <p style="white-space: pre-line;">{{prj.description}}</p>
+                        </div>
+                        <div class="col-md-2 col-md-offset-1">
+                            <label>Language</label>
+                            <p>{{prj.language}}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Created</label>
+                            <p>{{prj.createdAt | date}}</p>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="prj.isPrivate">
+                        <div class="col-md-12">
+                            <label>Access control</label>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-disabled="true" ng-checked="prj.isPrivate"> Private project
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Owners</label>
+                            <p>
+                                <span ng-repeat="owner in prj.ownerSet"><a href="/users/{{owner.username}}">{{owner.username}}</a> </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Share</label>
+                            <p>
+                                <a href="/projects/{{prj.id}}">https://codeboard.sml.zhaw.ch/projects/{{prj.id}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-default" href="/projects/{{prj.id}}" role="button">Open in IDE</a>
+                            <div class="btn-group float-right" role="group">
+                                <a href="/projects/{{prj.id}}/settings" role="button" class="btn btn-default" title="Edit project settings"><i class="fas fa-wrench"></i></a>
+                                <a href="/projects/{{prj.id}}/stats" role="button" class="btn btn-default" title="Show project statistics"><i class="fas fa-chart-line"></i></a>
+                                <a href="/projects/{{prj.id}}/userprojects" role="button" class="btn btn-default" title="Show user versions of project"><i class="fas fa-user"></i></a>
+                                <a href="/projects/{{prj.id}}/submissions" role="button" class="btn btn-default" title="Show project submissions"><i class="fas fa-graduation-cap"></i></a>
+                                <a href="/projects/{{prj.id}}/helprequests" role="button" class="btn btn-default" title="Show project help requests"><i class="fas fa-bell"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3 p-2">
+            <ng-transclude></ng-transclude>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="col-12">
+    <div class="row">
+        <div class="col-4 p-2" ng-repeat="userCourse in userCourseSet">
+            <div class="card overflow-hidden" style="border-left: 4px solid #0d8fa4">
+                <div class="card-header">
+                    <div class="row m-0">
+                        <div class="col-8 p-0">
+                            <h6 class="card-title text-nowrap m-0">
+                                <a href="#" class="link-unstyled">{{userCourse.course.coursename}}</a>
+                            </h6>
+                        </div>
+                        <div class="col-4 p-0 text-right">
+                            <i class="text-right text-muted role small text-capitalize align-top">{{userCourse.role}}</i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative pb-4" style="min-height: 140px;">
+                        <p class="card-text text-muted small">{{userCourse.course.description}}</p>
+                        <p class="card-text small">Moodle-Id: {{userCourse.course.contextId}}</p>
+                        <div class="col-md-12 p-0 position-absolute fixed-bottom">
+                            <a class="btn btn-primary btn-sm" href="/courses/{{userCourse.course.id}}" role="button">Kurs öffnen</a>
+                            <div class="btn-group float-right" role="group">
+                                <a href="/courses/{{userCourse.course.id}}/settings" role="button" class="btn btn-default btn-sm" title="Edit project settings"><i class="fas fa-wrench"></i></a>
+                                <a href="/courses/{{userCourse.course.id}}/userprojects" role="button" class="btn btn-default btn-sm" title="Show user versions of project"><i class="fas fa-user"></i></a>
+                                <a href="/courses/{{userCourse.course.id}}/submissions" role="button" class="btn btn-default btn-sm" title="Show project submissions"><i class="fas fa-graduation-cap"></i></a>
+                                <a href="/courses/{{userCourse.course.id}}/helprequests" role="button" class="btn btn-default btn-sm" title="Show project help requests"><i class="fas fa-bell"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3 p-2">
+            <ng-transclude></ng-transclude>
+        </div>
+    </div>
+</div>

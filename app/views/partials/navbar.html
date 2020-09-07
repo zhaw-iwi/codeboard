@@ -6,9 +6,11 @@
     <div class="col-md-9">
       <ul class="nav nav-pills float-right">
         <li ng-show="username" class="mr-2">
-          <a ng-href="/users/{{username}}">{{username}}</a>
+          <a ng-href="/users/{{username}}/settings">{{username}}</a>
         </li>
-        <li><a ng-show="isAuth" href="" ng-click="signOut()">Sign out</a></li>
+        <li>
+          <a ng-show="isAuth" href="" ng-click="signOut()">Sign out</a>
+        </li>
       </ul>
     </div>
   </div>

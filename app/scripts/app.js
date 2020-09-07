@@ -74,6 +74,15 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
           }]
         }
       })
+      .when('/home/', {
+        templateUrl: 'partials/userOverview',
+        controller: 'UserOverviewCtrl',
+        resolve: {
+          isAuth: ['UserSrv', function(UserSrv) {
+            return UserSrv.isUserAuthForAdmin();
+          }]
+        }
+      })
       .when('/courses/new', {
         // user creates a new project
         templateUrl: 'partials/courses/courseNew',
@@ -103,10 +112,20 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             return ProjectSettingsRes.get({projectId: $route.current.params.projectId}).$promise;
           }],
           courseSet: ['$route', '$http', 'UserSrv', function($route, $http, UserSrv) {
-            return $http.get('/api/users/' + UserSrv.getUsername() + '/courses/owner')
+            return $http.get('/api/users/' + UserSrv.getUsername() + '/courses')
                 .then(function(result) {
                   return result.data.courseOwnerSet;
                 });
+          }]
+        }
+      })
+        .when('/courses/:courseId/settings', {
+        // allows to modify the general settings for :projectId (only accessible to project owners)
+        templateUrl: 'partials/courses/courseSettings',
+        controller: 'CourseSettingsCtrl',
+        resolve: {
+          courseData: ['$route', 'CourseSettingsRes', function($route, CourseSettingsRes) {
+            return CourseSettingsRes.get({courseId: $route.current.params.courseId}).$promise;
           }]
         }
       })

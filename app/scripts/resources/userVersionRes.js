@@ -88,6 +88,10 @@ angular.module('codeboardApp')
                 // promise all
                 $q.all([courseData, userVersions])
                     .then(function(results) {
+
+                        console.log(results[0]);
+
+
                         deferred.resolve({
                             courseData: results[0],
                             userVersionSet: results[1]
@@ -156,6 +160,9 @@ angular.module('codeboardApp')
                 // promise all
                 $q.all([projectData, courseData, userVersions])
                     .then(function(results) {
+
+                        console.log(results[1]);
+
                         deferred.resolve({
                             projectData: results[0],
                             courseData: results[1],
