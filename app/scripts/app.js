@@ -114,7 +114,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
           courseSet: ['$route', '$http', 'UserSrv', function($route, $http, UserSrv) {
             return $http.get('/api/users/' + UserSrv.getUsername() + '/courses')
                 .then(function(result) {
-                  return result.data.courseOwnerSet;
+                  return result.data.userCourseSetNew;
                 });
           }]
         }

@@ -111,9 +111,6 @@ angular.module('codeboardApp')
 
                     $http.put('/api/courses/' + courseId + '/settings', payload)
                         .then(function (result) {
-
-                            console.log(result);
-
                             // show the success message and remove it after 4 seconds
                             $scope.server.saveSuccess = true;
                             $timeout(function () {
