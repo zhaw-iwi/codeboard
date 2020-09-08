@@ -87,6 +87,10 @@ fieldset[disabled] .btn:hover {
     margin-bottom: 8px;
 }
 
+.btn-group-sm>.btn, .btn-sm {
+    font-size: .75rem;
+}
+
 
 .btn-circle {
     width: 30px;

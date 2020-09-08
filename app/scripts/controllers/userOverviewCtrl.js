@@ -1,33 +1,18 @@
 'use strict';
 
 angular.module('codeboardApp')
-  .controller('UserOverviewCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$location', '$route', 'UserSrv',
-    function ($scope, $rootScope, $routeParams, $http, $location, $route, UserSrv) {
+    .controller('CourseCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
 
-    /* Object that stores all the data of the user */
-    $scope.user = {};
+        console.log($routeParams);
 
-    /* Object that stores info about all the projects own by the user */
-    $scope.ownerSet = {};
-
-    /* Object that stores info about all the projects used by the user */
-    $scope.userSet = {};
-
-    /* Parameter that is true if the user is watching her own page, otherwise false; use to display buttons */
-    $scope.currentUserIsSelf = false;
-
-    /**
-     * Function runs when the controller is loaded the first time.
-     * Gets the user and user's project data from the server.
-     */
-    $scope.init = function() {
+        $scope.courseId = $routeParams.courseId;
 
 
-    };
-    $scope.init();
+        this.data = $routeParams.courseId;
 
-  }]);
+    }]);
 
+// todo split into different components
 
 angular.module('codeboardApp').component('userCourseList', {
     templateUrl: 'partials/components/userCourseList',
@@ -51,7 +36,12 @@ angular.module('codeboardApp').component('userCourseList', {
 angular.module('codeboardApp').component('userProjectList', {
     templateUrl: 'partials/components/userProjectList',
     transclude: true,
-    controller: function GreetUserController($scope, $http, UserSrv) {
+    bindings: {
+        "courseId": "<"
+    },
+    controller: function ($element, $scope, $http, UserSrv) {
+
+        let _this = this;
 
         /* Object that stores info about all the projects own by the user */
         $scope.ownerSet = {};
@@ -59,12 +49,31 @@ angular.module('codeboardApp').component('userProjectList', {
         /* Object that stores info about all the projects used by the user */
         $scope.userSet = {};
 
-        // get user an all his projects
-        $http.get('/api/users/' + UserSrv.getUsername() + '/projects')
-            .then( function(result) {
-                console.log(result.data.ownerSet);
-                $scope.ownerSet = result.data.ownerSet;
-                $scope.userSet= result.data.userSet;
-            });
+        // Called after all the controllers on an element have been constructed and had their bindings initialized
+        this.$onInit = function() {
+
+            // get the optional courseid
+            var courseId = _this.courseId;
+
+            // check if course id is set, if so we add it to the where clause
+            if (typeof courseId !== typeof undefined && courseId !== false) {
+                // get all projects within a course
+                $http.get('/api/courses/' + courseId  + '/projects')
+                    .then( function(result) {
+                        $scope.ownerSet = result.data;
+                    });
+            } else {
+                // get user an all his projects
+                $http.get('/api/users/' + UserSrv.getUsername() + '/projects')
+                    .then( function(result) {
+                        console.log(result.data.ownerSet);
+                        $scope.ownerSet = result.data.ownerSet;
+                        $scope.userSet= result.data.userSet;
+                    });
+            }
+        };
     }
 });
+
+
+

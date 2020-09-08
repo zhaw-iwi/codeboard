@@ -76,7 +76,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
       })
       .when('/home/', {
         templateUrl: 'partials/userOverview',
-        controller: 'UserOverviewCtrl',
         resolve: {
           isAuth: ['UserSrv', function(UserSrv) {
             return UserSrv.isUserAuthForAdmin();
@@ -87,6 +86,16 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         // user creates a new project
         templateUrl: 'partials/courses/courseNew',
         controller: 'CourseNewCtrl',
+        resolve: {
+          isAuth: ['UserSrv', function(UserSrv){
+            return UserSrv.isUserAuthForAdmin();
+          }]
+        }
+      })
+      .when('/courses/:courseId', {
+        // user creates a new project
+        templateUrl: 'partials/courses/course',
+        controller: 'CourseCtrl',
         resolve: {
           isAuth: ['UserSrv', function(UserSrv){
             return UserSrv.isUserAuthForAdmin();
