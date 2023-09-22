@@ -120,7 +120,7 @@ angular.module('codeboardApp')
         // filter chatLines for helpRequest chatlines
         function filterHelpChatLines() {
             $scope.filteredHelpRequestChatLines = $scope.chatLines.filter(function(chatLine) {
-                return chatLine.type === 'helpRequest' || chatLine.type === 'helpRequestAnswer';
+                return chatLine.type === 'helpRequest' || chatLine.type === 'helpRequestAnswer' || (chatLine.type === 'card' && chatLine.author.name === 'Javakurs') || (chatLine.type === 'card' && chatLine.author.username !== 'Roby');
             });
         }
 
