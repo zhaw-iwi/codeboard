@@ -107,7 +107,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
     var wholeLineTxt;
     // regex to calculate marker position
     const markerDeclarationRegex = /(?<=\s|^)((?:\w+)(?:\s*\[\])+|\w+)(\s+)(\w+)/;
-    const markerRedeclarationRegex = /(?<=\s|^)(\w+)(?=\s*[+\-*\/]?=|\+\+;|--;|\[\d+\])/;
+    const markerRedeclarationRegex = /(?<=\s|^)(\w+)(?=\s*[+\-*\/]?=|\+\+;|--;|\[\d+\]|\[.+\])/;
     const markerLoopRegex = /(?:for|while)\s*\(([^()]*?)(\w+)\s+([^()]*?)(\w+)/;
 
     // toggles the markers on and off in the code-editor
@@ -512,7 +512,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
             // store print statement in new variable "printStatement"
             var printStatement = currentMatch[1];
             var checkPrintStatement;
-            if (printStatement == '') {
+            if (printStatement === '') {
               for (let j = 0; j < printAnswerArray.length; j++) {
                 // add "printAnswerArray" to explanationParts array
                 explanationParts.push(printAnswerArray[j] + ' ');
@@ -742,9 +742,11 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 explanationParts = [];
               }
               // check if variable is already declared
-              else if (variableMap.has(currentMatch[2]) == true || wrongRandomScanner == true) {
+              else if (variableMap.has(currentMatch[2]) == true) {
                 matched = false;
                 declareVarErr = true;
+              } else if (wrongRandomScanner == true) {
+                matched = false;
               }
             }
           }
@@ -824,8 +826,8 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
             var wrongRandomScanner = false;
             var randomScannerMatch = false;
             if (dbline.name === 'randomOrScannerRegex') {
-              if (importMap.has(currentMatch[2])) {
-                if (importMap.get(currentMatch[2]) === 'Random') {
+              if (importMap.has(currentMatch[4])) {
+                if (importMap.get(currentMatch[4]) === 'Random') {
                   data.randomExpressions.forEach(function (rnExpression) {
                     if (currentMatch[0].match(rnExpression.regex)) {
                       redeclarVarAnswerArray = rnExpression.answer.split("'");
@@ -833,7 +835,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                       dbline.link = 'https://www.javatpoint.com/how-to-generate-random-number-in-java';
                     }
                   });
-                } else if (importMap.get(currentMatch[2]) === 'Scanner') {
+                } else if (importMap.get(currentMatch[4]) === 'Scanner') {
                   data.scannerExpressions.forEach(function (ksExpression) {
                     if (currentMatch[0].match(ksExpression.regex)) {
                       redeclarVarAnswerArray = ksExpression.answer.split("'");
@@ -861,6 +863,9 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 matched = false;
                 redeclareVarErr = true;
               }
+            }
+            else if (wrongRandomScanner) {
+              matched = false;
             }
             // if variable is not inside variableMap it must be declared first (matched = false)
             else {

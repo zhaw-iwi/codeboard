@@ -756,15 +756,15 @@
             "type": "array"
         },
         {
-            "name": "newTwoDimensionalArrayRegex",
-            "regex": "^\\s*(int|String|boolean|long|double|char)\\[\\]\\[\\]\\s*(\\w+)\\s?=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
+            "name": "new2DArrayRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*\\[\\]\\s*(\\w+)\\s?=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
             "answer": "Zweidimensionaler Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newTwoDimensionalArray1Regex",
+            "name": "new2DArray1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*\\[\\s*\\]\\s*=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
             "answer": "Zweidimensionaler Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
@@ -772,15 +772,15 @@
             "type": "array"
         },
         {
-            "name": "newStartValueTwoDimensoinalArrayRegex",
-            "regex": "^\\s*(int|String|boolean|long|double|char)\\[\\]\\[\\]\\s*(\\w+)\\s*=?\\s*\\{\\s*(\\{.*\\})\\s*\\}\\s*;\\s*$",
+            "name": "newStartValue2DArrayRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*\\[\\]\\s*(\\w+)\\s*=?\\s*\\{\\s*(\\{.*\\})\\s*\\}\\s*;\\s*$",
             "answer": "Zweidimensionaler Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newStartValueTwoDimensoinalArray1Regex",
+            "name": "newStartValue2DArray1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*\\[\\s*\\]\\s*=?\\s*\\{(\\{.*\\})\\}\\s*;\\s*$",
             "answer": "Zweidimensionaler Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
@@ -918,8 +918,8 @@
             "type": "operator"
         },
         {
-            "name": "addToTwoDimensoinalArrayRegex",
-            "regex": "^\\s*(\\w+)\\[([0-9]+)\\]\\[([0-9]+)\\]\\s*=\\s*\"{0,1}(\\w+)\"{0,1}\\s*;\\s*$",
+            "name": "addTo2DArrayRegex",
+            "regex": "^\\s*(\\w+)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*=\\s*\"{0,1}(\\w+)\"{0,1}\\s*;\\s*$",
             "answer": "Wert in der Zeile '2' und Spalte '3' im 2D-Array \"'1'\" wird auf '4' gesetzt.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
@@ -935,16 +935,24 @@
         },
         {
             "name": "redeclareArrayWithOtherArrayRegex",
-            "regex": "^\\s*(\\w+)\\s*\\[(\\d+)\\]\\s*=\\s*(\\w+)\\s*\\[(\\d+)\\]([\\w\\W]*)\\s*;\\s*$",
-            "answer": "Der Wert an der \"Stelle '4'\" '5' im Array '3' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "regex": "^\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]([\\w\\W]*)\\s*;\\s*$",
+            "answer": "Der Wert an der Stelle \"'4'\" '5' im Array '3' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "link": "https://www.w3schools.com/java/java_arrays.asp",
+            "block": "false",
+            "type": "array"
+        },
+        {
+            "name": "redeclareVariableWithArrayRegex",
+            "regex": "^\\s*(\\w+)\\s*=\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]([\\w\\W]*)\\s*;\\s*$",
+            "answer": "Der Wert an der Stelle \"'3'\" '4' im Array '2' wird der Variable \"'1'\" zugewiesen",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
         },
         {
             "name": "redeclareArrayRegex",
-            "regex": "^\\s*(\\w+)\\s*\\[([\\d+\\-+*/%\\s]+)\\]\\s*=\\s*(.+)\\s*;\\s*$",
-            "answer": "3' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "regex": "^\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=(?!\\s*.+.next(?:Int|Double|Line|Boolean|Long))(.+)\\s*;\\s*$",
+            "answer": "3' wird der Stelle \"'2'\" im Array \"'1'\" zugewiesen",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -975,7 +983,7 @@
         },
         {
             "name": "allocation",
-            "regex": "^\\s*([a-zA-Z0-9_\\[\\]]*)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*([a-zA-Z0-9_.\\[\\].]*)\\s*\\;\\s*$",
+            "regex": "^\\s*([a-zA-Z0-9_\\[\\]]*)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*(.*)\\s*\\;\\s*$",
             "answer": "Das Ergebnis von '1' '2' '3' wird der Variable \"'1'\" zugewiesen (entspricht '1' = '1' '2' '3')",
             "link": "https://www.w3schools.com/jsref/jsref_operators.asp",
             "block": "false",
@@ -983,7 +991,7 @@
         },
         {
             "name": "randomOrScannerRegex",
-            "regex": "^\\s*(\\w+)\\s?=?\\s?([\\w\\d]+)\\.next.*\\((.*)\\)+\\s*\\;\\s*$",
+            "regex": "^\\s*(\\w+)\\s*\\[*([\\d\\w\\s\\-+*\/%)]*)\\]*\\s*\\[*([\\d\\w\\s\\-+*\/%)]*)\\]*\\s*=+\\s*([\\w\\d]+)\\.next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
             "answer": "Random or Scanner",
             "link": "Random or Scanner",
             "block": "false",
@@ -1081,8 +1089,20 @@
         },
         {
             "name": "redeclarVarScannerRegex",
-            "regex": "^\\s*\\w+\\s?=?\\s?([\\w\\d]+).next(Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
-            "answer": "Der eingegebene Inhalt von Scanner '2' wird der Variable '1' zugewiesen",
+            "regex": "^\\s*\\w+\\s?=?\\s?([\\w\\d]+).next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der eingegebene Inhalt von Scanner '4' wird der Variable \"'1'\" zugewiesen",
+            "type": "scanner"
+        },
+        {
+            "name": "redeclarArrayScannerRegex",
+            "regex": "^\\s*\\w+\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=?\\s?([\\w\\d]+).next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der eingegebene Inhalt von Scanner '4' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "type": "scanner"
+        },
+        {
+            "name": "redeclar2DArrayScannerRegex",
+            "regex": "^\\s*\\w+\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=+\\s*([\\w\\d]+)\\.next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der Wert in der Zeile '2' und Spalte '3' im 2D-Array \"'1'\" wird durch den eingegebenen Inhalt von Scanner '4' ersetzt",
             "type": "scanner"
         }
     ],
