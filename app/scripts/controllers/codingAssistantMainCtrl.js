@@ -75,8 +75,15 @@ angular.module('codeboardApp').controller('CodingAssistantMainCtrl', [
         });
       });
 
-      // Call updateExplanations() with a slight delay to ensure the initial code is loaded (click tab above editor case)
+      // call updateExplanations() with a slight delay to ensure the initial code is loaded (click tab above editor case)
       $scope.$on('javaClassClicked', function () {
+        $timeout(() => {
+          updateExplanations(db);
+        });
+      });
+
+      // call updateExplanations() with a slight delay to ensure the code is loaded (reset code case)
+      $scope.$on('resetCode', function () {
         $timeout(() => {
           updateExplanations(db);
         });

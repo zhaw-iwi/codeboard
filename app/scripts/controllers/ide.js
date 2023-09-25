@@ -795,6 +795,7 @@ app.controller('IdeCtrl', [
 
                             // close modal
                             $uibModalInstance.close();
+                            $rootScope.$broadcast('resetCode');
                         });
                     };
 
@@ -1788,6 +1789,13 @@ app.controller('IdeCtrl', [
                 });
             });
 
+            // call updateExplanations() with a slight delay to ensure the code is loaded (reset code case)
+            $scope.$on('resetCode', function() {
+                $timeout(() => {
+                    updateExplanations(db);
+                });
+            });
+
             AceEditorSrv.aceChangeListener($scope.ace.editor, function () {
                 var lSelectedNode = CodeboardSrv.getFile() ||'.java';
                 if (lSelectedNode.match(/.java/)) {
@@ -2445,6 +2453,19 @@ app.controller('RightBarCtrl', [
                 $scope.isCollapsed = true;
             }
         });
+
+        /**
+         * function which gets called when user clicks on the reset code btn to remove the markers and close the window
+         */
+        $scope.$on('resetCode', function() {
+            CodingAssistantCodeMatchSrv.storedMarkersBackup = [];
+            CodingAssistantCodeMatchSrv.toggleMarkers($scope.ace.editor, true, true);
+            if (!$scope.isCollapsed) {
+                $scope.innerSplitter.collapse('#ideVarScopePartOfMiddlePart');
+                $scope.ideTabsStyle = { 'margin-left': '47px' };
+                $scope.isCollapsed = true;
+            }
+        })
 
         /**
          * function which gets called when user clicks on a new file in the tree-view to remove the markers and close the window - can be enabled in a case where the tree-view should be visible for the students
