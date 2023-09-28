@@ -227,7 +227,8 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Check if code-line is a comment
         if (line.match(/\/\//) || line.match(/\/\*/)) {
-          isComment = true;
+          line = line.replace(/\/\/\s*.*/, "");
+          // isComment = true;
           if (line.match(/\/\*/)) {
             stayComment = true;
           }
