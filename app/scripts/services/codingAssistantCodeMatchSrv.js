@@ -124,7 +124,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
               aceEditor.getSession().addMarker(item.range, item.clazz, item.type);
             }
           });
-        } 
+        }
         // this condition gets executed when the markers get showed the first time.. if there are now changes in the code the markers get showed from the storedMarkersBackup array
         else {
           // show the stored markers in the code-editor
@@ -227,7 +227,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Check if code-line is a comment
         if (line.match(/\/\//) || line.match(/\/\*/)) {
-          line = line.replace(/\/\/\s*.*/, "");
+          line = line.replace(/\/\/\s*.*/, '');
           // isComment = true;
           if (line.match(/\/\*/)) {
             stayComment = true;
@@ -651,24 +651,39 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 // increase variableCount -> different color & outputid for every variable
                 variableCount++;
 
-                if (dbline.name === 'newVarCallMethodRegex') {
-                  if (currentMatch[4] !== '') {
-                    let inputPara = currentMatch[4].split(',');
-                    if (inputPara.length == 1) {
-                      varScopeAnswerArray.splice(2, 0, '" mit dem Parameter "' + inputPara[0]);
-                    } else if (inputPara.length > 1) {
-                      let callMethod = '" mit den Parametern "';
-                      for (let j = 0; j < inputPara.length; j++) {
-                        if (j == inputPara.length - 1) {
-                          callMethod += inputPara[j];
-                        } else {
-                          callMethod += inputPara[j] + ', ';
-                        }
+                var inputPara = 0;
+                if (currentMatch[4] !== '' && dbline.name === 'newVarCallMethodRegex') {
+                  inputPara = currentMatch[4].split(',');
+                } else if (currentMatch[5] !== '' && dbline.name === 'newVarCallMethodFromOtherClassRegex') {
+                  inputPara = currentMatch[5].split(',');
+                }
+                if (inputPara.length == 1) {
+                  if (dbline.name === 'newVarCallMethodRegex') {
+                    varScopeAnswerArray.splice(7, 0, 'welche mit dem Parameter ' + inputPara[0] + ' aufgerufen wird, ');
+                  } else if (dbline.name === 'newVarCallMethodFromOtherClassRegex') {
+                    varScopeAnswerArray.splice(7, 0, 'welche mit dem Parameter ' + inputPara[0] + ' ');
+                  }
+                } else if (inputPara.length > 1) {
+                  let callMethod = 'welche mit den Parametern ';
+                  for (let j = 0; j < inputPara.length; j++) {
+                    if (j == inputPara.length - 1) {
+                      if (dbline.name === 'newVarCallMethodRegex') {
+                        callMethod += inputPara[j] + ' aufgerufen wird, ';
+                      } else if (dbline.name === 'newVarCallMethodFromOtherClassRegex') {
+                        callMethod += inputPara[j] + ' ';
                       }
-                      varScopeAnswerArray.splice(2, 0, callMethod);
+                    } else {
+                      callMethod += inputPara[j] + ', ';
                     }
                   }
+
+                  if (dbline.name === 'newVarCallMethodRegex') {
+                    varScopeAnswerArray.splice(7, 0, callMethod);
+                  } else if (dbline.name === 'newVarCallMethodFromOtherClassRegex') {
+                    varScopeAnswerArray.splice(7, 0, callMethod);
+                  }
                 }
+
                 for (let j = 0; j < varScopeAnswerArray.length; j++) {
                   // loops through all the splitted answers
                   if (varScopeAnswerArray[j].match(/^[0-9]*$/)) {
@@ -864,8 +879,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 matched = false;
                 redeclareVarErr = true;
               }
-            }
-            else if (wrongRandomScanner) {
+            } else if (wrongRandomScanner) {
               matched = false;
             }
             // if variable is not inside variableMap it must be declared first (matched = false)
@@ -892,24 +906,34 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 });
               }
 
-              if (dbline.name === 'redeclareVariableCallMethodRegex') {
-                if (currentMatch[3] !== '') {
-                  let inputPara = currentMatch[3].split(',');
-                  if (inputPara.length == 1) {
-                    redeclarVarAnswerArray.splice(2, 0, '" mit dem Parameter "' + inputPara[0]);
-                  } else if (inputPara.length > 1) {
-                    let callMethod = '" mit den Parametern "';
-                    for (let j = 0; j < inputPara.length; j++) {
-                      if (j == inputPara.length - 1) {
-                        callMethod += inputPara[j];
-                      } else {
-                        callMethod += inputPara[j] + ', ';
-                      }
-                    }
-                    redeclarVarAnswerArray.splice(2, 0, callMethod);
+              var inputPara = 0;
+              if (currentMatch[3] !== '' && dbline.name === 'redeclareVariableCallMethodRegex') {
+                inputPara = currentMatch[3].split(',');
+              } else if (currentMatch[4] !== '' && dbline.name === 'redeclareVariableCallMethodFromOtherClassRegex') {
+                inputPara = currentMatch[4].split(',');
+              }
+              if (inputPara.length == 1) {
+                if (dbline.name === 'redeclareVariableCallMethodRegex') {
+                  redeclarVarAnswerArray.splice(3, 0, ' mit dem Parameter ' + inputPara[0] + ' ');
+                } else if (dbline.name === 'redeclareVariableCallMethodFromOtherClassRegex') {
+                  redeclarVarAnswerArray.splice(5, 0, ' mit dem Parameter ' + inputPara[0] + ' ');
+                }
+              } else if (inputPara.length > 1) {
+                let callMethod = ' mit den Parametern ';
+                for (let j = 0; j < inputPara.length; j++) {
+                  if (j == inputPara.length - 1) {
+                    callMethod += inputPara[j] + ' ';
+                  } else {
+                    callMethod += inputPara[j] + ', ';
                   }
                 }
+                if (dbline.name === 'redeclareVariableCallMethodRegex') {
+                  redeclarVarAnswerArray.splice(3, 0, callMethod);
+                } else if (dbline.name === 'redeclareVariableCallMethodFromOtherClassRegex') {
+                  redeclarVarAnswerArray.splice(5, 0, callMethod);
+                }
               }
+
               for (let j = 0; j < redeclarVarAnswerArray.length; j++) {
                 // loops through all the splitted answers
                 if (redeclarVarAnswerArray[j].match(/^[0-9]*$/)) {
