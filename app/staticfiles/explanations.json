@@ -67,7 +67,7 @@
         {
             "name": "methodRegex",
             "regex": "(int|String|boolean|long|double|char)\\s(\\w+)\\s?\\(([\\w\\s,.\"[\\]]*)\\)\\s?{\\s*$",
-            "answer": "Methode \"'2'\" mit einem Rückgabewert vom Typ \"'1'\" wird erstellt",
+            "answer": "Methode \"'2'\" mit einem Rückgabewert vom Typ \"'1'\" wird ",
             "link": "https://studyflix.de/informatik/java-methoden-1901",
             "block": "true",
             "type": "method"
@@ -75,7 +75,7 @@
         {
             "name": "methodVoidRegex",
             "regex": "(void)\\s(?!main)(\\w+)\\s?\\(([\\w\\s,.\"[\\]]*]*\\))\\s?{\\s*$",
-            "answer": "Methode \"'2'\" ohne Rückgabewert wird erstellt",
+            "answer": "Methode \"'2'\" ohne Rückgabewert wird ",
             "link": "https://studyflix.de/informatik/java-methoden-1901",
             "block": "true",
             "type": "method"

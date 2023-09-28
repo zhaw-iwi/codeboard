@@ -178,7 +178,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
       // Regexes needed for further check
       const beforeRegex = /^(public|private|protected)/;
       const staticRegex = /.* static/;
-      const paraRegex = /(int|String|boolean|long|double|char)[\[\]]*\s*(\w+[\[\]]*)+/;
+      const paraRegex = /(int|String|boolean|long|double|char)\s*[\[\]]*\s*(\w+[\[\]]*)+/;
       const newVarComparisationRegex = /^\s*((?:boolean))\s*(\w+)\s*\=\s*([A-z0-9$_()+\-*\/%\s]+)\s+([<=!>]+)\s+([A-z0-9$_()\-+*\/%\s]+);\s*$/;
       const redeclareVarComparisationRegex = /^\s*(\w+)\s+\=\s+([A-z0-9$_.()*\-+/%\s*]+)\s+([<=!>]+)\s+([A-z0-9$_.()*\-+/%\s*]+);\s*$/;
 
@@ -302,7 +302,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                   answerArray.push(' mit den Parametern');
                   for (let i = 0; i < currentRegexPara.length; i++) {
                     if (i == currentRegexPara.length - 1) {
-                      answerArray.push(' "' + currentRegexPara[i][0] + '"');
+                      answerArray.push(' "' + currentRegexPara[i][0] + '" erstellt');
                     } else {
                       answerArray.push(' "' + currentRegexPara[i][0] + '",');
                     }
