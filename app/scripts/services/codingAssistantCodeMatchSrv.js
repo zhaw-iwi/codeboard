@@ -295,7 +295,7 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                 });
                 // if only one parameter
                 if (currentRegexPara.length == 1) {
-                  answerArray.push(' mit dem Parameter "' + currentRegexPara[0][0] + '"');
+                  answerArray.push(' mit dem Parameter "' + currentRegexPara[0][0] + '" erstellt');
                 }
                 // if 1+ parameter
                 else if (currentRegexPara.length > 1) {

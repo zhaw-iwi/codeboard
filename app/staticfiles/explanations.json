@@ -360,18 +360,6 @@
             "type": "operator"
         },
         {
-            "name": "lengthMethodString",
-            "regex": "([A-Za-z0-9]+).length\\(\\)",
-            "answer": "Die Länge des Strings '1' wird",
-            "type": "stringMethod"
-        },
-        {
-            "name": "lengthMethodArray",
-            "regex": "([A-Za-z0-9]+).length",
-            "answer": "Die Länge des Array '1' wird",
-            "type": "stringMethod"
-        },
-        {
             "name": "containsMethode",
             "regex": "([A-Za-z0-9]+).contains\\((.+)\\)",
             "answer": "Falls '1' den Substring '2' enthält wird der Wert true ",
@@ -387,12 +375,6 @@
             "name": "substringMethode",
             "regex": "([A-Za-z0-9]+).substring\\(([0-9]+),([0-9]+)\\)",
             "answer": "Der Teil von '1' welcher zwischen dem Index '2' und '3' liegt wird ",
-            "type": "stringMethod"
-        },
-        {
-            "name": "charAtMethode",
-            "regex": "([A-Za-z0-9]+).charAt\\((.+)\\)",
-            "answer": "Das Zeichen von '1' welches an Indexposition '2' steht wird",
             "type": "stringMethod"
         },
         {
