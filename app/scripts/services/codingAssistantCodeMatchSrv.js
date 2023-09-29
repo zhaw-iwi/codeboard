@@ -413,21 +413,18 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
                   // create object with linelevel at the start, linelevel at the end, blocklevel, margin, color, keyoutput, height
                   var variableObject = { lineLevelStart: linelevel, blockLevel: level, lineLevelEnd: 0, height: '', margin: margin, color: colors[variableCount] };
                   var startwertMatch = newCondition[0].match(/(int|double)\s(\w+)\s?\=\s?[0-9]+/);
+                  startwertMatch[2] += Math.floor(Math.random() * (1000 - 1) + 1);
                   variableMap.set(startwertMatch[2], variableObject);
-
                   /////////////////// Ace Marker ///////////////////
                   // get the code from the current line
                   wholeLineTxt = aceEditor.session.getLine(linelevel - 1);
                   markerMatch = wholeLineTxt.match(markerLoopRegex);
                   if (markerMatch) {
-                    dataType = markerMatch[3];
-                    variableName = markerMatch[4];
-                    startIndex = markerMatch.index + markerMatch[0].length - dataType.length - variableName.length;
-                    variableLength = variableName.length;
+                    startIndex = markerMatch.index + markerMatch[0].length - markerMatch[3].length - markerMatch[4].length;
 
                     service.storedMarkers.push({
-                      range: new Range(linelevel - 1, startIndex, linelevel - 1, startIndex + variableLength),
-                      clazz: 'marker' + variableName,
+                      range: new Range(linelevel - 1, startIndex, linelevel - 1, startIndex + markerMatch[4].length),
+                      clazz: 'marker' + startwertMatch[2],
                       type: 'text',
                     });
                   }
