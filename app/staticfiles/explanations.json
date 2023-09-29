@@ -67,7 +67,7 @@
         {
             "name": "methodRegex",
             "regex": "(int|String|boolean|long|double|char)\\s(\\w+)\\s?\\(([\\w\\s,.\"[\\]]*)\\)\\s?{\\s*$",
-            "answer": "Methode \"'2'\" mit einem Rückgabewert vom Typ \"'1'\" wird erstellt",
+            "answer": "Methode \"'2'\" mit einem Rückgabewert vom Typ \"'1'\" wird ",
             "link": "https://studyflix.de/informatik/java-methoden-1901",
             "block": "true",
             "type": "method"
@@ -75,7 +75,7 @@
         {
             "name": "methodVoidRegex",
             "regex": "(void)\\s(?!main)(\\w+)\\s?\\(([\\w\\s,.\"[\\]]*]*\\))\\s?{\\s*$",
-            "answer": "Methode \"'2'\" ohne Rückgabewert wird erstellt",
+            "answer": "Methode \"'2'\" ohne Rückgabewert wird ",
             "link": "https://studyflix.de/informatik/java-methoden-1901",
             "block": "true",
             "type": "method"
@@ -115,7 +115,7 @@
         {
             "name": "elseIfRegex",
             "regex": "^\\s*}*\\s*(else)\\sif\\s?\\(.*\\)\\s?{\\s*$",
-            "answer": "Weitere If-Condition wird gestartet",
+            "answer": "Weitere if-Condition wird gestartet",
             "link": "https://www.w3schools.com/java/java_conditions.asp",
             "block": "true",
             "type": "condition"
@@ -140,7 +140,7 @@
         {
             "name": "elseRegex",
             "regex": "^\\s*}*\\s*else\\s?{\\s*$",
-            "answer": "Wird ausgeführt falls If-Condition nicht passt",
+            "answer": "Wird ausgeführt falls if-Condition und else-if-Condition nicht passt",
             "link": "https://www.w3schools.com/java/java_conditions.asp",
             "block": "true",
             "type": "condition"
@@ -164,7 +164,7 @@
         {
             "name": "useScannerRegex",
             "regex": "^\\s*([\\w\\d]+)\\.next(\\w+)\\(\\)",
-            "answer": "Scanner '1' wird verwendet um einen \"'2'\" einezugeben",
+            "answer": "Scanner '1' wird verwendet um einen \"'2'\" einzugeben",
             "link": "https://www.w3schools.com/java/java_user_input.asp",
             "block": "false",
             "type": "scanner"
@@ -360,12 +360,6 @@
             "type": "operator"
         },
         {
-            "name": "lengthMethode",
-            "regex": "([A-Za-z0-9]+).length\\(\\)",
-            "answer": "Die Länge von '1' wird",
-            "type": "stringMethod"
-        },
-        {
             "name": "containsMethode",
             "regex": "([A-Za-z0-9]+).contains\\((.+)\\)",
             "answer": "Falls '1' den Substring '2' enthält wird der Wert true ",
@@ -381,12 +375,6 @@
             "name": "substringMethode",
             "regex": "([A-Za-z0-9]+).substring\\(([0-9]+),([0-9]+)\\)",
             "answer": "Der Teil von '1' welcher zwischen dem Index '2' und '3' liegt wird ",
-            "type": "stringMethod"
-        },
-        {
-            "name": "charAtMethode",
-            "regex": "([A-Za-z0-9]+).charAt\\((.+)\\)",
-            "answer": "Das Zeichen von '1' welches an Indexposition '2' steht wird",
             "type": "stringMethod"
         },
         {
@@ -448,30 +436,6 @@
             "regex": "(([a-zA-Z0-9_\\[\\]]+)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*([a-zA-Z0-9_\\[\\].]+))",
             "answer": "Das Ergebnis von '1' (entspricht '2' = '2' '3' '4') wird ",
             "type": "operator"
-        },
-        {
-            "name": "ArrayPositionPrint",
-            "regex": "([a-zA-Z0-9$_]+)\\[([0-9]+)\\]\\s*$",
-            "answer": "Der Wert an der Position '2' im Array '1' wird ",
-            "type": "array"
-        },
-        {
-            "name": "ArrayPositionWithVariablePrint",
-            "regex": "([a-zA-Z0-9$_]+)\\[([A-z])\\]\\s*$",
-            "answer": "Der Wert an der Position '2' im Array '1' wird ",
-            "type": "array"
-        },
-        {
-            "name": "2DArrayPositionPrint",
-            "regex": "([a-zA-Z0-9$_]+)\\[([0-9]+)\\]\\[([0-9]+)\\]\\s*$",
-            "answer": "Der array in der Zeile '2' und Spalte '3' im 2D-Array '1' wird ",
-            "type": "printExpression"
-        },
-        {
-            "name": "2DArrayPositionWithVariablePrint",
-            "regex": "([a-zA-Z0-9$_]+)\\[([A-z])\\]\\[([A-z])\\]\\s*$",
-            "answer": "Der Wert in der Zeile '2' und Spalte '3' im 2D-Array '1' wird ",
-            "type": "array"
         },
         {
             "name": "MathRoundPrint",
@@ -550,7 +514,15 @@
         {
             "name": "newVarCallMethodRegex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s(\\w+)\\s?=\\s?([a-zA-Z]+)\\((.*)\\)\\s*;\\s*$",
-            "answer": "Die Methode \"'3'\" wird 'aufgerufen und der Rückgabewert als '1' \"'2'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den Rückgabewert der Methode \"'3'()\", ' gesetzt",
+            "link": "https://www.w3schools.com/java/java_variables.asp",
+            "block": "false",
+            "type": "method"
+        },
+        {
+            "name": "newVarCallMethodFromOtherClassRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s(\\w+)\\s*=(?!\\s*.+.next(?:Int|Double|Line|Boolean|Long))\\s*([\\d\\w]+).([a-zA-Z]+)\\((.*)\\)\\s*;\\s*$",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den Rückgabewert der Methode \"'4'()\", ' in der Klasse '3' aufgerufen wird, gesetzt",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "method"
@@ -558,7 +530,7 @@
         {
             "name": "newVarComparisationRegex",
             "regex": "^\\s*((?:boolean))\\s*(\\w+)\\s*\\=\\s*([A-z0-9$_()+\\-*/%\\s]+)\\s+([<=!>]+)\\s+([A-z0-9$_()\\-+*/%\\s]+)\\s*;\\s*$",
-            "answer": "Boolean '2' wird als das Ergebnis ob '3' expr '5' deklariert",
+            "answer": "Die Boolean-Variable \"'2'\" wird deklariert und auf das Ergebnis ob '3' expr '5' gesetzt",
             "link": "https://www.w3schools.com/java/java_operators.asp",
             "block": "false",
             "type": "operator"
@@ -566,7 +538,7 @@
         {
             "name": "newVariableDivisionRegex",
             "regex": "^\\s*(int|double)\\s(\\w+)\\s?\\=\\s?([A-z0-9.()+*-\/\\s]+\\s*\/+\\s*[A-z0-9.()+*-\/\\s]*)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' deklariert (Bei Datentyp 'int' --> keine Nachkommastelle)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf das Ergebnis von '3' gesetzt (Bei Datentyp 'int' --> keine Nachkommastelle)",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "operator"
@@ -574,7 +546,7 @@
         {
             "name": "newVariableWithoutValueRegex",
             "regex": "^\\s*(int|String|boolean|long|double)\\s([A-Za-z0-9]+)\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "variable"
@@ -582,7 +554,7 @@
         {
             "name": "newVariableEqualsMethodRegex",
             "regex": "^\\s*(boolean)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.equals\\((.+)\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem Ergebnis ob \"'3'\" identisch mit '4' ist deklariert (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf das Ergebnis ob \"'3'\" identisch mit '4' ist gesetzt (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_equals.asp",
             "block": "false",
             "type": "operator"
@@ -590,7 +562,7 @@
         {
             "name": "newVariableCharAtMethodRegex",
             "regex": "^\\s*(char)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.charAt\\((.+)\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem Zeichen von \"'3'\" deklariert welches an Indexposition '4' steht (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf das Zeichen von \"'3'\", welches an Indexposition '4' steht, gesetzt (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_charat.asp",
             "block": "false",
             "type": "stringMethod"
@@ -598,7 +570,7 @@
         {
             "name": "newVariableContainsMethodRegex",
             "regex": "^\\s*(boolean)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.contains\\((.+)\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als true deklariert wenn '3' den Substring '4' enthält (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf true gesetzt, wenn '3' den Substring '4' enthält (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_contains.asp",
             "block": "false",
             "type": "stringMethod"
@@ -606,7 +578,7 @@
         {
             "name": "newVariableIndexOfMethodRegex",
             "regex": "^\\s*(int|double)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.indexOf\\((.+)\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem Index von '4' im String \"'3'\" deklariert (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den Index von '4' im String \"'3'\" gesetzt (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_indexof.asp",
             "block": "false",
             "type": "stringMethod"
@@ -614,23 +586,31 @@
         {
             "name": "newVariableSubstringMethodRegex",
             "regex": "^\\s*(String)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.substring\\s*\\(\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem Teil von \"'3'\" deklariert welcher zwischen dem Index '4' und '5' liegt (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den Teil von \"'3'\" gesetzt, welcher zwischen dem Index '4' und '5' liegt (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.geeksforgeeks.org/substring-in-java/",
             "block": "false",
             "type": "stringMethod"
         },
         {
-            "name": "newVariableLengthMethodRegex",
+            "name": "newVariableLengthMethodStringRegex",
             "regex": "^\\s*(int|double)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.length\\(\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit der Länge von '3' deklariert (\"'3'\" muss vom Datentyp String sein)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf die Länge des Strings '3' gesetzt (\"'3'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_length.asp",
             "block": "false",
             "type": "stringMethod"
         },
         {
+            "name": "newVariableLengthMethodArrayRegex",
+            "regex": "^\\s*(int|double)\\s(\\w+)\\s?=?\\s?([A-Za-z0-9]+)\\.length(?!\\(|\\))\\s*(.+)\\s*;\\s*$",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf die Länge des Arrays \"'3'\" '4' gesetzt (\"'3'\" muss ein Array sein)",
+            "link": "https://www.geeksforgeeks.org/length-vs-length-java/",
+            "block": "false",
+            "type": "arrayMethod"
+        },
+        {
             "name": "newVariableCharRegex",
             "regex": "^\\s*(char)\\s(\\w+)\\s?\\=\\s?([']{0,1}.{1}[']{0,1})\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' deklariert (char speichert ein einzelnes Zeichen)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf '3' gesetzt (char speichert ein einzelnes Zeichen)",
             "link": "https://www.w3schools.com/java/ref_keyword_char.asp",
             "block": "false",
             "type": "variable"
@@ -638,7 +618,7 @@
         {
             "name": "newVariableCharWithoutValueRegex",
             "regex": "^\\s*(char)\\s([A-Za-z0-9]+)\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird deklariert (char speichert ein einzelnes Zeichen)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert (char speichert ein einzelnes Zeichen)",
             "link": "https://www.w3schools.com/java/ref_keyword_char.asp",
             "block": "false",
             "type": "variable"
@@ -646,7 +626,7 @@
         {
             "name": "newVariableModuloRegex",
             "regex": "^\\s*(int|double)\\s(\\w+)\\s?\\=\\s?([A-z0-9.()+*-\/\\s]+\\s*\\%\\s*[A-z0-9.()+*-\/\\s]*)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' deklariert (\"%\" gibt den Rest der Division zurück)",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf das Ergebnis von '3' gesetzt (\"%\" gibt den Rest der Division zurück)",
             "link": "https://codegree.de/java-modulo-die-division-mit-rest-in-java/",
             "block": "false",
             "type": "operator"
@@ -654,7 +634,7 @@
         {
             "name": "newVariableRegex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s(\\w+)\\s?\\=\\s?(\"{0,1}[A-Za-z0-9_.+\\-$]+\"{0,1}\\s*[+*-]*\\s*\"{0,1}[A-Za-z0-9_$]*\"{0,1})\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf '3' gesetzt",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "variable"
@@ -662,15 +642,15 @@
         {
             "name": "newVariableStringRegex",
             "regex": "^\\s*(String)\\s(\\w+)\\s*\\=\\s*(\"[\\w\\W]*\")\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf '3' gesetzt",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "variable"
         },
         {
             "name": "newVariableMathRoundRegex",
-            "regex": "^\\s*(int|String|boolean|long|double|char)\\s*(\\w+)\\s?=\\s?Math\\.round\\(([\\w.]+)\\)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' (gerundet) deklariert",
+            "regex": "^\\s*(int|long|double)\\s*(\\w+)\\s?=\\s?Math\\.round\\(([\\w.]+)\\)\\s*;\\s*$",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf '3' (gerundet) gesetzt",
             "link": "https://www.geeksforgeeks.org/java-math-round-method-example/",
             "block": "false",
             "type": "mathMethod"
@@ -678,7 +658,7 @@
         {
             "name": "newVariableBitOperationRegex",
             "regex": "^\\s*(int|long|double)\\s+(\\w+)\\s+\\=\\s?([0-9A-z]+)\\s+(<<|\\||>>|\\^|&)\\s+([0-9A-z]+)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als '3' '4' '5' operation deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf '3' '4' '5' operation gesetzt",
             "link": "https://www.geeksforgeeks.org/bitwise-operators-in-java/",
             "block": "false",
             "type": "bitOperator"
@@ -686,7 +666,7 @@
         {
             "name": "newVariableLogicOperatorRegex",
             "regex": "^\\s*((?:boolean))\\s*(\\w+)\\s*\\=\\s*([A-z0-9$_()+\\-*/%\\s<=!>]+)\\s+((?:&&)|(?:\\|\\|))\\s+([A-z0-9$_()\\-+*/%\\s<=!>]+)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als \"'3' '4' '5'\" logic deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf \"'3' '4' '5'\" gesetzt",
             "link": "https://www.w3schools.com/java/java_operators.asp",
             "block": "false",
             "type": "operator"
@@ -694,7 +674,7 @@
         {
             "name": "newVariableLogicOperatorNOTRegex",
             "regex": "^\\s*((?:boolean))\\s*(\\w+)\\s*\\=\\s*([!])([A-z0-9$_()+\\-*/%<=!>\\s]+)\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird als \"'3'4'\" logic deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf \"'3'4'\" logic gesetzt",
             "link": "https://www.w3schools.com/java/java_operators.asp",
             "block": "false",
             "type": "operator"
@@ -702,7 +682,7 @@
         {
             "name": "newArrayDeclarationRegex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*(\\w+)\\s*;\\s*$",
-            "answer": "Es wird ein Array vom Datentyp '1' mit dem Namen \"'2'\" deklariert.",
+            "answer": "Ein Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert.",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -710,7 +690,7 @@
         {
             "name": "newArrayDeclaration1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*;\\s*$",
-            "answer": "Es wird ein Array vom Datentyp '1' mit dem Namen \"'2'\" deklariert.",
+            "answer": "Ein Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert.",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -718,7 +698,7 @@
         {
             "name": "newArrayRegex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*(\\w+)\\s*=?\\s*\\{(.*)\\}\\s*;\\s*$",
-            "answer": "Array \"'2'\" vom Datentyp '1' wird mit dem Inhalt \"'3'\" deklariert",
+            "answer": "Ein Array \"'2'\" vom Datentyp '1' wird mit dem Inhalt \"'3'\" deklariert",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -726,7 +706,7 @@
         {
             "name": "newArray1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*=?\\s*\\{(.*)\\}\\s*;\\s*$",
-            "answer": "Array \"'2'\" vom Datentyp '1' wird mit dem Inhalt \"'3'\" deklariert",
+            "answer": "Ein Array \"'2'\" vom Datentyp '1' wird mit dem Inhalt \"'3'\" deklariert",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -734,7 +714,7 @@
         {
             "name": "newArrayDeclarationAndInitializationRegex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*(\\w+)\\s?=?\\s*new\\s+(int|String|boolean|long|double|char)\\[([0-9])\\]\\s*;\\s*$",
-            "answer": "Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert, um '4' '3'-Werte zu speichern.",
+            "answer": "Ein Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert, um '4' '3'-Werte zu speichern.",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -742,47 +722,47 @@
         {
             "name": "newArrayDeclarationAndInitialization1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*=?\\s*new\\s+(int|String|boolean|long|double|char)\\[([0-9])\\]\\s*;\\s*$",
-            "answer": "Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert, um '4' '3'-Werte zu speichern.",
+            "answer": "Ein Array vom Datentyp '1' wird mit dem Namen \"'2'\" deklariert, um '4' '3'-Werte zu speichern.",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
         },
         {
             "name": "newVariableWithArrayPositionValueRegex",
-            "regex": "^\\s*(int|String|long|double)\\s+([A-z0-9_$]+)\\s*=\\s*([A-z0-9_$]+)\\[([0-9]+)\\]\\s*;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem Wert an der Position '4' im Array '3' deklariert",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s(\\w+)\\s*\\=\\s*(\\w+)\\s*\\[([^\\]]+)\\]([\\w\\W]*)\\s*;\\s*$",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den Wert an der Indexposition \"'4'\" im Array '3' '5' gesetzt",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newTwoDimensionalArrayRegex",
-            "regex": "^\\s*(int|String|boolean|long|double|char)\\[\\]\\[\\]\\s*(\\w+)\\s?=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
-            "answer": "Zweidimensionaler Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
+            "name": "new2DArrayRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*\\[\\]\\s*(\\w+)\\s?=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
+            "answer": "Ein Multidimensionales Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newTwoDimensionalArray1Regex",
+            "name": "new2DArray1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*\\[\\s*\\]\\s*=?\\s*new\\s+(int|String|boolean|long|double|char)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*;\\s*$",
-            "answer": "Zweidimensionaler Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
+            "answer": "Ein Multidimensionales Array vom Typ '3' wird mit dem Namen \"'2'\" erstellt und hat '4' Zeilen und '5' Spalten.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newStartValueTwoDimensoinalArrayRegex",
-            "regex": "^\\s*(int|String|boolean|long|double|char)\\[\\]\\[\\]\\s*(\\w+)\\s*=?\\s*\\{\\s*(\\{.*\\})\\s*\\}\\s*;\\s*$",
-            "answer": "Zweidimensionaler Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
+            "name": "newStartValue2DArrayRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s*\\[\\]\\s*\\[\\]\\s*(\\w+)\\s*=?\\s*\\{\\s*(\\{.*\\})\\s*\\}\\s*;\\s*$",
+            "answer": "Ein Multidimensionales Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
         },
         {
-            "name": "newStartValueTwoDimensoinalArray1Regex",
+            "name": "newStartValue2DArray1Regex",
             "regex": "^\\s*(int|String|boolean|long|double|char)\\s+(\\w+)\\s*\\[\\s*\\]\\s*\\[\\s*\\]\\s*=?\\s*\\{(\\{.*\\})\\}\\s*;\\s*$",
-            "answer": "Zweidimensionaler Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
+            "answer": "Ein Multidimensionales Array vom Typ '1' mit dem Namen \"'2'\" wird erstellt und mit folgenden '1'-Werten (Startwerte) definiert: '3",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
             "type": "array"
@@ -794,13 +774,29 @@
             "link": "Random or Scanner",
             "block": "false",
             "type": "variable"
+        },
+        {
+            "name": "allOtherDeclarationCasesRegex",
+            "regex": "^\\s*(int|String|boolean|long|double|char)\\s(\\w+)\\s?\\=(?!\\s*.+.next(?:Int|Double|Line|Boolean|Long))(.+);\\s*$",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf das Ergebnis von '3' gesetzt",
+            "link": "https://www.w3schools.com/java/java_variables.asp",
+            "block": "false",
+            "type": "variable"
         }
     ],
     "redeclareVar": [
         {
             "name": "redeclareVariableCallMethodRegex",
             "regex": "^\\s*(\\w+)\\s?=\\s?([a-zA-Z]+)\\((.*)\\)\\s*;\\s*$",
-            "answer": "Die Methode \"'2'\" wird 'aufgerufen und der Rückgabewert der Variable '1' zugewiesen",
+            "answer": "Die Methode \"'2'()\" wird ' aufgerufen und der Rückgabewert der Variable '1' zugewiesen",
+            "link": "https://www.w3schools.com/java/java_variables.asp",
+            "block": "false",
+            "type": "method"
+        },
+        {
+            "name": "redeclareVariableCallMethodFromOtherClassRegex",
+            "regex": "^\\s*(\\w+)\\s*=(?!\\s*.+.next(?:Int|Double|Line|Boolean|Long))\\s*([\\w\\d]+)\\.([\\w\\d]+)\\((.*)\\)\\s*;\\s*$",
+            "answer": "Die Methode \"'3'()\" der Klasse '2' wird ' aufgerufen und der Rückgabewert der Variable '1' zugewiesen",
             "link": "https://www.w3schools.com/java/java_variables.asp",
             "block": "false",
             "type": "method"
@@ -894,10 +890,18 @@
             "type": "stringMethod"
         },
         {
-            "name": "redeclareVariableLengthMethodeRegex",
+            "name": "redeclareVariableLengthMethodeStringRegex",
             "regex": "^\\s*(\\w+)\\s?=\\s?([A-Za-z0-9]+)\\.length\\(\\)\\s*;\\s*$",
-            "answer": "Die Länge von \"'2'\" wird der Variable \"'1'\" zugewiesen (\"'2'\" muss vom Datentyp String sein)",
+            "answer": "Die Länge des Strings \"'2'\" wird der Variable \"'1'\" zugewiesen (\"'2'\" muss vom Datentyp String sein)",
             "link": "https://www.w3schools.com/java/ref_string_length.asp",
+            "block": "false",
+            "type": "stringMethod"
+        },
+        {
+            "name": "redeclareVariableLengthMethodeArrayRegex",
+            "regex": "^\\s*(\\w+)\\s?=\\s?([A-Za-z0-9]+)\\.length(?!\\(|\\))\\s*(.+)\\s*;\\s*$",
+            "answer": "Die Länge des Array \"'2'\" '3' wird der Variable \"'1'\" zugewiesen (\"'2'\" muss ein Array sein)",
+            "link": "https://www.geeksforgeeks.org/length-vs-length-java/",
             "block": "false",
             "type": "stringMethod"
         },
@@ -918,8 +922,8 @@
             "type": "operator"
         },
         {
-            "name": "addToTwoDimensoinalArrayRegex",
-            "regex": "^\\s*(\\w+)\\[([0-9]+)\\]\\[([0-9]+)\\]\\s*=\\s*\"{0,1}(\\w+)\"{0,1}\\s*;\\s*$",
+            "name": "addTo2DArrayRegex",
+            "regex": "^\\s*(\\w+)\\s*\\[([0-9]+)\\]\\s*\\[([0-9]+)\\]\\s*=\\s*\"{0,1}(\\w+)\"{0,1}\\s*;\\s*$",
             "answer": "Wert in der Zeile '2' und Spalte '3' im 2D-Array \"'1'\" wird auf '4' gesetzt.",
             "link": "https://www.w3schools.com/java/java_arrays_multi.asp",
             "block": "false",
@@ -935,16 +939,24 @@
         },
         {
             "name": "redeclareArrayWithOtherArrayRegex",
-            "regex": "^\\s*(\\w+)\\s*\\[(\\d+)\\]\\s*=\\s*(\\w+)\\s*\\[(\\d+)\\]([\\w\\W]*)\\s*;\\s*$",
-            "answer": "Der Wert an der \"Stelle '4'\" '5' im Array '3' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "regex": "^\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=\\s*(\\w+)\\s*\\[([^\\]]+)\\]([\\w\\W]*)\\s*;\\s*$",
+            "answer": "Der Wert an der Indexposition \"'4'\" im Array '3' '5' wird der Indexposition '2' im Array \"'1'\" zugewiesen",
+            "link": "https://www.w3schools.com/java/java_arrays.asp",
+            "block": "false",
+            "type": "array"
+        },
+        {
+            "name": "redeclareVariableWithArrayRegex",
+            "regex": "^\\s*(\\w+)\\s*\\=\\s*(\\w+)\\s*\\[([^\\]]+)\\]([\\w\\W]*)\\s*;\\s*$",
+            "answer": "Der Wert an der Indexposition \"'3'\" im Array '2' '4' wird der Variable \"'1'\" zugewiesen",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
         },
         {
             "name": "redeclareArrayRegex",
-            "regex": "^\\s*(\\w+)\\s*\\[([\\d+\\-+*/%\\s]+)\\]\\s*=\\s*(.+)\\s*;\\s*$",
-            "answer": "3' wird der Stelle '2' im Array \"'1'\" zugewiesen",
+            "regex": "^\\s*(\\w+)\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=(?!\\s*.+.next(?:Int|Double|Line|Boolean|Long))(.+)\\s*;\\s*$",
+            "answer": "Der Wert an der Indexposition \"'2'\" im Array \"'1'\" wird auf '3' gesetzt",
             "link": "https://www.w3schools.com/java/java_arrays.asp",
             "block": "false",
             "type": "array"
@@ -960,7 +972,7 @@
         {
             "name": "incrementalRegex",
             "regex": "^\\s*(\\w+)\\+{2}\\s*;\\s*$",
-            "answer": "1' wird um den Wert 1 erhöht.",
+            "answer": "Die Variable '1' wird um den Wert 1 erhöht.",
             "link": "https://www.w3schools.com/java/java_operators.asp",
             "block": "false",
             "type": "operator"
@@ -968,14 +980,14 @@
         {
             "name": "decrementalRegex",
             "regex": "^\\s*(\\w+)\\-{2}\\s*;\\s*$",
-            "answer": "1' wird um den Wert 1 verringert.",
+            "answer": "Die Variable '1' wird um den Wert 1 verringert.",
             "link": "https://www.w3schools.com/java/java_operators.asp",
             "block": "false",
             "type": "operator"
         },
         {
             "name": "allocation",
-            "regex": "^\\s*([a-zA-Z0-9_\\[\\]]*)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*([a-zA-Z0-9_.\\[\\].]*)\\s*\\;\\s*$",
+            "regex": "^\\s*([a-zA-Z0-9_\\[\\]]*)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*(.*)\\s*\\;\\s*$",
             "answer": "Das Ergebnis von '1' '2' '3' wird der Variable \"'1'\" zugewiesen (entspricht '1' = '1' '2' '3')",
             "link": "https://www.w3schools.com/jsref/jsref_operators.asp",
             "block": "false",
@@ -983,7 +995,7 @@
         },
         {
             "name": "randomOrScannerRegex",
-            "regex": "^\\s*(\\w+)\\s?=?\\s?([\\w\\d]+)\\.next.*\\((.*)\\)+\\s*\\;\\s*$",
+            "regex": "^\\s*(\\w+)\\s*\\[*([\\d\\w\\s\\-+*\/%)]*)\\]*\\s*\\[*([\\d\\w\\s\\-+*\/%)]*)\\]*\\s*=+\\s*([\\w\\d]+)\\.next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
             "answer": "Random or Scanner",
             "link": "Random or Scanner",
             "block": "false",
@@ -1002,25 +1014,25 @@
         {
             "name": "newVarRandomIntRegex",
             "regex": "int\\s\\w+\\s?=?\\s?[\\w\\d]+.nextInt\\([0-9]+\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit einer Zufallszahl zwischen 0 und '4'-1 deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf eine Zufallszahl zwischen 0 und '4'-1 gesetzt",
             "type": "random"
         },
         {
             "name": "newVarRandomDoubleRegex",
             "regex": "double\\s\\w+\\s?=?\\s?[\\w\\d]+.nextDouble\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit einer Zufallszahl zwischen 0.0 und 1.0 deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf eine Zufallszahl zwischen 0.0 und 1.0 gesetzt",
             "type": "random"
         },
         {
             "name": "newVarRandomLongRegex",
             "regex": "long\\s\\w+\\s?=?\\s?([\\w\\d]+).nextLong\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit einer Zufallszahl vom Typ long deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf eine Zufallszahl vom Typ long gesetzt",
             "type": "random"
         },
         {
             "name": "newVarRandomBooleanRegex",
             "regex": "boolean\\s\\w+\\s?=?\\s?([\\w\\d]+).nextBoolean\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit einem Zufallswert true oder false deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf einen Zufallswert true oder false gesetzt",
             "type": "random"
         },
         {
@@ -1052,37 +1064,49 @@
         {
             "name": "newVarScannerIntRegex",
             "regex": "int\\s\\w+\\s?=?\\s?([\\w\\d]+).nextInt\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem eingegebenen Inhalt von Scanner \"'3'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den eingegebenen Wert von Scanner \"'3'\" gesetzt",
             "type": "scanner"
         },
         {
             "name": "newVarScannerDoubleRegex",
             "regex": "double\\s\\w+\\s?=?\\s?([\\w\\d]+).nextDouble\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem eingegebenen Inhalt von Scanner \"'3'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den eingegebenen Wert von Scanner \"'3'\" gesetzt",
             "type": "scanner"
         },
         {
             "name": "newVarScannerLineRegex",
             "regex": "String\\s\\w+\\s?=?\\s?([\\w\\d]+).nextLine\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem eingegebenen Inhalt von Scanner \"'3'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den eingegebenen Wert von Scanner \"'3'\" gesetzt",
             "type": "scanner"
         },
         {
             "name": "newVarScannerBooleanRegex",
             "regex": "boolean\\s\\w+\\s?=?\\s?([\\w\\d]+).nextBoolean\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem eingegebenen Inhalt von Scanner \"'3'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den eingegebenen Wert von Scanner \"'3'\" gesetzt",
             "type": "scanner"
         },
         {
             "name": "newVarScannerLongRegex",
             "regex": "long\\s\\w+\\s?=?\\s?([\\w\\d]+).nextLong\\(\\)+\\s*\\;\\s*$",
-            "answer": "1' \"'2'\" wird mit dem eingegebenen Inhalt von Scanner \"'3'\" deklariert",
+            "answer": "Die '1'-Variable \"'2'\" wird deklariert und auf den eingegebenen Wert von Scanner \"'3'\" gesetzt",
             "type": "scanner"
         },
         {
             "name": "redeclarVarScannerRegex",
-            "regex": "^\\s*\\w+\\s?=?\\s?([\\w\\d]+).next(Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
-            "answer": "Der eingegebene Inhalt von Scanner '2' wird der Variable '1' zugewiesen",
+            "regex": "^\\s*\\w+\\s?=?\\s?([\\w\\d]+).next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der eingegebene Wert von Scanner '4' wird der Variable \"'1'\" zugewiesen",
+            "type": "scanner"
+        },
+        {
+            "name": "redeclarArrayScannerRegex",
+            "regex": "^\\s*\\w+\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=?\\s?([\\w\\d]+).next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der eingegebene Wert von Scanner '4' wird der Indexposition '2' im Array \"'1'\" zugewiesen",
+            "type": "scanner"
+        },
+        {
+            "name": "redeclar2DArrayScannerRegex",
+            "regex": "^\\s*\\w+\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*\\[([\\d\\w\\W\\s]+)\\]\\s*=+\\s*([\\w\\d]+)\\.next(?:Int|Double|Line|Boolean|Long)\\(\\)+\\s*\\;\\s*$",
+            "answer": "Der Wert in der Zeile '2' und Spalte '3' im 2D-Array \"'1'\" wird durch den eingegebenen Wert von Scanner '4' ersetzt",
             "type": "scanner"
         }
     ],

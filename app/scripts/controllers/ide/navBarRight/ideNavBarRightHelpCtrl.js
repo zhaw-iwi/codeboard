@@ -79,10 +79,9 @@ angular.module('codeboardApp')
          * @param scrollToBottom
          */
         let addChatLine = function(chatLine, scrollToBottom = false) {
-
             // if chatLine type card, parse the message
             // if current user role is 'user' remove the reference
-            if(chatLine.type === 'hint' || chatLine.type === 'helpRequest') {
+            if(chatLine.type === 'hint' || chatLine.type === 'helpRequest' || chatLine.type === 'card') {
                 chatLine.message = JSON.parse(chatLine.message);
                 chatLine.message.cardReference = (ProjectFactory.getProject().userRole === 'user') ? null : chatLine.message.cardReference;
             }
@@ -120,7 +119,7 @@ angular.module('codeboardApp')
         // filter chatLines for helpRequest chatlines
         function filterHelpChatLines() {
             $scope.filteredHelpRequestChatLines = $scope.chatLines.filter(function(chatLine) {
-                return chatLine.type === 'helpRequest' || chatLine.type === 'helpRequestAnswer' || (chatLine.type === 'card' && chatLine.author.name === 'Javakurs') || (chatLine.type === 'card' && chatLine.author.username !== 'Roby');
+                return chatLine.type === 'helpRequest' || chatLine.type === 'helpRequestAnswer' || chatLine.type === 'html' || (chatLine.type === 'card' && chatLine.message.cardType === 'help');
             });
         }
 
