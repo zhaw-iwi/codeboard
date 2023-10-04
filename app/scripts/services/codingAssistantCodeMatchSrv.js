@@ -497,70 +497,79 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Check if it is a Print-Statement (standard explanations ("wird auf der Konsole ausgegeben"))
         data.print.forEach(function (dbline) {
+
           // check if print statement
           if (line.match(dbline.regex) && matched == false && isComment == false) {
+
             // capture groups in neuer variabel speichern
             var currentMatch = line.match(dbline.regex);
-            // antwort spliten und in neuem array speichern
+            var printStatement = currentMatch[1].split(' ');
+            console.log(printStatement);
+            // this is the default explanation "Folgendes wird auf der Konsole ausgegeben (mit/ohne Zeilenumbruch): "
             var printAnswerArray = dbline.answer.split("'");
             // matched true setzen um nicht als "nicht erkannt" klassifiziert zu werden
             matched = true;
-            var matchedPrintExpression = false;
 
             // store print statement in new variable "printStatement"
-            var printStatement = currentMatch[1];
             var checkPrintStatement;
-            if (printStatement === '') {
-              for (let j = 0; j < printAnswerArray.length; j++) {
-                // add "printAnswerArray" to explanationParts array
-                explanationParts.push(printAnswerArray[j] + ' ');
-              }
+            if (printStatement == '') {
+              // add "printAnswerArray" to explanationParts array
+              explanationParts.push(printAnswerArray + ' Nichts');
             } else {
               // initialize "anserArray"
               var answerArray;
-              // loop trough all printExpressions (used for things inside ())
-              data.printExpressions.forEach(function (currentExpression) {
-                // check if printExpression gets matched
-                if (printStatement.match(currentExpression.regex) && matchedPrintExpression == false) {
-                  matchedPrintExpression = true;
-                  // split answer of the printExpressions and store it in the printExpressionAnswerArray
-                  var printExpressionAnswerArray = currentExpression.answer.split("'");
-                  // store capture groups in a new array
-                  checkPrintStatement = printStatement.match(currentExpression.regex);
-                  for (let j = 0; j < printExpressionAnswerArray.length; j++) {
-                    // go trough all the splitted answers and check where the cg is needed
-                    if (printExpressionAnswerArray[j].match(/^[0-9]*$/)) {
-                      const currentNumber = printExpressionAnswerArray[j].match(/^[0-9]*$/);
-                      printExpressionAnswerArray[j] = checkPrintStatement[currentNumber];
-                    }
-                  }
-                  if (currentExpression.name === 'callMethodInputRegex') {
-                    let inputPara = checkPrintStatement[2].split(',');
-                    if (inputPara.length == 1) {
-                      printExpressionAnswerArray.splice(2, 0, ' mit dem Parameter "' + inputPara[0] + '"');
-                    } else if (inputPara.length > 1) {
-                      let callMethod = ' mit den Parametern "';
-                      for (let j = 0; j < inputPara.length; j++) {
-                        if (j == inputPara.length - 1) {
-                          callMethod += inputPara[j] + '"';
-                        } else {
-                          callMethod += inputPara[j] + ', ';
-                        }
+              printStatement.forEach((e) => {
+                var matchedPrintExpression = false;
+
+                // loop trough all printExpressions (used for things inside ())
+                data.printExpressions.forEach(function (currentExpression) {
+                  // check if printExpression gets matched
+                  if (e.match(currentExpression.regex) && !matchedPrintExpression) {
+                    // split answer of the printExpressions and store it in the printExpressionAnswerArray
+                    var printExpressionAnswerArray = currentExpression.answer.split("'");
+                    // store capture groups in a new array
+                    checkPrintStatement = e.match(currentExpression.regex);
+                    for (let j = 0; j < printExpressionAnswerArray.length; j++) {
+                      // go trough all the splitted answers and check where the cg is needed
+                      if (printExpressionAnswerArray[j].match(/^[0-9]*$/)) {
+                        const currentNumber = printExpressionAnswerArray[j].match(/^[0-9]*$/);
+                        printExpressionAnswerArray[j] = checkPrintStatement[currentNumber];
                       }
-                      printExpressionAnswerArray.splice(2, 0, callMethod);
                     }
+
+                    if (currentExpression.name === 'callMethodInputRegex') {
+                      let inputPara = checkPrintStatement[2].split(',');
+                      if (inputPara.length == 1) {
+                        printExpressionAnswerArray.splice(2, 0, ', welche mit dem Parameter "' + inputPara[0] + '"');
+                      } else if (inputPara.length > 1) {
+                        let callMethod = ', welche mit den Parametern "';
+                        for (let j = 0; j < inputPara.length; j++) {
+                          if (j == inputPara.length - 1) {
+                            callMethod += inputPara[j] + '"';
+                          } else {
+                            callMethod += inputPara[j] + ', ';
+                          }
+                        }
+                        printExpressionAnswerArray.splice(2, 0, callMethod);
+                      }
+                    }
+
+                    answerArray = printExpressionAnswerArray;
+                    answerArray.forEach((e) => {
+                      explanationParts.push(e);
+                    });
+
+                    matchedPrintExpression = true;
                   }
-                  answerArray = printExpressionAnswerArray.concat(printAnswerArray);
+                });
+                if (!matchedPrintExpression) {
+                  explanationParts.push(e + ' ');
                 }
               });
-              for (let j = 0; j < answerArray.length; j++) {
-                // add answerArray to explanationParts
-                explanationParts.push(answerArray[j] + ' ');
-              }
             }
             // add explanations to explanations array
             explanations.push({
-              answer: explanationParts.join(''),
+              answer: printAnswerArray + ' ' + explanationParts.join(''),
               link: dbline.link,
               lineLevel: linelevel,
               isError: false,
