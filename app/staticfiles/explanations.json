@@ -213,7 +213,7 @@
     "notCheckedLines": [
         {
             "name": "expressionIfRegex",
-            "regex": "(if)\\s?\\(([\\w\\s,.\"=+\\-*/\\%<>!&|;:\\[\\]\\(\\)\\{\\}]*)\\)\\s?{\\s*$",
+            "regex": "(if)\\s?\\(([\\w\\s,.\"=+\\-*/\\%<>!&|;:\\[\\]\\(\\)\\{\\}']*)\\)\\s?{\\s*$",
             "answer": "falls",
             "type": "condition"
         },
@@ -240,7 +240,7 @@
         {
             "name": "equalsMethode",
             "regex": "([A-Za-z0-9]+).charAt\\((.+)\\)",
-            "answer": "cg1 identisch mit cg2 ist",
+            "answer": "das Zeichen von \"cg1\", welches an Indexposition cg2 steht ",
             "type": "stringMethod"
         },
         {
@@ -332,7 +332,7 @@
         {
             "name": "printRegex",
             "regex": "System\\.out\\.print\\((.*)\\)\\s*;\\s*$",
-            "answer": "auf der Konsole ausgegeben (ohne Zeilenumbruch)",
+            "answer": "Folgendes wird auf der Konsole ausgegeben (ohne Zeilenumbruch):",
             "link": "https://www.w3schools.com/java/java_variables_print.asp",
             "block": "false",
             "type": "print"
@@ -340,7 +340,7 @@
         {
             "name": "printlnRegex",
             "regex": "System\\.out\\.println\\((.*)\\)\\s*;\\s*$",
-            "answer": "auf der Konsole ausgegeben (mit Zeilenumbruch)",
+            "answer": "Folgendes wird auf der Konsole ausgegeben (mit Zeilenumbruch):",
             "link": "https://www.w3schools.com/java/java_variables_print.asp",
             "block": "false",
             "type": "print"
@@ -350,164 +350,188 @@
         {
             "name": "increment",
             "regex": "(\\w+)\\+{2}",
-            "answer": "1' wird um den Wert 1 erhöht und wird",
+            "answer": "das Ergebnis von '1' + 1 ",
             "type": "operator"
         },
         {
             "name": "decrement",
             "regex": "(\\w+)\\-{2}",
-            "answer": "1' wird um den Wert 1 verringert und wird",
+            "answer": "das Ergebnis von '1' - 1 ",
             "type": "operator"
         },
         {
             "name": "containsMethode",
             "regex": "([A-Za-z0-9]+).contains\\((.+)\\)",
-            "answer": "Falls '1' den Substring '2' enthält wird der Wert true ",
+            "answer": "true, falls '1' den Substring '2' enthält ",
+            "type": "stringMethod"
+        }, 
+        {
+            "name": "charAtMethode",
+            "regex": "([A-Za-z0-9]+).charAt\\((.+)\\)",
+            "answer": "das Zeichen von '1' welches an Indexposition '2' steht ",
             "type": "stringMethod"
         },
         {
             "name": "indexOfMethode",
             "regex": "([A-Za-z0-9]+).indexOf\\((.+)\\)",
-            "answer": "Der Index von '2' im String '1' wird ",
+            "answer": "der Index von '2' im String '1' ",
             "type": "stringMethod"
         },
         {
             "name": "substringMethode",
             "regex": "([A-Za-z0-9]+).substring\\(([0-9]+),([0-9]+)\\)",
-            "answer": "Der Teil von '1' welcher zwischen dem Index '2' und '3' liegt wird ",
+            "answer": "der Teil von '1' welcher zwischen dem Index '2' und '3' liegt ",
+            "type": "stringMethod"
+        }, 
+        {
+            "name": "lengthMethodString",
+            "regex": "([A-Za-z0-9]+).length\\(\\)",
+            "answer": "die Länge des Strings '1' ",
+            "type": "stringMethod"
+        },
+        {
+            "name": "lengthMethodArray",
+            "regex": "([A-Za-z0-9]+).length",
+            "answer": "die Länge des Array '1' ",
             "type": "stringMethod"
         },
         {
             "name": "equalsMethode",
             "regex": "([A-Za-z0-9]+).equals\\((.+)\\)",
-            "answer": "Das Ergebnis ob '1' identisch mit '2' ist wird",
+            "answer": "das Ergebnis ob '1' identisch mit '2' ist ",
             "type": "operator"
         },
         {
             "name": "lessThanPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+<\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' kleiner als '2' ist wird als Boolean ",
+            "regex": "^<$",
+            "answer": "< (kleiner) ",
             "type": "operator"
         },
         {
             "name": "greaterThanPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+>\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' grösser als '2' ist wird als Boolean ",
+            "regex": "^>$",
+            "answer": "> (grösser) ",
             "type": "operator"
         },
         {
             "name": "greaterOrSameThanPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+>=\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' grösser oder gleich '2' ist wird als Boolean ",
+            "regex": "^>=$",
+            "answer": ">= (grösser-gleich) ",
             "type": "operator"
         },
         {
             "name": "lessOrSameThanPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+<=\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' kleiner oder gleich '2' ist wird als Boolean ",
+            "regex": "^<=$",
+            "answer": "<= (kleiner-gleich) ",
             "type": "operator"
         },
         {
             "name": "equalsPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+==\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' gleich '2' ist wird als Boolean ",
+            "regex": "^==$",
+            "answer": "== (gleich) ",
             "type": "operator"
         },
         {
             "name": "notEqualsPrint",
-            "regex": "^([A-Za-z0-9_$\\-+*%/\\s()]+)\\s+!=\\s+([A-Za-z0-9_$\\-+*%/\\s()]+)$",
-            "answer": "Das Ergebnis ob '1' nicht gleich '2' ist wird als Boolean ",
+            "regex": "^!=$",
+            "answer": "!= (ungleich) ",
             "type": "operator"
         },
         {
             "name": "operationPrint",
             "regex": "^(([a-zA-Z0-9_()+/\\-*\\s*]+)\\s*(\\+|\\-|/|\\*)\\s*([a-zA-Z0-9_()+/\\-*\\s*]+))$",
-            "answer": "Das Ergebnis von '1' wird ",
+            "answer": "das Ergebnis von '1' ",
             "type": "operator"
         },
         {
-            "name": "operationModuloPrint",
-            "regex": "(^([a-zA-Z0-9_()+/%\\-*\\s*]+)\\s+\\%\\s+([a-zA-Z0-9_()+/%\\-*\\s*]+)$)",
-            "answer": "Der Rest der Division '1' wird ",
-            "type": "operator"
+            "name": "ArrayPositionPrint",
+            "regex": "([a-zA-Z0-9$_]+)\\[([0-9]+)\\]\\s*$",
+            "answer": "der Wert an der Position '2' im Array '1' ",
+            "type": "array"
         },
         {
-            "name": "allocationPrint",
-            "regex": "(([a-zA-Z0-9_\\[\\]]+)\\s*(\\+|\\-|\\/|\\*|\\%)\\=\\s*([a-zA-Z0-9_\\[\\].]+))",
-            "answer": "Das Ergebnis von '1' (entspricht '2' = '2' '3' '4') wird ",
-            "type": "operator"
+            "name": "ArrayPositionWithVariablePrint",
+            "regex": "([a-zA-Z0-9$_]+)\\[([A-z])\\]\\s*$",
+            "answer": "der Wert an der Position '2' im Array '1' ",
+            "type": "array"
+        },
+        {
+            "name": "2DArrayPositionPrint",
+            "regex": "([a-zA-Z0-9$_]+)\\[([0-9]+)\\]\\[([0-9]+)\\]\\s*$",
+            "answer": "der Wert in der Zeile '2' und Spalte '3' im 2D-Array '1' ",
+            "type": "printExpression"
+        },
+        {
+            "name": "2DArrayPositionWithVariablePrint",
+            "regex": "([a-zA-Z0-9$_]+)\\[([A-z])\\]\\[([A-z])\\]\\s*$",
+            "answer": "der Wert in der Zeile '2' und Spalte '3' im 2D-Array '1' ",
+            "type": "array"
         },
         {
             "name": "MathRoundPrint",
             "regex": "Math.round\\(([\\w.]+)\\)",
-            "answer": "1' wird gerundet und ",
+            "answer": "der gerundete Wert von '1' ",
             "type": "mathMethod"
         },
         {
             "name": "bitweiseAND",
-            "regex": "([a-zA-Z0-9_]+\\s*\\&\\s*[a-zA-Z0-9_]+)",
-            "answer": "1' (Bit-Operation - AND) wird",
+            "regex": "^\\&$",
+            "answer": "& (Bit-Operation - AND) ",
             "type": "bitOperator"
         },
         {
             "name": "bitweiseOR",
-            "regex": "([a-zA-Z0-9_]+\\s*\\|\\s*[a-zA-Z0-9_]+)",
-            "answer": "1' (Bit-Operation - OR) wird",
+            "regex": "^\\|$",
+            "answer": "| (Bit-Operation - OR) ",
             "type": "bitOperator"
         },
         {
             "name": "bitweiseXOR",
-            "regex": "([a-zA-Z0-9_]+\\s*\\^\\s*[a-zA-Z0-9_]+)",
-            "answer": "1' (Bit-Operation - XOR) wird",
+            "regex": "^\\^$",
+            "answer": "^ (Bit-Operation - XOR) ",
             "type": "bitOperator"
         },
         {
             "name": "Linksschieben",
-            "regex": "([a-zA-Z0-9_]+\\s*<<\\s*[a-zA-Z0-9_]+)",
-            "answer": "1' (Bit-Operation - Linksschieben) wird",
+            "regex": "^\\<\\<$",
+            "answer": "<< (Bit-Operation - Linksschieben) ",
             "type": "bitOperator"
         },
         {
             "name": "Rechtsschieben",
-            "regex": "([a-zA-Z0-9_]+\\s*>>\\s*[a-zA-Z0-9_]+)",
-            "answer": "1' (Bit-Operation - Rechtsschieben) wird",
+            "regex": "^\\>\\>$",
+            "answer": ">> (Bit-Operation - Rechtsschieben) ",
             "type": "bitOperator"
         },
         {
             "name": "AND",
-            "regex": "([a-zA-Z0-9_()<>!=/\\-%\\s]+\\s*&&\\s*[a-zA-Z0-9_()<>!=/\\-%\\s]+)",
-            "answer": "Falls beide Aussagen '1' wahr sind wird true",
+            "regex": "^&&$",
+            "answer": "AND - true falls beide Aussagen wahr sind - ",
             "type": "operator"
         },
         {
             "name": "OR",
-            "regex": "([a-zA-Z0-9_()<>!=/\\-%\\s]+\\s*\\|\\|\\s*[a-zA-Z0-9_()<>!=/\\-%\\s]+)",
-            "answer": "Falls eine Aussage '1' wahr ist wird true",
+            "regex": "^\\|\\|$",
+            "answer": "OR - true, falls eine Ausage wahr ist - ",
             "type": "operator"
         },
         {
             "name": "NOT",
-            "regex": "(^![a-zA-Z0-9_()<>!=/\\-%\\s]+)",
-            "answer": "Das umgekehrte Ergebnis (true/false) der Aussage '1' wird",
+            "regex": "^!$",
+            "answer": "das umgekehrte Ergebnis (true/false) der Aussage ",
             "type": "operator"
         },
         {
             "name": "callMethodNoInputRegex",
             "regex": "^(\\w+)\\(\\)",
-            "answer": "Die Methode '1' wird aufgerufen und der Rückgabewert ",
+            "answer": "der Rückgabewert der Methode '1' ",
             "type": "method"
         },
         {
             "name": "callMethodInputRegex",
             "regex": "^(\\w+)\\((.+)\\)",
-            "answer": "Die Methode '1' wird aufgerufen und der Rückgabewert ",
+            "answer": "der Rückgabewert der Methode '1' aufgerufen wird",
             "type": "method"
-        },
-        {
-            "name": "normalOutput",
-            "regex": "(.+)",
-            "answer": "1' wird",
-            "type": "print"
         }
     ],
     "varScope": [
