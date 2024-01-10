@@ -3,7 +3,7 @@
 //}
 var uploadService = angular.module('uploadService', ['ngResource', 'angularFileUpload']);
 
-var MyCtrl = [ '$scope', '$upload', function($scope, $upload) {
+var MyCtrl = [ '$scope', 'Upload', function($scope, Upload) {
   $scope.onSendFiles = function($files) {
 
     //$files: an array of files selected, each file has name, size, and type.
@@ -21,7 +21,7 @@ var MyCtrl = [ '$scope', '$upload', function($scope, $upload) {
         /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
         //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
       };
-      $scope.upload = $upload.upload(sentFile).progress(function(evt) {
+      Upload.upload(sentFile).progress(function(evt) {
           //alert("Loading!");
           // alert('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         }).success(function(data, status, headers, config) {
@@ -32,7 +32,7 @@ var MyCtrl = [ '$scope', '$upload', function($scope, $upload) {
       //.error(...)
       //.then(success, error, progress);
     }
-    // $scope.upload = $upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
+    // $scope.upload = Upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
   };
 }];
 //}

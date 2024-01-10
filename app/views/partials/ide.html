@@ -273,12 +273,12 @@
       <div class="modal-header">
         <h3>Bild hinzufügen</h3>
       </div>
-      <form class="form" name="ideAddImageForm" ng-submit="submit(data)" enctype="multipart/form-data">
+      <form class="form" name="ideAddImageForm" ng-submit="submit(img)" enctype="multipart/form-data">
         <div class="modal-body">
 
           <div class="form-group">
             <p>Bild auswählen und diesem Projekt hinzufügen.</p>
-            <input type="file" name="dataImage" ng-model="data.image" ng-file-select="onFileSelect($files)" />
+            <input type="file" name="dataImage" ngf-select accept="image/*" ng-model="img"/>
           </div>
         </div>
         <div class="modal-footer">

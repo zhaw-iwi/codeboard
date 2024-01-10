@@ -17,10 +17,10 @@
                     <img ng-src="{{data.imageUrl}}" style="margin-bottom: 15px; width: 150px;">
                   </div>
                   <div class="col-md-6">
-                    <div class="btn btn-default" ng-file-select="onFileSelect($files)">Upload new picture</div>
-                    <div ng-file-drop="onFileSelect($files)"
-                         ng-file-drag-over-class="optional-css-class-name-or-function"
-                         ng-file-drop-available="dropSupported=true"
+                    <div class="btn btn-default" ngf-select ngf-change="onFileSelect($files)">Upload new picture</div>
+                    <div ngf-drop="onFileSelect($files)"
+                         ngf-drag-over-class="optional-css-class-name-or-function"
+                         ngf-drop-available="dropSupported=true"
                          ng-show="dropSupported"
                          style=" width: 150px; padding: 20px 0px; border-style: dashed; border-width: 4px; border-color: #d3d3d3; margin: 10px 0px">
                       Or drop a picture here

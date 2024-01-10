@@ -218,8 +218,8 @@ app.controller('IdeNodeActionCtrl', ['$scope', '$rootScope', '$uibModal', '$log'
  * @author Janick Michot
  * @date 20.01.20
  */
-app.controller('IdeImageActionCtrl', ['$scope', '$rootScope', '$q', '$http', '$routeParams', '$uibModal', '$log', 'IdeMsgService', '$upload',
-  function($scope, $rootScope, $q, $http, $routeParams, $uibModal, $log, IdeMsgService, $upload) {
+app.controller('IdeImageActionCtrl', ['$scope', '$rootScope', '$q', '$http', '$routeParams', '$uibModal', '$log', 'IdeMsgService', 'Upload',
+  function($scope, $rootScope, $q, $http, $routeParams, $uibModal, $log, IdeMsgService, Upload) {
 
     /**
      * Call this method to trigger the displaying of the modal for adding a new node.
@@ -239,12 +239,9 @@ app.controller('IdeImageActionCtrl', ['$scope', '$rootScope', '$q', '$http', '$r
         // Please note that $uibModalInstance represents a modal window (instance) dependency.
         // It is not the same as the $uibModal service used above.
 
-        $scope.data = {
-          file: false
-        };
-
-        $scope.ok = function() {
-          $uibModalInstance.close($scope.data);
+        // calls modalInstance.result with data
+        $scope.ok = function(data) {
+          $uibModalInstance.close(data);
         };
 
         // Close model when clicking on cancel
@@ -254,12 +251,7 @@ app.controller('IdeImageActionCtrl', ['$scope', '$rootScope', '$q', '$http', '$r
 
         // Function to close the modal when a user hits the Enter key.
         $scope.submit = function(formData) {
-          $scope.ok();
-        };
-
-        // store file to variable on select
-        $scope.onFileSelect = function(file) {
-          $scope.data.file = file[0]; // for now only one images is passed
+          $scope.ok(formData);
         };
       }];
 
@@ -273,14 +265,13 @@ app.controller('IdeImageActionCtrl', ['$scope', '$rootScope', '$q', '$http', '$r
       // defines what happens when the modal is closed
       modalInstance.result
         .then(function(aData) {
-
-          if(aData && aData.file) {
-            $scope.upload = $upload.upload({
+          if(aData) {
+            Upload.upload({
               url: '/api/projects/' + $routeParams.projectId + '/projectImage',
-              file: aData.file
+              file: aData
             }).then(function (result) {
               // file is uploaded successfully
-              var req = IdeMsgService.msgSaveImageNodeRequest(result.data.imageUrl, aData.file.name);
+              var req = IdeMsgService.msgSaveImageNodeRequest(result.data.imageUrl, aData.name);
               $rootScope.$broadcast(req.msg, req.data);
 
               })

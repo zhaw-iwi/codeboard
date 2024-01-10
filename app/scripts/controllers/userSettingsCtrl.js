@@ -2,8 +2,8 @@
 
 angular.module('codeboardApp')
   .controller('UserSettingsCtrl',
-  ['$scope', '$upload', '$routeParams', '$http', '$timeout', '$log', 'UserResSettings', 'userData',
-    function($scope, $upload, $routeParams, $http, $timeout, $log, UserResSettings, userData) {
+  ['$scope', 'Upload', '$routeParams', '$http', '$timeout', '$log', 'UserResSettings', 'userData',
+    function($scope, Upload, $routeParams, $http, $timeout, $log, UserResSettings, userData) {
 
       $scope.data = userData;
 
@@ -45,9 +45,7 @@ angular.module('codeboardApp')
         //$files: an array of files selected, each file has name, size, and type.
         for(var i = 0; i < $files.length; i++) {
           var file = $files[i];
-          $scope.upload = $upload.upload({
-
-
+          Upload.upload({
             url: '/api/users/' + $routeParams.username + '/settings/userImage', //upload.php script, node.js route, or servlet url
             //method: 'POST' or 'PUT',
             //headers: {'header-key': 'header-value'},

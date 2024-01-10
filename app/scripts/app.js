@@ -5,12 +5,12 @@ var app = angular.module('codeboardApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
+  'ngFileUpload',
   'ngAnimate',
   'ui.ace',
   'angularTreeview',
   'angularScreenfull',
   'ui.bootstrap',
-  'angularFileUpload',
   'ui.select',
   'ngGrid',
   'kendo.directives',
@@ -73,6 +73,10 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         // shows the :userId page (non-public projects are included when user is authorized)
         templateUrl: 'partials/userCourses',
         controller: 'UserProjectsCtrl'
+      })
+      .when('/users/:username/images', {
+        templateUrl: 'partials/userImages',
+        controller: 'UserImagesCtrl'
       })
       .when('/courses/new', {
         // user creates a new project
