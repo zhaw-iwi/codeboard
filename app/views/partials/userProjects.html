@@ -104,7 +104,7 @@
               <h3 class="panel-title"><b>{{prj.id}} - <a ng-href="/projects/{{prj.id}}/summary"> {{prj.projectname}}</a></b><span class="glyphicon glyphicon-eye-close ml-4" ng-show="prj.isPrivate" title="Project is private"></span></h3>
             </div>
             <div class="col-md-6 text-right">
-              <a class="btn btn-default" href="/projects/{{prj.id}}" role="button">Open in IDE</a>
+              <a class="btn btn-default mr-2" href="/projects/{{prj.id}}" role="button">Open in IDE</a>
               <button id="btn-{{prj.id}}" class="btn" style="background-color: #0064A5; color: white" role="button" ng-click="shareProject(prj.id)" title="https://codeboard.sml.zhaw.ch/projects/{{prj.id}}">Share</button>
             </div>
           </div>  

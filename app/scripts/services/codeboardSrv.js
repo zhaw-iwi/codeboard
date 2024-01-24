@@ -8,13 +8,14 @@ angular.module('codeboardApp').service('CodeboardSrv', [
   'ProjectFactory',
   function (ProjectFactory) {
     var service = this;
-    var disabledActions = [];
     var enabledActions = [];
     var variableMap = {};
     var currentFile;
 
     // this function gets all current disabledActions
+    // todo: this function gets called multiple times (performance?)
     service.getDisabledActions = () => {
+      let disabledActions = [];
       // check for disabled action in the context of a course
       let courseData = ProjectFactory.getProject().courseData;
       if (typeof courseData !== 'undefined' && courseData.hasOwnProperty('courseOptions')) {
