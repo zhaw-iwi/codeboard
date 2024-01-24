@@ -86,7 +86,6 @@ angular.module("codeboardApp").controller("UserProjectsCtrl", [
           $scope.currentUserIsSelf =
             UserSrv.isAuthenticated() &&
             data.username === UserSrv.getUsername();
-            console.log(data);
 
         },
         function (err) {

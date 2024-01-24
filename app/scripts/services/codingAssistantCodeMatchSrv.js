@@ -504,7 +504,6 @@ angular.module('codeboardApp').service('CodingAssistantCodeMatchSrv', [
             // capture groups in neuer variabel speichern
             var currentMatch = line.match(dbline.regex);
             var printStatement = currentMatch[1].split(' ');
-            console.log(printStatement);
             // this is the default explanation "Folgendes wird auf der Konsole ausgegeben (mit/ohne Zeilenumbruch): "
             var printAnswerArray = dbline.answer.split("'");
             // matched true setzen um nicht als "nicht erkannt" klassifiziert zu werden
