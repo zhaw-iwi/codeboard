@@ -17,6 +17,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
   "$route",
   "$uibModal",
   "UserSrv",
+  "FilterSrv",
   "Upload",
   function (
     $scope,
@@ -28,6 +29,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
     $route,
     $uibModal,
     UserSrv,
+    FilterSrv,
     Upload
   ) {
     /* Object that stores all the data of the user */
@@ -40,6 +42,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
       fileFormat: [],
       error: []
     };
+    $scope.filteredImgs = {};
 
     /* Parameter that is true if the user is watching her own page, otherwise false; use to display buttons */
     $scope.currentUserIsSelf = false;
@@ -78,6 +81,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
         .then(function (result) {
           let data = result.data;
           $scope.imgs = data.imgSet;
+          $scope.filteredImgs = data.imgSet;
         })
         .catch(function (err) {
           $location.path("/404").replace();
@@ -94,7 +98,6 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
           res.data.imgResults.forEach((res) => {
             $scope.results[res.type].push(res.file);
           });
-          console.log($scope.results);
         })
         .catch(function (err) {
           $scope.results["error"].push(err);
@@ -133,7 +136,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
           $timeout(() => {
             btn.textContent = "Copy";
             btn.style.backgroundColor = "#DDDDDD";
-          }, 3000);
+          }, 1000);
         })
         .catch(function (err) {
           console.error("Error in copying text: ", err);
@@ -166,6 +169,18 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
       modalInstance.result.then(function () {
         $route.reload();
       });
+    };
+
+    $scope.filter = function (filter) {
+      let data = {
+        filter: filter,
+        imgSet: $scope.imgs,
+        searchTxt: $scope.searchTxt
+      };
+      $scope.filteredImgs = FilterSrv.filter(data);
+      if (data.filter === "reset") {
+        $scope.searchTxt = "";
+      }
     };
   }
 ]);

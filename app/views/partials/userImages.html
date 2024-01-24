@@ -63,42 +63,61 @@
 
   <div class="row">
     <div class="col-md-12">
-      <div>
-        <h1 class="page-header">Own images</h1>
-        <form ng-submit="uploadImgs(selectedImgs)">
-          <input
-            type="file"
-            ngf-select
-            ng-model="selectedImgs"
-            accept="image/*"
-            required
-            multiple
-          />
-          <!-- <div
-            ngf-drop="true"
-            ng-model="imgs"
-            ngf-drag-over-class="dragover"
-            ngf-multiple="true"
-            ngf-drop-available="dropSupported=true"
-            ng-show="dropSupported"
-             accept="image/*"
-            style="
-              width: 200px;
-              padding: 20px 0px;
-              border-style: dashed;
-              border-width: 4px;
-              border-color: #d3d3d3;
-              margin: 10px 0px;
-              text-align: center;
-            "
-          >
-            Or drop them in here
-          </div> -->
-          <button class="btn btn-primary mt-4 btn" type="submit">
-            Upload images
-          </button>
-        </form>
+      <div class="page-header">
+        <h1 >Own images</h1>
+        <div class="row">
+          <div class="col-md-8"></div>
+          <div class="col-md-4 text-right">
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
+              <input ng-show="!courseId" type="text" class="form-control" placeholder="Filter by name/id of image" ng-model="searchTxt" ng-change="filter('input')">
+              <div ng-show="!courseId" class="dropdown">
+                <a class="btn btn-default btn-sm dropdown-toggle" style="height: 34px; line-height: 25px;" data-toggle="dropdown" role="button">
+                  <span class="glyphicon glyphicon-option-horizontal" style="padding: auto"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                  <li><a ng-click="filter('createdAt')">Filter by createdAt</a></li>
+                  <li><a ng-click="filter('name')">Filter by name</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a ng-click="filter('reset')"><b>Reset filter</b></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <form ng-submit="uploadImgs(selectedImgs)">
+        <input
+          type="file"
+          ngf-select
+          ng-model="selectedImgs"
+          accept="image/*"
+          required
+          multiple
+        />
+        <!-- <div
+          ngf-drop="true"
+          ng-model="imgs"
+          ngf-drag-over-class="dragover"
+          ngf-multiple="true"
+          ngf-drop-available="dropSupported=true"
+          ng-show="dropSupported"
+            accept="image/*"
+          style="
+            width: 200px;
+            padding: 20px 0px;
+            border-style: dashed;
+            border-width: 4px;
+            border-color: #d3d3d3;
+            margin: 10px 0px;
+            text-align: center;
+          "
+        >
+          Or drop them in here
+        </div> -->
+        <button class="btn btn-primary mt-4 btn" type="submit">
+          Upload images
+        </button>
+      </form>
       <hr />
       <h4 ng-show="!imgs.length >= 1">Keine Bilder vorhanden</h4>
       <table class="table" ng-show="imgs.length >= 1">
@@ -112,8 +131,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="(key, img) in imgs">
-            <th scope="row">{{key + 1}}</th>
+          <tr ng-repeat="(key, img) in filteredImgs">
+            <th scope="row">{{img.id}}</th>
             <td>{{img.imgName}}</td>
             <td>{{img.path}}</td>
             <td>
