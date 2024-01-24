@@ -355,7 +355,6 @@ app.controller('IdeCtrl', [
             ProjectFactory.runProject().then(
                 function (data) {
                     // note: we only get the data because the resolution to 'then' indicates that the call was successful; thus no header information
-
                     // set the Url on how to stop the current run-action
                     ideState.stopUrl = data.stopUrl;
 
@@ -392,6 +391,8 @@ app.controller('IdeCtrl', [
             // get disabled & enabled actions
             let disabledActions = CodeboardSrv.getDisabledActions();
             let enabledActions = CodeboardSrv.getEnabledActions();
+            let compilationResult = [];
+            let compilationOutputTxt = "";
 
             // make sure we save the current content before submitting
             saveCurrentlyDisplayedContent(true);
@@ -426,9 +427,14 @@ app.controller('IdeCtrl', [
                                         let reqOpenCompilerTab = IdeMsgService.msgNavBarRightOpenTab('compiler');
                                         $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
 
+                                        compilationResult = result.config.data.compilation.outputArray;
+                                        compilationResult.forEach((e) => {
+                                            compilationOutputTxt += e;
+                                        })
                                         let chatLineCard = {
                                             cardHeader: 'Fehler beim Kompilieren',
                                             cardBody: result.data,
+                                            compilationOutput: compilationOutputTxt,
                                             cardType: 'compHelp',
                                         };
 
