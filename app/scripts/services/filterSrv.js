@@ -40,7 +40,7 @@ angular.module("codeboardApp").service("FilterSrv", [
         result.sort((a, b) => {
           return (
             (a.projectname && a.projectname.localeCompare(b.projectname)) ||
-            (a.coursename && a.coursename.localeCompare(b.projectname)) ||
+            (a.coursename && a.coursename.localeCompare(b.coursename)) ||
             (a.imgName && a.imgName.localeCompare(b.imgName))
           );
         });
