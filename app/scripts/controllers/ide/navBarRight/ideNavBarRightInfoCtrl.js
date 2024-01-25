@@ -59,6 +59,8 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
     infoChatLines.forEach((chatLine) => {
       if (!disabledActions.includes(chatLine.tab) || enabledActions.includes(chatLine.tab)) {
         $scope.chatLines.push(chatLine);
+      } else if (UserSrv.isAuthenticated() && ProjectFactory.getProject().userRole !== 'user') {
+        $scope.chatLines.push(chatLine);
       }
     });
 
