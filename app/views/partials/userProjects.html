@@ -2,64 +2,19 @@
 
 
 <div class="container">
-
   <div class="row">
-    <div class="col-md-8 col-md-offset-3">
-      <h2>{{user.username}}</h2>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-2 col-md-offset-1">
-      <img src="{{user.imageUrl}}" alt="" style="width: 150px"/>
-    </div>
-    <div class="col-md-4">
-      <p ng-show="user.name">
-        <label>Name</label>
-        <br>
-        {{user.name}}
-      </p>
-      <p ng-show="user.email">
-        <label>Email</label>
-        <br>
-        <a href="mailto:{{user.email}}">{{user.email}}</a>
-      </p>
-      <p ng-show="user.url">
-        <label>Web</label>
-        <br>
-        <a href="{{user.url}}">{{user.url}}</a>
-      </p>
-    </div>
-    <div class="col-md-3">
-      <p ng-show="user.location">
-        <label>Located in</label>
-        <br>
-        {{user.location}}
-      </p>
-      <p ng-show="user.institution">
-        <label>Institution</label>
-        <br>
-        {{user.institution}}
-      </p>
-    </div>
-  </div>
-
-  <hr>
-
-    <div class="row" ng-show="currentUserIsSelf">
-      <div class="col-md-12">
-        <a class="btn btn-success" id="userProjects_createProject" href="/projects/new">Create new project</a>
-        <a class="btn btn-info" id="userProjects_createCourse" href="/courses/new">Create new course</a>
-        <a class="btn btn-default" ng-href="/users/{{user.username}}/settings">Edit user settings</a>
-      </div>
-    </div>
-
-  <div class="row" ng-show="ownerSet.length > 0">
     <div class="col-md-12">
       <div class="page-header">
-        <h1>Owns projects <span ng-if="courseId">in Course {{courseId}}</span></h1>
+        <h1>Owns projects <span ng-if="courseId">in Course {{courseId}}</span> - {{user.username}}</h1>
         <div class="row">
-          <div class="col-md-4 text-left" ng-show="!courseId">
+          <div class="col-md-12 text-right" ng-show="currentUserIsSelf">
+            <a class="btn btn-success" id="userProjects_createProject" href="/projects/new">Create new project</a>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4" ng-show="ownerSet.length >= 1">
+        <div ng-class="{'col-md-4': !currentUserIsSelf, 'col-md-8': currentUserIsSelf }">
+          <div ng-show="!courseId && currentUserIsSelf">
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button" style="margin-top: 7.5px" ng-click="filter('reset', 'prj')">
                 Filter by courses
@@ -73,30 +28,31 @@
               </ul>
             </div>
           </div>
-          <div ng-class="{'col-md-4': !courseId, 'col-md-8': courseId }">
-            <div class="mt-3" ng-if="courseId">
-              <a class="btn btn-default" href="/users/{{user.username}}">Show all projects</a>
-            </div>
+        </div>
+        <div ng-class="{'col-md-4': !courseId, 'col-md-8': courseId }">
+          <div class="mt-3" ng-show="courseId && currentUserIsSelf">
+            <a class="btn btn-default" href="/users/{{user.username}}">Show all projects</a>
           </div>
-          <div class="col-md-4 text-right">
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
-              <input type="text" class="form-control" placeholder="Filter by name/id of project" ng-model="searchTxt" ng-change="filter('input', 'prj')">
-              <div class="dropdown">
-                <a class="btn btn-default btn-sm dropdown-toggle" style="height: 34px; line-height: 25px;" data-toggle="dropdown" role="button">
-                  <span class="glyphicon glyphicon-option-horizontal" style="padding: auto"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                  <li><a ng-click="filter('createdAt', 'prj')">Filter by createdAt</a></li>
-                  <li><a ng-click="filter('name', 'prj')">Filter by name</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a ng-click="filter('reset', 'prj')"><b>Reset filter</b></a></li>
-                </ul>
-              </div>
+        </div>
+        <div class="col-md-4 text-right" ng-show="currentUserIsSelf">
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
+            <input type="text" class="form-control" placeholder="Filter by name/id of project" ng-model="searchTxt" ng-change="filter('input', 'prj')">
+            <div class="dropdown">
+              <a class="btn btn-default btn-sm dropdown-toggle" style="height: 34px; line-height: 25px;" data-toggle="dropdown" role="button">
+                <span class="glyphicon glyphicon-option-horizontal" style="padding: auto"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li><a ng-click="filter('createdAt', 'prj')">Filter by createdAt</a></li>
+                <li><a ng-click="filter('name', 'prj')">Filter by name</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a ng-click="filter('reset', 'prj')"><b>Reset filter</b></a></li>
+              </ul>
             </div>
           </div>
         </div>
-    </div>
-       
+      </div>
+      <h4 ng-show="!courseId && (!ownerSet.length >= 1 || !filteredProjects.length >= 1)">No projects found</h4>
+      <h4 ng-show="courseId && !filteredProjects.length >= 1">No projects found</h4>
       <div class="panel panel-default" ng-repeat="prj in filteredProjects">
         <div class="panel-heading">
           <div class="row">

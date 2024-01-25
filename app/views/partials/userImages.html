@@ -2,124 +2,68 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-8 col-md-offset-3">
-      <h2>{{user.username}}</h2>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-2 col-md-offset-1">
-      <img src="{{user.imageUrl}}" alt="" style="width: 150px" />
-    </div>
-    <div class="col-md-4">
-      <p ng-show="user.name">
-        <label>Name</label>
-        <br />
-        {{user.name}}
-      </p>
-      <p ng-show="user.email">
-        <label>Email</label>
-        <br />
-        <a href="mailto:{{user.email}}">{{user.email}}</a>
-      </p>
-      <p ng-show="user.url">
-        <label>Web</label>
-        <br />
-        <a href="{{user.url}}">{{user.url}}</a>
-      </p>
-    </div>
-    <div class="col-md-3">
-      <p ng-show="user.location">
-        <label>Located in</label>
-        <br />
-        {{user.location}}
-      </p>
-      <p ng-show="user.institution">
-        <label>Institution</label>
-        <br />
-        {{user.institution}}
-      </p>
-    </div>
-  </div>
-
-  <hr />
-
-  <div class="row" ng-show="currentUserIsSelf">
-    <div class="col-md-12">
-      <a
-        class="btn btn-success"
-        id="userProjects_createProject"
-        href="/projects/new"
-        >Create new project</a
-      >
-      <a class="btn btn-info" id="userProjects_createCourse" href="/courses/new"
-        >Create new course</a
-      >
-      <a class="btn btn-default" ng-href="/users/{{user.username}}/settings"
-        >Edit user settings</a
-      >
-    </div>
-  </div>
-
-  <div class="row">
     <div class="col-md-12">
       <div class="page-header">
-        <h1 >Own images</h1>
-        <div class="row">
-          <div class="col-md-8"></div>
-          <div class="col-md-4 text-right">
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
-              <input ng-show="!courseId" type="text" class="form-control" placeholder="Filter by name/id of image" ng-model="searchTxt" ng-change="filter('input')">
-              <div ng-show="!courseId" class="dropdown">
-                <a class="btn btn-default btn-sm dropdown-toggle" style="height: 34px; line-height: 25px;" data-toggle="dropdown" role="button">
-                  <span class="glyphicon glyphicon-option-horizontal" style="padding: auto"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                  <li><a ng-click="filter('createdAt')">Filter by createdAt</a></li>
-                  <li><a ng-click="filter('name')">Filter by name</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a ng-click="filter('reset')"><b>Reset filter</b></a></li>
-                </ul>
-              </div>
+        <h1 class="mb-5">Own images - {{user.username}}</h1>
+        <form ng-submit="uploadImgs(selectedImgs)" ng-show="currentUserIsSelf">
+          <input
+            type="file"
+            ngf-select
+            ng-model="selectedImgs"
+            accept="image/*"
+            required
+            multiple
+          />
+          <button class="btn btn-success btn mt-3" type="submit">
+            Upload images
+          </button>
+        </form>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-8"></div>
+        <div class="col-md-4 text-right" ng-show="imgs.length >= 1">
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              gap: 5px;
+            "
+          >
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Filter by name/id of image"
+              ng-model="searchTxt"
+              ng-change="filter('input')"
+            />
+            <div class="dropdown">
+              <a
+                class="btn btn-default btn-sm dropdown-toggle"
+                style="height: 34px; line-height: 25px"
+                data-toggle="dropdown"
+                role="button"
+              >
+                <span
+                  class="glyphicon glyphicon-option-horizontal"
+                  style="padding: auto"
+                ></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li>
+                  <a ng-click="filter('createdAt')">Filter by createdAt</a>
+                </li>
+                <li><a ng-click="filter('name')">Filter by name</a></li>
+                <li role="separator" class="divider"></li>
+                <li>
+                  <a ng-click="filter('reset')"><b>Reset filter</b></a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-      <form ng-submit="uploadImgs(selectedImgs)">
-        <input
-          type="file"
-          ngf-select
-          ng-model="selectedImgs"
-          accept="image/*"
-          required
-          multiple
-        />
-        <!-- <div
-          ngf-drop="true"
-          ng-model="imgs"
-          ngf-drag-over-class="dragover"
-          ngf-multiple="true"
-          ngf-drop-available="dropSupported=true"
-          ng-show="dropSupported"
-            accept="image/*"
-          style="
-            width: 200px;
-            padding: 20px 0px;
-            border-style: dashed;
-            border-width: 4px;
-            border-color: #d3d3d3;
-            margin: 10px 0px;
-            text-align: center;
-          "
-        >
-          Or drop them in here
-        </div> -->
-        <button class="btn btn-primary mt-4 btn" type="submit">
-          Upload images
-        </button>
-      </form>
-      <hr />
-      <h4 ng-show="!imgs.length >= 1">Keine Bilder vorhanden</h4>
+      <h4 ng-show="!imgs.length >= 1">No images uploaded yet</h4>
       <table class="table" ng-show="imgs.length >= 1">
         <thead>
           <tr>
@@ -154,54 +98,55 @@
       </table>
     </div>
   </div>
-  <script type="text/ng-template" id="ideUploadImgModal.html">
-    <div class="modal-header">
-      <h3>Results of the image upload</h3>
-    </div>
-    <div class="modal-body">
-      <!-- SUCCESS -->
-      <div ng-if="results.success.length > 0">
-        <h4>Successful Uploads</h4>
-        <ul>
-          <li ng-repeat="msg in results.success">{{msg}}</li>
-        </ul>
-      </div>
-
-      <!-- DELET -->
-      <div ng-if="results.deleted.length > 0">
-        <div style="color: green" ng-repeat="msg in results.deleted">{{msg}}</div>
-      </div>
-
-      <!-- DUPLICATES -->
-      <div ng-if="results.duplicate.length > 0">
-        <h4>Duplicated Images</h4>
-        <ul>
-          <li ng-repeat="msg in results.duplicate">{{msg}}</li>
-        </ul>
-        Please use a different filename
-      </div>
-
-      <!-- FILE FOMRAT -->
-      <div ng-if="results.fileFormat.length > 0">
-        <h4>Wrong File Format</h4>
-        <ul>
-          <li ng-repeat="msg in results.fileFormat">{{msg}}</li>
-        </ul>
-        Please change the file format to an img
-      </div>
-
-      <!-- ERRORS -->
-      <div ng-if="results.error.length > 0">
-        <h4>Other Errors</h4>
-        <div>
-          <p ng-repeat="msg in results.error">{{msg}}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-primary" ng-click="cancel()">Close</button>
-    </div>
-  </script>
 </div>
+
+<script type="text/ng-template" id="ideUploadImgModal.html">
+  <div class="modal-header">
+    <h3>Results of the image upload</h3>
+  </div>
+  <div class="modal-body">
+    <!-- SUCCESS -->
+    <div ng-if="results.success.length > 0">
+      <h4>Successful Uploads</h4>
+      <ul>
+        <li ng-repeat="msg in results.success">{{msg}}</li>
+      </ul>
+    </div>
+
+    <!-- DELETE -->
+    <div ng-if="results.deleted.length > 0">
+      <div style="color: green" ng-repeat="msg in results.deleted">{{msg}}</div>
+    </div>
+
+    <!-- DUPLICATES -->
+    <div ng-if="results.duplicate.length > 0">
+      <h4>Duplicated Images</h4>
+      <ul>
+        <li ng-repeat="msg in results.duplicate">{{msg}}</li>
+      </ul>
+      Please use a different filename
+    </div>
+
+    <!-- FILE FOMRAT -->
+    <div ng-if="results.fileFormat.length > 0">
+      <h4>Wrong File Format</h4>
+      <ul>
+        <li ng-repeat="msg in results.fileFormat">{{msg}}</li>
+      </ul>
+      Please change the file format to an img
+    </div>
+
+    <!-- ERRORS -->
+    <div ng-if="results.error.length > 0">
+      <h4>Other Errors</h4>
+      <div>
+        <p ng-repeat="msg in results.error">{{msg}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="cancel()">Close</button>
+  </div>
+</script>
 <!-- end of container -->
