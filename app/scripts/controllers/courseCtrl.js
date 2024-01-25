@@ -16,7 +16,8 @@ angular.module('codeboardApp').controller('CourseNewCtrl', [
   '$routeParams',
   '$location',
   'CodeboardSrv',
-  function ($scope, $http, $routeParams, $location, CodeboardSrv) {
+  'UserSrv',
+  function ($scope, $http, $routeParams, $location, CodeboardSrv, UserSrv) {
     // Object that holds the properties of a course and binds to the form
     $scope.data = {
       language: 'Java',
@@ -36,6 +37,8 @@ angular.module('codeboardApp').controller('CourseNewCtrl', [
 
     $scope.actionsSelected = [];
 
+    $scope.username = UserSrv.getUsername();
+
     $scope.save = function (form) {
       if (form.$valid) {
         var payload = {
@@ -54,7 +57,7 @@ angular.module('codeboardApp').controller('CourseNewCtrl', [
         $http.post('/api/courses/', payload).then(
           function (result) {
             $scope.server.saveSuccess = true;
-            $location.path(`/`);
+            $location.path(`/users/${$scope.username}/courses`);
           },
           function (error) {
             // show the error message and remove it after 4 seconds
