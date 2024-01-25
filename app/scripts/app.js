@@ -69,6 +69,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         templateUrl: 'partials/userProjects',
         controller: 'UserProjectsCtrl'
       })
+      .when('/users/:username/overview', {
+        // shows the overview of the user
+        templateUrl: 'partials/userOverview',
+        controller: 'UserProjectsCtrl'
+      })
       .when('/users/:username/courses', {
         // shows the :userId page (non-public projects are included when user is authorized)
         templateUrl: 'partials/userCourses',
