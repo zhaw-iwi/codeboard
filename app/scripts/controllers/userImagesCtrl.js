@@ -125,7 +125,7 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
           img = e;
         }
       });
-      var imgElement = `<p class='text-center'> <img src='${img.path}' alt='${img.imgName}' width='90%'></p>`;
+      var imgElement = `<img src='${img.path}' alt='${img.imgName}' width='90%'>`;
       var btn = document.getElementById("btn" + id);
       navigator.clipboard
         .writeText(imgElement)
