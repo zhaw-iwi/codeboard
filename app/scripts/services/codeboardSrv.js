@@ -141,6 +141,10 @@ angular.module('codeboardApp').service('CodeboardSrv', [
         desc: 'The tips tab (Tipps)',
       },
       {
+        name: 'ai-hints',
+        desc: 'If enabled relevant hint gets selected using chat-gpt',
+      },
+      {
         name: 'questions',
         desc: 'The questions tab (Fragen)',
       },
