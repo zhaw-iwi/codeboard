@@ -5,8 +5,8 @@
  */
 
 angular.module('codeboardApp')
-  .controller('CourseSettingsCtrl', ['$scope', '$http', '$log', '$routeParams', '$location', '$timeout', '$uibModal', 'CourseRes', 'courseData', 'CodeboardSrv',
-    function ($scope, $http, $log, $routeParams, $location, $timeout, $uibModal, CourseRes, courseData, CodeboardSrv) {
+  .controller('CourseSettingsCtrl', ['$scope', '$http', '$log', '$routeParams', '$location', '$timeout', '$uibModal', 'CourseRes', 'courseData', 'CodeboardSrv', 'UserSrv',
+    function ($scope, $http, $log, $routeParams, $location, $timeout, $uibModal, CourseRes, courseData, CodeboardSrv, UserSrv) {
 
       // Object that holds the properties of a course and binds to the form
       $scope.data = {};
@@ -23,6 +23,8 @@ angular.module('codeboardApp')
         error: '',
         info: ''
       };
+
+      $scope.username = UserSrv.getUsername();
 
       // array of disabled actions
       $scope.actions = CodeboardSrv.actions;
@@ -126,7 +128,7 @@ angular.module('codeboardApp')
         CourseRes.remove( { courseId: $routeParams.courseId },
           function () {
             $log.debug('Deletion ok');
-            $location.url('/');
+            $location.path('/users/' + $scope.username + '/courses');
           },
           function () {
             $log.debug('Deletion failed');
