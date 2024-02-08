@@ -3,6 +3,7 @@
  * It makes use of the 'chatSrv' in order to request tips as well as enabling the chat function in the "Tips" tab and provide the compiler-messages to the "Compiler" tab.
  *
  * @author Janick Michot
+ * @author Samuel Truniger
  * @date 19.12.2019
  */
 
@@ -13,15 +14,16 @@ angular.module('codeboardApp')
     /**
      * Controller for Project Description
      */
-    .controller('ideNavBarRightHelpCtrl', ['$scope', '$rootScope', '$sce', '$routeParams', '$http', '$log', '$timeout', '$uibModal', 'IdeMsgService', 'ProjectFactory', 'ChatSrv', 'UserSrv', 'AceEditorSrv',
-    function ($scope, $rootScope, $sce, $routeParams, $http, $log, $timeout, $uibModal, IdeMsgService, ProjectFactory, ChatSrv, UserSrv, AceEditorSrv) {
+    .controller('ideNavBarRightHelpCtrl', ['$scope', '$rootScope', '$sce', '$routeParams', '$http', '$log', '$timeout', '$uibModal', 'IdeMsgService', 'ProjectFactory', 'ChatSrv', 'UserSrv', 'AceEditorSrv', 'AISrv', 'CodeboardSrv', 'ProjectRes',
+    function ($scope, $rootScope, $sce, $routeParams, $http, $log, $timeout, $uibModal, IdeMsgService, ProjectFactory, ChatSrv, UserSrv, AceEditorSrv, AISrv, CodeboardSrv, ProjectRes) {
 
         let slug = 'help',
             avatarName = "Roby"; // todo dieser Benutzername ist eingetlich nicht statisch ...
         let lastCompilerChatboxIndex = -1;
-        var aceEditor = $scope.ace.editor;
 
         // scope variables
+        $scope.hintBtnTxt = "Tipp anfordern"
+        $scope.searchForHint = false;
         $scope.chatLines = [];
         $scope.filteredCompilerChatLines = [];
         $scope.filteredTipChatLines = [];
@@ -206,6 +208,9 @@ angular.module('codeboardApp')
                         $scope.tips = config.Help.tips.map(tip => ({...tip, sent: false}));
                         $scope.helpIntro = config.Help.helpIntro;
                         $scope.requestTipDisabled = (getNumTipsAlreadySent() >= $scope.tips.length);
+                        if ($scope.requestTipDisabled) {
+                            $scope.hintBtnTxt = "Es sind keine weiteren Tipps verfügbar."
+                        }
 
                         // update tips sent property based on chat history
                         $scope.chatLines.forEach(function (chatLine) {
@@ -219,6 +224,7 @@ angular.module('codeboardApp')
                             }
                         });
                     }
+
                 })
                 .catch(function() {
                     console.log("Fehler beim Laden des Chatverlaufs");
@@ -252,62 +258,153 @@ angular.module('codeboardApp')
             chatScrollToBottom();
         });
 
-        /**
-         * This functions adds a chatline with a relevant tip.
-         */
+        // this function gets called when a student triggers the "Tipp anfordern" button
         $scope.askForTip = function() {
-            let relevantTip;
+            let disabledActions = CodeboardSrv.getDisabledActions();
+            let enabledActions = CodeboardSrv.getEnabledActions();
+
+            // check wheter to use ai to generate next hint or default process (order)
+            if (disabledActions.includes("ai-hints") && !enabledActions.includes("ai-hints")) {
+                let relevantHint = getHint();
+                displayHint(relevantHint)
+            } else {
+                // save the all files in project to db
+                if ($scope.ace.currentNodeId !== -1) {
+                    // if the value is !== -1, then some tab is open
+                    ProjectFactory.getNode($scope.ace.currentNodeId).content = $scope.ace.editor.getSession().getValue();
+                }   
+                ProjectFactory.saveProjectToServer().then(() => {
+                    $scope.hintBtnTxt ="Tipp wird geladen..."
+                    $scope.searchForHint = true;
+                    getHintUsingAI().then((hint) => {
+                        if (hint) {
+                        displayHint(hint);
+                        } else {
+                            // case when no relevant hint was found by ai (hint should be undefined)
+                            displayHint(hint);
+                        }
+                    }).catch(function(err) {
+                        console.error("Error fetching hint using ai:", err);
+                        let relevantHint = getHint();
+                        displayHint(relevantHint)
+                    });
+               }).catch((err) => {
+                    console.log(err);
+                    let relevantHint = getHint();
+                    displayHint(relevantHint);
+               })
+            }
+        };
+        
+        // function which prioritize the hints using chatGPT
+        var getHintUsingAI = function() {
+            let hintsForProject = [];
+
+            // store hints which are not already sent in new array 
+            let index = 0;
+            $scope.tips.forEach((e) => {
+                if (!e.sent) {
+                    hintsForProject.push({
+                        id: index,
+                        name: e.name,
+                        note: e.note
+                    })
+                    index++;
+                }
+            })
+
+            // data which is needed for the request
+            let data = {
+                hints: hintsForProject
+            }
+
+            return AISrv.askForRelevantTip(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
+                if (res.choices && res.choices.length > 0) {
+                    // the api call should return the id of the relevant hint which is then used to get the corresponding hint from the hints array
+                    let hintIndex = parseInt(res.choices[0].message.content);
+                    // condition which checks wheter relevant hint was found by ai
+                    if (hintIndex !== -1 && hintsForProject[hintIndex]) {
+                        return hintsForProject[hintIndex];
+                    } else if (hintIndex === -1) {
+                        // case when ai returns -1 because no relevant hint was found
+                        return;
+                    } else if (!hintsForProject[hintIndex]) {
+                        // case when ai returns an index other than -1 which is not part of array
+                        return getHint();
+                    }
+                } 
+                // fall back to default hint priorization (order)
+                return getHint();
+                
+            }).catch((err) => {
+                if (err.status === 401) {
+                    console.error("Incorrect API key provided.");
+                } else {
+                    console.log(err);
+                }
+                // fall back to default hint priorization (order)
+                return getHint();
+            });
+        }
+
+        // function which prioritize the hints using default order
+        var getHint = function() {
+            let hint;
             // loop trough each tip in $scope.tips
             for (let i = 0; i < $scope.tips.length; i++) {
                 // assign current tip to tip variable
-                let tip = $scope.tips[i];
-
-                if (tip.hasOwnProperty("mustMatch") && tip.hasOwnProperty("matching")) {
-                    // check if student code matches the "matching" regex pattern from current tip
-                    let codeMatched = aceEditor.getSession().getValue().match(tip.matching) !== null;
-                    
-                    // if student code matches "matching" regex and tip is not already sent assign current tip to relevant tip variable
-                    if (!tip.sent && ((tip.mustMatch && codeMatched) || (!tip.mustMatch && !codeMatched))) {
-                        relevantTip = tip;
-                        break;
-                    } 
-                } else {
-                    // tips which do not have "mustMatch" & "matching" property
-                    if (!tip.sent) {
-                        relevantTip = tip;
-                        break;
-                    } 
+                let tip = $scope.tips[i];           
+                if (!tip.sent) {
+                    hint = tip;
+                    break;                 
                 }
             }
-                       
+            return hint;
+        }
+
+        
+        // this functions adds a chatline with a relevant hint in the tip tab.
+        var displayHint = function(relevantHint) {
+            $scope.hintBtnTxt = "Tipp anfordern";
+            $scope.searchForHint = false;
             // if there is a relevant tip add it to chatLines array
-            if (relevantTip) {
+            if (relevantHint) {
                 // get index of the tip to store it in db
-                let tipIndex = $scope.tips.indexOf(relevantTip);
-                ChatSrv.addChatLineCard(relevantTip.note, relevantTip.name, 'tip', null, null, avatarName, true, tipIndex)
+                let tipIndex = $scope.tips.findIndex(hint => hint.name === relevantHint.name);
+                $scope.tips[tipIndex].sent = true;
+                // add chatbox in view
+                ChatSrv.addChatLineCard(relevantHint.note, relevantHint.name, 'tip', null, null, avatarName, true, tipIndex)
                     .then(function(aChatLine) {
                         addChatLine(aChatLine, true);
-                        relevantTip.sent = true;
                         $scope.requestTipDisabled = (getNumTipsAlreadySent() >= $scope.tips.length);
+                        if ($scope.requestTipDisabled) {
+                            $scope.hintBtnTxt = "Du hast alle verfügbaren Tipps abgefragt."
+                        }
                     });
             } else {
-                /** The controller for the modal */
-                var noRelevantTipModalInstanceCtrl = [
-                    '$scope',
-                    '$uibModalInstance',
-                    function ($scope, $uibModalInstance) {
-                        $scope.cancel = function () {
-                            $uibModalInstance.close();
-                        };
-                    },
-                ];
-
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'noRelevantTipModalContent.html',
-                    controller: noRelevantTipModalInstanceCtrl
-                });
+                // open the modal to indicate that there was no relevant hint for the students solution
+                $scope.$broadcast('openNoRelevantTipModal');
             }
-        };
+        }
+
+        // In a controller or service with access to $uibModal
+        $scope.$on('openNoRelevantTipModal', function() {
+             /** The controller for the modal */
+             let noRelevantTipModalInstanceCtrl = [
+                '$scope',
+                '$uibModalInstance',
+                function ($scope, $uibModalInstance) {
+                    $scope.cancel = function () {
+                        $uibModalInstance.close();
+                    };
+                },
+            ];
+            $uibModal.open({
+                templateUrl: 'noRelevantTipModalContent.html',
+                controller: noRelevantTipModalInstanceCtrl
+            });
+        });
+
 
         var lastHelpRequest = null;
 
