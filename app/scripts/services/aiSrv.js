@@ -11,9 +11,13 @@ angular.module("codeboardApp").service("AISrv", [
   function ChatService($rootScope, $http) {
     var service = this;
 
-    service.askForRelevantTip = function (data) {
+    service.askForRelevantTip = function (username, courseId, projectId, data) {
       return $http
-        .post("/api/ai/hints", data, { timeout: 10000 })
+        .post(
+          "/api/ai/hints/" + username + "/" + courseId + "/" + projectId,
+          data,
+          { timeout: 10000 }
+        )
         .then(function (res) {
           return res.data;
         })

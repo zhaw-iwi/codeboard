@@ -14,13 +14,12 @@ angular.module('codeboardApp')
     /**
      * Controller for Project Description
      */
-    .controller('ideNavBarRightHelpCtrl', ['$scope', '$rootScope', '$sce', '$routeParams', '$http', '$log', '$timeout', '$uibModal', 'IdeMsgService', 'ProjectFactory', 'ChatSrv', 'UserSrv', 'AceEditorSrv', 'AISrv', 'CodeboardSrv',
-    function ($scope, $rootScope, $sce, $routeParams, $http, $log, $timeout, $uibModal, IdeMsgService, ProjectFactory, ChatSrv, UserSrv, AceEditorSrv, AISrv, CodeboardSrv) {
+    .controller('ideNavBarRightHelpCtrl', ['$scope', '$rootScope', '$sce', '$routeParams', '$http', '$log', '$timeout', '$uibModal', 'IdeMsgService', 'ProjectFactory', 'ChatSrv', 'UserSrv', 'AceEditorSrv', 'AISrv', 'CodeboardSrv', 'ProjectRes',
+    function ($scope, $rootScope, $sce, $routeParams, $http, $log, $timeout, $uibModal, IdeMsgService, ProjectFactory, ChatSrv, UserSrv, AceEditorSrv, AISrv, CodeboardSrv, ProjectRes) {
 
         let slug = 'help',
             avatarName = "Roby"; // todo dieser Benutzername ist eingetlich nicht statisch ...
         let lastCompilerChatboxIndex = -1;
-        var aceEditor = $scope.ace.editor;
 
         // scope variables
         $scope.hintBtnTxt = "Tipp anfordern"
@@ -263,35 +262,43 @@ angular.module('codeboardApp')
         $scope.askForTip = function() {
             let disabledActions = CodeboardSrv.getDisabledActions();
             let enabledActions = CodeboardSrv.getEnabledActions();
-            
-            // check wheter to use ai to generate next hint or default process (regex/order)
+
+            // check wheter to use ai to generate next hint or default process (order)
             if (disabledActions.includes("ai-hints") && !enabledActions.includes("ai-hints")) {
                 let relevantHint = getHint();
                 displayHint(relevantHint)
             } else {
-                $scope.hintBtnTxt ="Tipp wird geladen..."
-                $scope.searchForHint = true;
-                getHintUsingAI().then((hint) => {
-                    if (hint) {
-                       displayHint(hint);
-                    } else {
-                        // case when no relevant hint was found by ai (hint should be undefined)
+                // save the all files in project to db
+                if ($scope.ace.currentNodeId !== -1) {
+                    // if the value is !== -1, then some tab is open
+                    ProjectFactory.getNode($scope.ace.currentNodeId).content = $scope.ace.editor.getSession().getValue();
+                }   
+                ProjectFactory.saveProjectToServer().then(() => {
+                    $scope.hintBtnTxt ="Tipp wird geladen..."
+                    $scope.searchForHint = true;
+                    getHintUsingAI().then((hint) => {
+                        if (hint) {
                         displayHint(hint);
-                    }
-                }).catch(function(error) {
-                    console.error("Error fetching hint using ai:", error);
+                        } else {
+                            // case when no relevant hint was found by ai (hint should be undefined)
+                            displayHint(hint);
+                        }
+                    }).catch(function(err) {
+                        console.error("Error fetching hint using ai:", err);
+                        let relevantHint = getHint();
+                        displayHint(relevantHint)
+                    });
+               }).catch((err) => {
+                    console.log(err);
                     let relevantHint = getHint();
-                    displayHint(relevantHint)
-                });
+                    displayHint(relevantHint);
+               })
             }
         };
         
         // function which prioritize the hints using chatGPT
         var getHintUsingAI = function() {
-            let studentCode = aceEditor.getSession().getValue();
             let hintsForProject = [];
-            let sampleSolution = ProjectFactory.getSampleSolution().replace(/(<([^>]+)>)/gi, "") || "No sample solution available";
-            let description = ProjectFactory.getProjectDescription().replace(/(<([^>]+)>)/gi, "") || "No project description available";
 
             // store hints which are not already sent in new array 
             let index = 0;
@@ -308,28 +315,25 @@ angular.module('codeboardApp')
 
             // data which is needed for the request
             let data = {
-                desc: description,
-                code: studentCode,
-                solution: sampleSolution,
                 hints: hintsForProject
             }
 
-            return AISrv.askForRelevantTip(data).then((res) => {
+            return AISrv.askForRelevantTip(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
                 if (res.choices && res.choices.length > 0) {
                     // the api call should return the id of the relevant hint which is then used to get the corresponding hint from the hints array
                     let hintIndex = parseInt(res.choices[0].message.content);
                     // condition which checks wheter relevant hint was found by ai
-                    if (hintIndex !== -1 && hints[hintIndex]) {
-                        return hints[hintIndex];
+                    if (hintIndex !== -1 && hintsForProject[hintIndex]) {
+                        return hintsForProject[hintIndex];
                     } else if (hintIndex === -1) {
                         // case when ai returns -1 because no relevant hint was found
                         return;
-                    } else if (!hints[hintIndex]) {
+                    } else if (!hintsForProject[hintIndex]) {
                         // case when ai returns an index other than -1 which is not part of array
                         return getHint();
                     }
                 } 
-                // fall back to default hint priorization (regex/order)
+                // fall back to default hint priorization (order)
                 return getHint();
                 
             }).catch((err) => {
@@ -338,32 +342,21 @@ angular.module('codeboardApp')
                 } else {
                     console.log(err);
                 }
-                // fall back to default hint priorization (regex/order)
+                // fall back to default hint priorization (order)
                 return getHint();
             });
         }
 
-        // function which prioritize the hints using regex or default order
+        // function which prioritize the hints using default order
         var getHint = function() {
             let hint;
             // loop trough each tip in $scope.tips
             for (let i = 0; i < $scope.tips.length; i++) {
                 // assign current tip to tip variable
-                let tip = $scope.tips[i];
-                if (tip.hasOwnProperty("mustMatch") && tip.hasOwnProperty("matching") && !tip.sent) {
-                    // check if student code matches the "matching" regex pattern from current tip
-                    let codeMatched = aceEditor.getSession().getValue().match(tip.matching) !== null;                
-                    // if student code matches "matching" regex and tip is not already sent assign current tip to relevant tip variable
-                    if ((tip.mustMatch && codeMatched) || (!tip.mustMatch && !codeMatched)) {
-                        hint = tip;
-                        break;
-                    } 
-                } else {
-                    // tips which do not have "mustMatch" & "matching" property
-                    if (!tip.sent) {
-                        hint = tip;
-                        break;
-                    } 
+                let tip = $scope.tips[i];           
+                if (!tip.sent) {
+                    hint = tip;
+                    break;                 
                 }
             }
             return hint;
