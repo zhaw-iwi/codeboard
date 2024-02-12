@@ -19,7 +19,6 @@ angular.module('codeboardApp')
 
         let slug = 'help',
             avatarName = "Roby"; // todo dieser Benutzername ist eingetlich nicht statisch ...
-        let lastCompilerChatboxIndex = -1;
 
         // scope variables
         $scope.hintBtnTxt = "Tipp anfordern"
@@ -36,6 +35,61 @@ angular.module('codeboardApp')
         $scope.showCompilerInfoMessage = false;
         $scope.showNoCompilationErrorMessage = false;
         $scope.showCompilationErrorMessage = false;
+
+        /**
+         * init this tab by loading chat history and read tips
+         */
+        $scope.init = function() {
+            // $scope.currentRoleIsUser()
+            $scope.sendRequestFormVisible = !$scope.currentRoleIsUser();
+
+            // when user role help, make help default tab
+            if(ProjectFactory.getProject().userRole === 'help') {
+                $timeout(function () {
+                    let req = IdeMsgService.msgNavBarRightOpenTab('questions');
+                    $rootScope.$broadcast(req.msg, req.data);
+                }, 500);
+            }
+
+
+            // load chat history
+            ChatSrv.getChatHistory()
+                .then(function(result) {
+                    result.data.forEach(function(chatLine) {
+                        addChatLine(chatLine);
+                    });
+                })
+                .then(function() {
+                    // read all tips from codeboard.json
+                    let config = ProjectFactory.getConfig();
+                    if (config && "Help" in config && "tips" in config.Help) {
+                        // add property to tips that they do not get sent multiple times in runtime
+                        $scope.tips = config.Help.tips.map(tip => ({...tip, sent: false}));
+                        $scope.helpIntro = config.Help.helpIntro;
+                        $scope.requestTipDisabled = (getNumTipsAlreadySent() >= $scope.tips.length);
+                        if ($scope.requestTipDisabled) {
+                            $scope.hintBtnTxt = "Es sind keine weiteren Tipps verfügbar."
+                        }
+
+                        // update tips sent property based on chat history
+                        $scope.chatLines.forEach(function (chatLine) {
+                            if (chatLine.type === 'hint' && chatLine.message.cardType === 'tip' && chatLine.message.tipSent) {
+                                // get index of already sent tip
+                                let tipIndex = chatLine.message.tipIndex;
+                                // if the tip was already sent mark it as true
+                                if (tipIndex !== -1) {
+                                    $scope.tips[tipIndex].sent = true;
+                                }
+                            }
+                        });
+                    }
+
+                })
+                .catch(function() {
+                    console.log("Fehler beim Laden des Chatverlaufs");
+                });
+        };
+        $scope.init();
 
         /**
          * Function to scroll to the bottom of the chat tab
@@ -125,7 +179,7 @@ angular.module('codeboardApp')
             });
         }
 
-        // watches for changes in the chatLines array and call filter functions if there are changes
+        // watches for changes in the chatLines array and call filter functions if there are changes to display the new chatboxes
         $scope.$watch('chatLines', function() {
             filterCompilerChatLines();
             filterTipChatLines();
@@ -140,98 +194,7 @@ angular.module('codeboardApp')
             $scope.showCompilerIntroMessage = false;
         })
 
-        // gets called when there is an error after the code gets compiled
-        $scope.$on('compilerError', function () {
-            $scope.showCompilerIntroMessage = false;
-            $scope.showCompilerInfoMessage = false;
-            $scope.showCompilationErrorMessage = true;
-            $timeout(() => {
-                // remove last compilation error chatbox
-                if (lastCompilerChatboxIndex !== -1) {
-                    $scope.chatLines.splice(lastCompilerChatboxIndex, 1);
-                }
         
-                // find the new last compilation error chatbox index
-                $scope.chatLines.forEach((chatLine, index) => {
-                    if (chatLine.type === 'compiler' || chatLine.type === 'compilerTest') {
-                        $scope.showNoCompilationErrorMessage = false;
-                        lastCompilerChatboxIndex = index;
-                    }
-                });
-            });
-        });
-
-        // gets called when there is no error after the code gets compiled
-        $scope.$on('noCompilerError', function() {
-            $scope.showCompilerIntroMessage = false;
-            $scope.showCompilerInfoMessage = false;
-            $scope.showNoCompilationErrorMessage = true;
-            $scope.showCompilationErrorMessage = false;
-            // remove last compilation error chatbox
-            if (lastCompilerChatboxIndex !== -1) {
-                $scope.chatLines.splice(lastCompilerChatboxIndex, 1);
-                lastCompilerChatboxIndex = -1;
-            } else {
-                $log.debug('No Compiler message found!');
-            }
-        })
-        
-
-        /**
-         * init this tab by loading chat history and read tips
-         */
-        $scope.init = function() {
-            // $scope.currentRoleIsUser()
-            $scope.sendRequestFormVisible = !$scope.currentRoleIsUser();
-
-            // when user role help, make help default tab
-            if(ProjectFactory.getProject().userRole === 'help') {
-                $timeout(function () {
-                    let req = IdeMsgService.msgNavBarRightOpenTab('questions');
-                    $rootScope.$broadcast(req.msg, req.data);
-                }, 500);
-            }
-
-
-            // load chat history
-            ChatSrv.getChatHistory()
-                .then(function(result) {
-                    result.data.forEach(function(chatLine) {
-                        addChatLine(chatLine);
-                    });
-                })
-                .then(function() {
-                    // read all tips from codeboard.json
-                    let config = ProjectFactory.getConfig();
-                    if (config && "Help" in config && "tips" in config.Help) {
-                        // add property to tips that they do not get sent multiple times in runtime
-                        $scope.tips = config.Help.tips.map(tip => ({...tip, sent: false}));
-                        $scope.helpIntro = config.Help.helpIntro;
-                        $scope.requestTipDisabled = (getNumTipsAlreadySent() >= $scope.tips.length);
-                        if ($scope.requestTipDisabled) {
-                            $scope.hintBtnTxt = "Es sind keine weiteren Tipps verfügbar."
-                        }
-
-                        // update tips sent property based on chat history
-                        $scope.chatLines.forEach(function (chatLine) {
-                            if (chatLine.type === 'hint' && chatLine.message.cardType === 'tip' && chatLine.message.tipSent) {
-                                // get index of already sent tip
-                                let tipIndex = chatLine.message.tipIndex;
-                                // if the tip was already sent mark it as true
-                                if (tipIndex !== -1) {
-                                    $scope.tips[tipIndex].sent = true;
-                                }
-                            }
-                        });
-                    }
-
-                })
-                .catch(function() {
-                    console.log("Fehler beim Laden des Chatverlaufs");
-                });
-        };
-        $scope.init();
-
         /**
          * On open help tab, scroll to the bottom
          */
@@ -242,9 +205,12 @@ angular.module('codeboardApp')
         });
 
         /**
-         * Message that is emitted when a new message should be added to the help tab.
+         * Message that is emitted when a new message (compiler error due to compilation/testing) should be added to the help tab.
          */
         $scope.$on(IdeMsgService.msgAddHelpMessage().msg, function (event, data) {
+            $scope.showCompilerIntroMessage = false;
+            $scope.showCompilerInfoMessage = false;
+            $scope.showCompilationErrorMessage = true;
 
             let chatline = {
                 type: data.type,
@@ -256,6 +222,41 @@ angular.module('codeboardApp')
             $scope.chatLines.push(chatline);
 
             chatScrollToBottom();
+        });
+
+        let lastCompilerChatboxIndex = -1;
+
+        // gets called when there is an error after the code was compiled/tested (store the id of the new chatLine to remove it later)
+        $scope.$on(IdeMsgService.setIndexOfDisplayedCompChatLine().msg, function (event) {
+            // find the new last compilation error chatbox index
+            $scope.chatLines.forEach((chatLine, index) => {
+                if (chatLine.type === 'compiler' || chatLine.type === 'compilerTest') {
+                    $scope.showNoCompilationErrorMessage = false;
+                    lastCompilerChatboxIndex = index;
+                }
+            });
+        });
+
+        // gets called when a new compilation is started or finished with no errors to remove the last displayed chatbox
+        $scope.$on(IdeMsgService.msgRemoveChatLine().msg, function (event, data) {
+            // remove last compilation error chatbox
+            if (data.type === "error") {
+                if (lastCompilerChatboxIndex !== -1) {
+                    $scope.chatLines.splice(lastCompilerChatboxIndex, 1);
+                }
+            } else if (data.type === "noError") {
+                $scope.showCompilerIntroMessage = false;
+                $scope.showCompilerInfoMessage = false;
+                $scope.showNoCompilationErrorMessage = true;
+                $scope.showCompilationErrorMessage = false;
+                // use $timeout to ensure that code to runs after the current digest cycle finishes (without that view does not get updated correctly)
+                $timeout(() => {
+                    if (lastCompilerChatboxIndex !== -1) {
+                        $scope.chatLines.splice(lastCompilerChatboxIndex, 1);
+                        lastCompilerChatboxIndex = -1;
+                    }
+                })
+            }
         });
 
         // this function gets called when a student triggers the "Tipp anfordern" button
@@ -319,9 +320,9 @@ angular.module('codeboardApp')
             }
 
             return AISrv.askForRelevantTip(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
-                if (res.choices && res.choices.length > 0) {
+                if (res) {
                     // the api call should return the id of the relevant hint which is then used to get the corresponding hint from the hints array
-                    let hintIndex = parseInt(res.choices[0].message.content);
+                    let hintIndex = parseInt(res);
                     // condition which checks wheter relevant hint was found by ai
                     if (hintIndex !== -1 && hintsForProject[hintIndex]) {
                         return hintsForProject[hintIndex];
