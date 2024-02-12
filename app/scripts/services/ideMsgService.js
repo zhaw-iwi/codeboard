@@ -491,16 +491,4 @@ angular.module('codeboardApp')
         data: { type: type }
       };
     };
-
-    /**
-     * This broadcast is triggered when a compilation is finished with errors 
-     * to store the index of the newly added chatbox that it can be removed 
-     * when a new compilation starts
-     * @returns {{msg: string}}
-     */
-    this.setIndexOfDisplayedCompChatLine = function () {
-      return {
-        msg: 'ide.showErrorExpChatLine',
-      };
-    }
   });

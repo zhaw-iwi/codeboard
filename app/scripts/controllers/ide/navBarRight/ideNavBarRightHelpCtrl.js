@@ -204,6 +204,7 @@ angular.module('codeboardApp')
             }
         });
 
+        let lastCompilerChatboxIndex = -1;
         /**
          * Message that is emitted when a new message (compiler error due to compilation/testing) should be added to the help tab.
          */
@@ -219,15 +220,9 @@ angular.module('codeboardApp')
                 avatar: data.avatar
             };
 
+            // add the new chatbox to the array to display it in the compiler tab
             $scope.chatLines.push(chatline);
-
-            chatScrollToBottom();
-        });
-
-        let lastCompilerChatboxIndex = -1;
-
-        // gets called when there is an error after the code was compiled/tested (store the id of the new chatLine to remove it later)
-        $scope.$on(IdeMsgService.setIndexOfDisplayedCompChatLine().msg, function (event) {
+            
             // find the new last compilation error chatbox index
             $scope.chatLines.forEach((chatLine, index) => {
                 if (chatLine.type === 'compiler' || chatLine.type === 'compilerTest') {
@@ -235,6 +230,7 @@ angular.module('codeboardApp')
                     lastCompilerChatboxIndex = index;
                 }
             });
+            chatScrollToBottom();
         });
 
         // gets called when a new compilation is started or finished with no errors to remove the last displayed chatbox

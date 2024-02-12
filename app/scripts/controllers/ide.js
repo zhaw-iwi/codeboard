@@ -566,10 +566,6 @@ app.controller('IdeCtrl', [
                 // broadcast event that code was compiled and has an error (makes sure that the new chatbox is displayed in compiler tab)
                 let reqAddMsg = IdeMsgService.msgAddHelpMessage(chatLineCard, 'compiler', 'Roby', 'worried');
                 $rootScope.$broadcast(reqAddMsg.msg, reqAddMsg.data);
-                
-                // broadcast event that code was compiled and has an error (makes sure that the index of the newly showed chatbox is stored)
-                let reqAddErrExp = IdeMsgService.setIndexOfDisplayedCompChatLine();
-                $scope.$broadcast(reqAddErrExp.msg);
             }
         }
 
