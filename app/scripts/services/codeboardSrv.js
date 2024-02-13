@@ -137,6 +137,10 @@ angular.module('codeboardApp').service('CodeboardSrv', [
         desc: 'The compiler tab (Compiler)',
       },
       {
+        name: 'ai-compiler',
+        desc: 'If enabled compiler error message gets explained using chat-gpt',
+      },
+      {
         name: 'tips',
         desc: 'The tips tab (Tipps)',
       },

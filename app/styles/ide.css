@@ -612,7 +612,7 @@ body {
   color: #aaa !important;
 }
 .modalAccordion .panel-heading.pending .glyphicon:before {
-  content: '';
+  content: '\e030';
 }
 
 /* Fail */
@@ -662,8 +662,8 @@ body {
 /* Compile :: Success */
 .modalAccordion .compileTest .panel-heading.success,
 .modalAccordion .compileTest .panel-heading.success a {
-  background: #a7d5e6;
-  color: #5c89af !important;
+  background: #E7F3E8;
+  color: #7EBE86 !important;
 }
 
 /* disable click events */

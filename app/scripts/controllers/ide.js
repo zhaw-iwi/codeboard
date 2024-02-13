@@ -23,13 +23,16 @@ app.controller('IdeCtrl', [
     'CodingAssistantCodeMatchSrv',
     'CodeboardSrv',
     'AceEditorSrv',
-    function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv) {
+    'AISrv',
+    function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv, AISrv) {
         // First we handle all data that was injected as part of the app.js resolve.
         // set the ProjectFactory to contain the project loaded from the server
         ProjectFactory.setProjectFromJSONdata(projectData, ltiData);
 
         // store name of pressed Button
         $scope.pressedButton = '';
+        // state if loading gif should be displayed (compileAndRun project)
+        $scope.showLoadingForCompiler = false;
 
         /**
          * Contains functions and events to save the project automatically
@@ -391,8 +394,6 @@ app.controller('IdeCtrl', [
             // get disabled & enabled actions
             let disabledActions = CodeboardSrv.getDisabledActions();
             let enabledActions = CodeboardSrv.getEnabledActions();
-            let compilationResult = [];
-            let compilationOutputTxt = "";
 
             // make sure we save the current content before submitting
             saveCurrentlyDisplayedContent(true);
@@ -413,47 +414,50 @@ app.controller('IdeCtrl', [
                     };
                     let onConnectionClosed = function (compilationError) {
                         if (compilationError && outputArray.length > 0) {
-                            let payload = ProjectFactory.getPayloadForCompilation();
-                            payload.compilation = {
-                                compilationError: true,
-                                output: outputArray.join(),
-                                outputArray: outputArray,
-                                stream: false,
-                            };
+                            // only broadcast an event that compiler tab should be opened when the functionality is enabled
+                            if (!disabledActions.includes('compiler') || enabledActions.includes('compiler')) {
+                                // the current displayed chatbox (if available) should be removed because new compilation is started
+                                let reqRmvChat = IdeMsgService.msgRemoveChatLine("error");
+                                $rootScope.$broadcast(reqRmvChat.msg, reqRmvChat.data);
 
-                            $http.post('/api/' + $routeParams.projectId + '/help/compilation', payload).then(
-                                function (result) {
-                                    if (typeof result.data !== 'undefined' && (!disabledActions.includes('compiler') || enabledActions.includes('compiler'))) {
-                                        let reqOpenCompilerTab = IdeMsgService.msgNavBarRightOpenTab('compiler');
-                                        $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
+                                // broadcast an event that the compiler tab should be openend (only if there is an error during compilation)
+                                let reqOpenCompilerTab = IdeMsgService.msgNavBarRightOpenTab('compiler');
+                                $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
 
-                                        compilationResult = result.config.data.compilation.outputArray;
-                                        compilationResult.forEach((e) => {
-                                            compilationOutputTxt += e;
-                                        })
-                                        let chatLineCard = {
-                                            cardHeader: 'Fehler beim Kompilieren',
-                                            cardBody: result.data,
-                                            compilationOutput: compilationOutputTxt,
-                                            cardType: 'compHelp',
-                                        };
+                                // show loader because request take some time
+                                $scope.showLoadingForCompiler = true;
+                            
+                                let payload = ProjectFactory.getPayloadForCompilation();
+                                payload.compilation = {
+                                    compilationError: true,
+                                    output: outputArray.join(),
+                                    outputArray: outputArray,
+                                    stream: false,
+                                };
 
-                                        let reqAddMsg = IdeMsgService.msgAddHelpMessage(chatLineCard, 'compiler', 'Roby', 'worried');
-                                        $rootScope.$broadcast(reqAddMsg.msg, reqAddMsg.data);
-                                        // broadcast event that code gets compiled and has a syntax-error
-                                        $scope.$broadcast('compilerError');
-                                    }
-                                },
-                                function (error) {
-                                    console.log(error);
-                                    $log.debug('An error occurred while trying to create help message for compilation error.');
+                                // DEFAULT COMPILER ERROR EXPLANATION GENERATION (REGEX)
+                                if (disabledActions.includes("ai-compiler") && !enabledActions.includes("ai-compiler")) {
+                                    fallBackExpGeneration(payload);
+                                } else {
+                                    // COMPILER ERROR EXPLANATION GENERATION USING AI
+                                    compilerErrorAI(payload.compilation).then((res) => {
+                                        if (res) {
+                                            displayErrorChatbox(res);
+                                        } else {
+                                            // if no response from request fall back to default generation
+                                            fallBackExpGeneration(payload);
+                                        }
+                                    }).catch((err) => {
+                                        console.log("Error fetching compiler error explanation using AI: " + err);
+                                        // fall back to default generation
+                                        fallBackExpGeneration(payload);
+                                    })
                                 }
-                            );
+                            }
                         } else {
-                            // broadcast event that code gets compiled and has no syntax error (make sure with $timeout that the chatbox is available)
-                            $timeout(() => {
-                                $scope.$broadcast('noCompilerError');
-                            });
+                            // broadcast event that code was compiled and has no syntax error (remove last displayed compiler error explanation chatbox)
+                            let reqRmvChat = IdeMsgService.msgRemoveChatLine("noError");
+                            $rootScope.$broadcast(reqRmvChat.msg, reqRmvChat.data);
                         }
                     };
 
@@ -482,6 +486,88 @@ app.controller('IdeCtrl', [
                     $rootScope.$broadcast(IdeMsgService.msgStoppableActionGone().msg);
                 });
         };
+
+        /**
+         * Fall-back function which uses the default compiler error message generation.
+         * @author Samuel Truniger
+         * @param payload The compiler error message displayed in the console
+         */
+        let fallBackExpGeneration = function(payload) {
+            compilerErrorDefault(payload).then((data) => {
+                if (data) {
+                    displayErrorChatbox(data);
+                } else {
+                    console.log("Data is undefined!");
+                }
+            }).catch((err) => {
+                console.log("Error fetching compiler error explanation using default procedure: " + err);
+            })
+        }
+
+        /**
+         * Function that fetches the compiler error explanation using AI.
+         * @author Samuel Truniger
+         * @param payload The compiler error message displayed in the console
+         */
+        let compilerErrorAI = function(payload) {
+            return AISrv.askForCompilerExplanation(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, payload).then((res) => {
+                return res;                 
+            }).catch((err) => {
+                if (err.status === 401) {
+                    console.error("Incorrect API key provided.");
+                } else {
+                    console.log("Error fetching compiler message using AI: " + err);
+                }
+            });
+        }
+
+        /**
+         * Function that fetches the compiler error explanation using regex (default).
+         * @param payload The data needed for generating the explanations
+         */
+        let compilerErrorDefault = function(payload) {
+            return $http.post('/api/' + $routeParams.projectId + '/help/compilation', payload).then((res) => {
+                    return res;
+                }).catch((err) => {
+                    console.log(err);
+                    $log.debug('An error occurred while trying to create help message for compilation error.');
+                }
+            );
+        }
+
+        /**
+         * Function that uses the data from the response to generate and display 
+         * a new compiler error explanation chatbox in the compiler tab.
+         * @param data The response from the request (default/AI)
+         */
+        let displayErrorChatbox = function(data) {
+            // hide loader because request is finished
+            $scope.showLoadingForCompiler = false;
+            let compilationOutputTxt = "";
+            if (typeof data.data !== 'undefined' || typeof data.answer !== "undefined") {
+                // get error message if data.config is available (only in default)    
+                if (data.config || data.error) {
+                    let compilationResult = data.config?.data?.compilation?.outputArray || data.error;
+                    if (compilationResult) {
+                        compilationResult.forEach((e) => {
+                            compilationOutputTxt += e;
+                        });
+                    }
+                }
+
+                // generate a new chatbox (default/AI)
+                let chatLineCard = {
+                    cardHeader: 'Kompilierungsfehler',
+                    cardBody: data.data || data.answer,
+                    compilationOutput: compilationOutputTxt,
+                    cardType: 'compHelp',
+                };
+
+                // broadcast event that code was compiled and has an error (makes sure that the new chatbox is displayed in compiler tab)
+                let reqAddMsg = IdeMsgService.msgAddHelpMessage(chatLineCard, 'compiler', 'Roby', 'worried');
+                $rootScope.$broadcast(reqAddMsg.msg, reqAddMsg.data);
+            }
+        }
 
         /**
          * Execute the "tool" action on the current project

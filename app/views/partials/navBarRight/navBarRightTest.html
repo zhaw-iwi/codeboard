@@ -25,7 +25,10 @@
         <div class="panel panel-default compileTest" ng-show="compilation.compilationError || state === states.inProgress">
             <div class="panel-heading {{compilation.status}}">
                 <a data-parent="#ioTestsAccordion">
-                    <span class="title" ng-show="state === states.inProgress">Überprüfung Kompilierung</span>
+                    <div ng-show="state === states.inProgress">
+                        <span class="title">Überprüfung Kompilierung</span>
+                        <span ng-class="{'gly-spin': (compilation.status === 'pending')}" class="pull-right flag glyphicon {{compilation.status}}" aria-hidden="true"></span>
+                    </div>
                     <span class="title" ng-show="compilation.status === 'fail'">Deine Aufgabe hat einen Fehler, du findest diesen im 'Compiler-Tab'</span>
                 </a>
             </div>
