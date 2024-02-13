@@ -546,8 +546,15 @@ app.controller('IdeCtrl', [
             let compilationOutputTxt = "";
             if (typeof data.data !== 'undefined' || typeof data.answer !== "undefined") {
                 // get error message if data.config is available (only in default)    
-                if (data.config || data.error) {
-                    let compilationResult = data.config?.data?.compilation?.outputArray || data.error;
+                if (data.config) {
+                    let compilationResult = data.config.data.compilation.outputArray;
+                    if (compilationResult) {
+                        compilationResult.forEach((e) => {
+                            compilationOutputTxt += e;
+                        });
+                    }
+                } else if (data.error) {
+                    let compilationResult = data.error;
                     if (compilationResult) {
                         compilationResult.forEach((e) => {
                             compilationOutputTxt += e;
