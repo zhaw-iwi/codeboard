@@ -557,7 +557,7 @@ app.controller('IdeCtrl', [
 
                 // generate a new chatbox (default/AI)
                 let chatLineCard = {
-                    cardHeader: 'Fehler beim Kompilieren',
+                    cardHeader: 'Kompilierungsfehler',
                     cardBody: data.data || data.answer,
                     compilationOutput: compilationOutputTxt,
                     cardType: 'compHelp',

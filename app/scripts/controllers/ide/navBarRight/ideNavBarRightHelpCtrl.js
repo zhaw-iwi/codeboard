@@ -263,7 +263,7 @@ angular.module('codeboardApp')
             // check wheter to use ai to generate next hint or default process (order)
             if (disabledActions.includes("ai-hints") && !enabledActions.includes("ai-hints")) {
                 let relevantHint = getHint();
-                displayHint(relevantHint)
+                displayHint(relevantHint);
             } else {
                 // save the all files in project to db
                 if ($scope.ace.currentNodeId !== -1) {
