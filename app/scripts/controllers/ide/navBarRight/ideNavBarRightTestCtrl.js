@@ -176,7 +176,9 @@ angular.module('codeboardApp')
                 $log.debug('Test request received');
 
                 // reset tests
-                _ioTestSet[0].status = "pending";
+                _ioTestSet.forEach((e, i) => {
+                    _ioTestSet[i].status = "pending";
+                })
                 $scope.ioTestSet = _ioTestSet;
 
                 // get disabled & enabled actions
