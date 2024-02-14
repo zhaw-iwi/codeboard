@@ -11,10 +11,10 @@ angular.module("codeboardApp").service("AISrv", [
   function ChatService($rootScope, $http) {
     var service = this;
 
-    service.askForRelevantTip = function (username, courseId, projectId, data) {
+    service.askForRelevantTip = function (userId, courseId, projectId, data) {
       return $http
         .post(
-          "/api/ai/hints/" + username + "/" + courseId + "/" + projectId,
+          "/api/ai/hints/" + userId + "/" + courseId + "/" + projectId,
           data,
           { timeout: 10000 }
         )
@@ -26,10 +26,10 @@ angular.module("codeboardApp").service("AISrv", [
         });
     };
 
-    service.askForCompilerExplanation = function (username, courseId, projectId, data) {
+    service.askForCompilerExplanation = function (userId, courseId, projectId, data) {
       return $http
         .post(
-          "/api/ai/compiler/" + username + "/" + courseId + "/" + projectId,
+          "/api/ai/compiler/" + userId + "/" + courseId + "/" + projectId,
           data,
           { timeout: 10000 }
         )

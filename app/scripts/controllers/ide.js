@@ -510,7 +510,7 @@ app.controller('IdeCtrl', [
          * @param payload The compiler error message displayed in the console
          */
         let compilerErrorAI = function(payload) {
-            return AISrv.askForCompilerExplanation(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, payload).then((res) => {
+            return AISrv.askForCompilerExplanation(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, payload).then((res) => {
                 return res;                 
             }).catch((err) => {
                 if (err.status === 401) {

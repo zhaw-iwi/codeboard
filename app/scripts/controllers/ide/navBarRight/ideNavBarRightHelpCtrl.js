@@ -315,7 +315,7 @@ angular.module('codeboardApp')
                 hints: hintsForProject
             }
 
-            return AISrv.askForRelevantTip(UserSrv.getUsername(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
+            return AISrv.askForRelevantTip(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
                 if (res) {
                     // the api call should return the id of the relevant hint which is then used to get the corresponding hint from the hints array
                     let hintIndex = parseInt(res);

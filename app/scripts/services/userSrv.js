@@ -4,8 +4,13 @@ angular.module('codeboardApp')
   .service('UserSrv',['$rootScope', '$q', 'SessionRes', '$log', '$location', function UserService($rootScope, $q, SessionRes, $log, $location) {
 
     var _isAuthenticated = false;
+    var _userId;
     var _username = '';
     var _userrole = '';
+
+    this.getUserId = function() {
+      return _userId;
+    }
 
     this.getUsername = function() {
       return _username;
@@ -20,7 +25,8 @@ angular.module('codeboardApp')
     };
 
 
-    var setAuthenticatedUser = function(aUsername, aRole) {
+    var setAuthenticatedUser = function(aUserId, aUsername, aRole) {
+      _userId = aUserId;
       _username = aUsername;
       _userrole = aRole;
       _isAuthenticated = true;
@@ -50,7 +56,7 @@ angular.module('codeboardApp')
 
         SessionRes.get(
             function(data){
-                setAuthenticatedUser(data.username, data.role);
+                setAuthenticatedUser(data.id, data.username, data.role);
                 $rootScope.$broadcast('userLoggedIn');
 
                 if(data.role !== 'user' && isAuthRequired) {
