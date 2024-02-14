@@ -51,8 +51,7 @@
           </div>
         </div>
       </div>
-      <h4 ng-show="!courseId && (!ownerSet.length >= 1 || !filteredProjects.length >= 1)">No projects found</h4>
-      <h4 ng-show="courseId && !filteredProjects.length >= 1">No projects found</h4>
+      <h4 ng-show="!ownerSet.length">Projects loading...</h4>
       <div class="panel panel-default" ng-repeat="prj in filteredProjects">
         <div class="panel-heading">
           <div class="row">
@@ -89,7 +88,7 @@
               <label>Actions</label>
                 <p>
                   <a href="/projects/{{prj.id}}/settings" role="button" class="btn btn-default" title="Edit project settings"><span class="glyphicon glyphicon-wrench"></span></a>
-                  <a href="/projects/{{prj.id}}/stats" role="button" class="btn btn-default" title="Show project statistics"><span class="glyphicon glyphicon-stats"></span></a>
+                  <!-- <a href="/projects/{{prj.id}}/stats" role="button" class="btn btn-default" title="Show project statistics"><span class="glyphicon glyphicon-stats"></span></a> -->
                   <a href="/projects/{{prj.id}}/userprojects" role="button" class="btn btn-default" title="Show user versions of project"><span class="glyphicon glyphicon-user"></span></a>
                   <a href="/projects/{{prj.id}}/submissions" role="button" class="btn btn-default" title="Show project submissions"><span class="glyphicon glyphicon-education"></span></a>
                   <a href="/projects/{{prj.id}}/helprequests" role="button" class="btn btn-default" title="Show project help requests"><span class="glyphicon glyphicon-bell"></span></a>
