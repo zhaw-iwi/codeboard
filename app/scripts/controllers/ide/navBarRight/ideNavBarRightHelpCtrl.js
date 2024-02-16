@@ -274,12 +274,8 @@ angular.module('codeboardApp')
                     $scope.hintBtnTxt ="Tipp wird geladen..."
                     $scope.searchForHint = true;
                     getHintUsingAI().then((hint) => {
-                        if (hint) {
+                        // hint can be a hint or undefined (handling in displayHint function)
                         displayHint(hint);
-                        } else {
-                            // case when no relevant hint was found by ai (hint should be undefined)
-                            displayHint(hint);
-                        }
                     }).catch(function(err) {
                         console.error("Error fetching hint using ai:", err);
                         let relevantHint = getHint();
@@ -380,12 +376,12 @@ angular.module('codeboardApp')
                     });
             } else {
                 // open the modal to indicate that there was no relevant hint for the students solution
-                $scope.$broadcast('openNoRelevantTipModal');
+                $scope.$broadcast(IdeMsgService.msgShowNoRelevantHintModal().msg);
             }
         }
 
         // In a controller or service with access to $uibModal
-        $scope.$on('openNoRelevantTipModal', function() {
+        $scope.$on(IdeMsgService.msgShowNoRelevantHintModal().msg, function() {
              /** The controller for the modal */
              let noRelevantTipModalInstanceCtrl = [
                 '$scope',

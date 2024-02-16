@@ -15,7 +15,8 @@ angular.module('codeboardApp').controller('CodingAssistantMainCtrl', [
   'CodingAssistantCodeMatchSrv',
   'AceEditorSrv',
   'CodeboardSrv',
-  function ($scope, $rootScope, $timeout, $document, ProjectFactory, CodingAssistantCodeMatchSrv, AceEditorSrv, CodeboardSrv) {
+  'IdeMsgService',
+  function ($scope, $rootScope, $timeout, $document, ProjectFactory, CodingAssistantCodeMatchSrv, AceEditorSrv, CodeboardSrv, IdeMsgService) {
     var aceEditor = $scope.ace.editor;
     var errorLine;
     var currentLine;
@@ -41,8 +42,8 @@ angular.module('codeboardApp').controller('CodingAssistantMainCtrl', [
       // call updateExplanations() once to show message, when no file is opened / load initial code
       updateExplanations(db);
 
-      // call updateExplanations when the user open the explanations tab
-      $rootScope.$on('tabClicked', function () {
+      // call updateExplanations when the user open the explanations tab to move the cursor to the first line
+      $rootScope.$on(IdeMsgService.msgExpTabClicked().msg, function () {
         var lSelectedNode = CodeboardSrv.getFile() || '.java';
         if (lSelectedNode.match(/.java/)) {
           var doc = aceEditor.getSession().getDocument();
@@ -69,21 +70,21 @@ angular.module('codeboardApp').controller('CodingAssistantMainCtrl', [
       });
 
       // call updateExplanations() with a slight delay to ensure the initial code is loaded - click file in tree-view case
-      $scope.$on('fileOpened', function () {
+      $scope.$on(IdeMsgService.msgJavaFileOpened().msg, function () {
         $timeout(() => {
           updateExplanations(db);
         });
       });
 
       // call updateExplanations() with a slight delay to ensure the initial code is loaded (click tab above editor case)
-      $scope.$on('javaClassClicked', function () {
+      $scope.$on(IdeMsgService.msgJavaTabOpened().msg, function () {
         $timeout(() => {
           updateExplanations(db);
         });
       });
 
       // call updateExplanations() with a slight delay to ensure the code is loaded (reset code case)
-      $scope.$on('resetCode', function () {
+      $scope.$on(IdeMsgService.msgResetCode().msg, function () {
         $timeout(() => {
           updateExplanations(db);
         });
@@ -101,7 +102,7 @@ angular.module('codeboardApp').controller('CodingAssistantMainCtrl', [
       });
     });
 
-    // Automatic function executed one time at the beginning / when a file is openend and then every time the code in the editor changes
+    // Automatic function executed one time at the beginning / when a file is opened and then every time the code in the editor changes
     function updateExplanations(db) {
       chatBoxes = [];
 

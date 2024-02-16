@@ -420,7 +420,7 @@ app.controller('IdeCtrl', [
                                 let reqRmvChat = IdeMsgService.msgRemoveChatLine("error");
                                 $rootScope.$broadcast(reqRmvChat.msg, reqRmvChat.data);
 
-                                // broadcast an event that the compiler tab should be openend (only if there is an error during compilation)
+                                // broadcast an event that the compiler tab should be opened (only if there is an error during compilation)
                                 let reqOpenCompilerTab = IdeMsgService.msgNavBarRightOpenTab('compiler');
                                 $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
 
@@ -894,7 +894,8 @@ app.controller('IdeCtrl', [
 
                             // close modal
                             $uibModalInstance.close();
-                            $rootScope.$broadcast('resetCode');
+                            // reset the code in the code editor
+                            $rootScope.$broadcast(IdeMsgService.msgResetCode().msg);
                         });
                     };
 
@@ -1875,21 +1876,21 @@ app.controller('IdeCtrl', [
             updateExplanations(db);
 
             // call updateExplanations() with a slight delay to ensure the initial code is loaded (click file in tree-view case)
-            $scope.$on('fileOpened', function () {
+            $scope.$on(IdeMsgService.msgJavaFileOpened().msg, function () {
                 $timeout(() => {
                     updateExplanations(db);
                 });
             });
 
             // call updateExplanations() with a slight delay to ensure the initial code is loaded (click tab above editor case)
-            $scope.$on('javaClassClicked', function () {
+            $scope.$on(IdeMsgService.msgJavaTabOpened().msg, function () {
                 $timeout(() => {
                     updateExplanations(db);
                 });
             });
 
             // call updateExplanations() with a slight delay to ensure the code is loaded (reset code case)
-            $scope.$on('resetCode', function() {
+            $scope.$on(IdeMsgService.msgResetCode().msg, function() {
                 $timeout(() => {
                     updateExplanations(db);
                 });
@@ -1902,8 +1903,8 @@ app.controller('IdeCtrl', [
                     $timeout(() => {
                         updateExplanations(db);
                     });
-                // broadcast that varScope window gets closed when there was a change in the code...    
-                $scope.$broadcast('codeChanged');
+                // broadcast that varScope window gets closed when there was a change in the code... 
+                $rootScope.$broadcast(IdeMsgService.msgCodeChanged().msg);   
                 }
                 
                 // add markers dynamically
@@ -1973,12 +1974,12 @@ app.controller('TreeCtrl', [
          * Broadcasts a msg that a node was selected (only if selected node is not a folder).
          */
         $scope.nodeClick = function () {
-            // broadcast an event when a file is openend
+            // broadcast an event when a file is opened
             var lSelectedNode = ProjectFactory.getNode($scope.mytree.currentNode.uniqueId);
             CodeboardSrv.setFile(lSelectedNode.filename);
             // only broadcast an event when a java file is opened (click file in tree-view case)
             if (lSelectedNode.filename.match(/.java/)) {
-                $rootScope.$broadcast('fileOpened');
+                $rootScope.$broadcast(IdeMsgService.msgJavaFileOpened().msg);
             } 
 
             // ignore the click if the selected node is a folder
@@ -2183,7 +2184,7 @@ app.controller('TabCtrl', [
             CodeboardSrv.setFile($scope.tabs[aArrayIndex].name);
             if ($scope.tabs[aArrayIndex].name.match(/.java/)) {
                 // broadcast an event when a new tab gets clicked (above the editor) and only when it is a .java file
-                $rootScope.$broadcast('javaClassClicked');
+                $rootScope.$broadcast(IdeMsgService.msgJavaTabOpened().msg);
             }
         };
 
@@ -2499,7 +2500,7 @@ app.controller('RightBarCtrl', [
         $scope.rightBarTabClick = function (slug) {
             
             if (slug === 'explanation') {
-                $rootScope.$broadcast("tabClicked");
+                $rootScope.$broadcast(IdeMsgService.msgExpTabClicked().msg);
             }
 
             if ($scope.activeTab !== slug) {
@@ -2542,7 +2543,7 @@ app.controller('RightBarCtrl', [
         /**
          * function which gets called when user clicks on a new tab above the editor to remove the markers and close the window
          */
-        $scope.$on('javaClassClicked', function () {
+        $scope.$on(IdeMsgService.msgJavaTabOpened().msg, function () {
             // reset storedMarkersBackup every time a new tab is clicked to not set the previous markers from the other tab in the new tab.. 
             CodingAssistantCodeMatchSrv.storedMarkersBackup = [];
             CodingAssistantCodeMatchSrv.toggleMarkers($scope.ace.editor, true, true);
@@ -2556,7 +2557,7 @@ app.controller('RightBarCtrl', [
         /**
          * function which gets called when user clicks on the reset code btn to remove the markers and close the window
          */
-        $scope.$on('resetCode', function() {
+        $scope.$on(IdeMsgService.msgResetCode().msg, function() {
             CodingAssistantCodeMatchSrv.storedMarkersBackup = [];
             CodingAssistantCodeMatchSrv.toggleMarkers($scope.ace.editor, true, true);
             if (!$scope.isCollapsed) {
@@ -2581,7 +2582,7 @@ app.controller('RightBarCtrl', [
         /**
          * function which gets called when code in ace editor changed to close the variable scope div
          */
-        $scope.$on("codeChanged", function() {
+        $scope.$on(IdeMsgService.msgCodeChanged().msg, function() {
             if (!$scope.isCollapsed) {
                 $scope.innerSplitter.collapse('#ideVarScopePartOfMiddlePart');
                 $scope.ideTabsStyle = { 'margin-left': '47px' };
