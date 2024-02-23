@@ -16,7 +16,7 @@ angular.module("codeboardApp").service("AISrv", [
         .post(
           "/api/ai/hints/" + userId + "/" + courseId + "/" + projectId,
           data,
-          { timeout: 10000 }
+          { timeout: 15000 }
         )
         .then(function (res) {
           return res.data;
@@ -31,7 +31,7 @@ angular.module("codeboardApp").service("AISrv", [
         .post(
           "/api/ai/compiler/" + userId + "/" + courseId + "/" + projectId,
           data,
-          { timeout: 10000 }
+          { timeout: 15000 }
         )
         .then(function (res) {
           return res.data;
