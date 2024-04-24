@@ -33,7 +33,7 @@ angular.module("codeboardApp").controller("UserOverviewCtrl", [
 
     /**
      * Function runs when the controller is loaded the first time.
-     * Gets the user and user's images from the server.
+     * Gets the user from the server.
      */
     $scope.init = function () {
       $http.get("/api/users/" + $routeParams.username).then(

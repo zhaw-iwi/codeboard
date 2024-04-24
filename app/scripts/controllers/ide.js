@@ -1215,10 +1215,6 @@ app.controller('IdeCtrl', [
                     req = IdeMsgService.msgNewNodeRequest('folder');
                     $rootScope.$broadcast(req.msg, req.data);
                     break;
-                case 'add_image':
-                    req = IdeMsgService.msgNewImageNodeRequest();
-                    $rootScope.$broadcast(req.msg);
-                    break;
                 case 'rename_node':
                     req = IdeMsgService.msgRenameNodeRequest();
                     $rootScope.$broadcast(req.msg);
@@ -2067,26 +2063,6 @@ app.controller('TreeCtrl', [
                     ProjectFactory.addFolder(lSelectedNodeUId, aMsgData.nodeName);
                     break;
             }
-        });
-
-        /**
-         * Listens for the event when a image should be stored
-         * @author Janick Michot
-         */
-        $scope.$on(IdeMsgService.msgSaveImageNodeRequest().msg, function (aEvent, aMsgData) {
-            let lSelectedNodeUId = $scope.mytree.currentNode.uniqueId;
-
-            console.log({
-                imagePath: aMsgData.imagePath,
-                imageName: aMsgData.imageName,
-            });
-
-            let content = JSON.stringify({
-                imagePath: aMsgData.imagePath,
-                imageName: aMsgData.imageName,
-            });
-
-            ProjectFactory.addFile(lSelectedNodeUId, aMsgData.imageName, { content: content });
         });
 
         /**

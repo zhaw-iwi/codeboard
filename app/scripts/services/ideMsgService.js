@@ -40,30 +40,6 @@ angular.module('codeboardApp')
     };
 
     /**
-     * Returns msg object for requests of new image.
-     * @author Janick Michot
-     * @return {{msg: string}}
-     */
-    this.msgNewImageNodeRequest = function () {
-      return {
-        msg: 'ide.newImageNodeRequest'
-      };
-    };
-
-    /**
-     * Returns msg object for storing a new image.
-     * @author Janick Michot
-     * @param {string} aNodeType which type of node was requested ('file' or 'folder')
-     * @return {{msg: string, data: {nodeType: *}}}
-     */
-    this.msgSaveImageNodeRequest = function (aImagePath, aImageName) {
-      return {
-        msg: 'ide.saveImageNodeRequest',
-        data: {imagePath: aImagePath, imageName: aImageName}
-      };
-    };
-
-    /**
      * Returns msg object used to signal that the user has provided a name for a new file or folder.
      * @param {string} aNodeName the name for the new node
      * @param {string} aNodeType the type of the node ('file' or 'folder')
