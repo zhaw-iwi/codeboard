@@ -3,7 +3,7 @@
 /**
  *
  * @author Samuel Truniger
- * This controller handles the functionality regarding a user and his data
+ * This controller handles the functionality regarding a user and his data in the profile tab
  */
 
 angular.module("codeboardApp").controller("UserOverviewCtrl", [
@@ -47,7 +47,6 @@ angular.module("codeboardApp").controller("UserOverviewCtrl", [
             url: data.url,
             location: data.location,
             institution: data.institution,
-            imageUrl: data.imageUrl
           };
 
           $scope.currentUserIsSelf =

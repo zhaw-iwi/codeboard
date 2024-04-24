@@ -1,5 +1,9 @@
 "use strict";
-
+/**
+ *
+ * @author Janick Michot, Samuel Truniger
+ * This controller handles the functionality regarding the projects/courses of a user (projects/courses tab)
+ */
 angular.module("codeboardApp").controller("UserProjectsCtrl", [
   "$scope",
   "$rootScope",
@@ -65,7 +69,6 @@ angular.module("codeboardApp").controller("UserProjectsCtrl", [
             url: data.url,
             location: data.location,
             institution: data.institution,
-            imageUrl: data.imageUrl
           };
 
           $scope.ownerSet = data.ownerSet;
