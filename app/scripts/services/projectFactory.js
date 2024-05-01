@@ -55,9 +55,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     let getSampleSolution = function() {
       return sampleSolution;
     };
+
     let setSampleSolution = function(aSampleSolution) {
       sampleSolution = aSampleSolution;
     };
+
     let hasSampleSolution = function() {
       return (sampleSolution !== "");
     };
@@ -736,13 +738,17 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       var deferred = $q.defer();
 
       // check if current user is owner or user. Otherwise reject promise
-      if(getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
+      if (getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
+
+        var files = getNodeArray(getProject().files);
+        // remove sample solution from user files
+        files = files.filter(file => file.filename !== "sampleSolution.html")
 
         var payload = {
           project: {
             lastUId: getProject().lastUId
           },
-          files: getNodeArray(getProject().files),
+          files: files,
           courseId: getCourseId()
         };
 
@@ -1257,6 +1263,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       getProjectDescription: getProjectDescription,
       hasProjectDescription: hasProjectDescription,
       getSampleSolution: getSampleSolution,
+      setSampleSolution: setSampleSolution,
       hasSampleSolution: hasSampleSolution,
       addFile: addFile,
       addFolder: addFolder,

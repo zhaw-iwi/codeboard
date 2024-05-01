@@ -252,7 +252,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         }
       })
       .when('/projects/:projectId/userprojects/:userprojectId', {
-        // loads a version as stored by a user in the ide
+        // loads a version as stored by a user in the ide (only accessible as owner of a project)
         templateUrl: 'partials/ide',
         controller: 'IdeCtrl',
         resolve: {
