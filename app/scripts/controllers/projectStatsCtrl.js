@@ -205,11 +205,9 @@ angular.module('codeboardApp')
             startDateLogs: $scope.fromDate,
             endDateLogs: $scope.untilDate
           }
-        })
-          .then(function (aReply) {
-
-            $scope.compilerSummaryLogs = aReply.compilerLogs;
-            $scope.compilerSummaryRunLogs = aReply.compilerRunLogs;
+        }).then(function (res) {
+            $scope.compilerSummaryLogs = res.data.compilerLogs;
+            $scope.compilerSummaryRunLogs = res.data.compilerRunLogs;
 
             $scope.totalCompilationsDay = '(' + getTotal($scope.compilerSummaryLogs, 'count') + ')';
             $scope.totalRunsDay =  '(' + getTotal($scope.compilerSummaryRunLogs, 'count') + ')';
@@ -217,8 +215,8 @@ angular.module('codeboardApp')
             drawCompilationRunGraph();
             $scope.isLoadingCompilationRunGraphData = false;
 
-          }, function (reply) {
-            $log.debug('Unable to get compile and run logs statistics (summary per day).');
+          }, function (err) {
+            $log.debug('Unable to get compile and run logs statistics (summary per day): ' + err.message);
           });
       };
 
@@ -235,15 +233,14 @@ angular.module('codeboardApp')
             startDateLogs: $scope.fromDate,
             endDateLogs: $scope.untilDate
           }
-        })
-          .then(function (aReply) {
-            $scope.projectAccessPerDay = aReply.projectAccessPerDay;
+        }).then((res) => {
+            $scope.projectAccessPerDay = res.data.projectAccessPerDay;
             $scope.totalAccessPerDay = '(' + getTotal($scope.projectAccessPerDay, 'count') + ')';
             drawProjectAccessGraph();
             $scope.isLoadingUserAccessGraphData = false;
-
-          }, function (reply) {
-          });
+          }).catch(function(err) {
+            $log.debug('Unable to get project access data for graph: ' + err.message)
+          })
       };
 
 
@@ -399,10 +396,9 @@ angular.module('codeboardApp')
             startDateLogs: $scope.fromDate,
             endDateLogs: $scope.untilDate
           }
-        }).
-          success(function (success) {
-            $scope.compilationStats = success.compilerLogs;
-            $scope.runStats = success.compilerRunLogs;
+        }).then(function (res) {
+            $scope.compilationStats = res.data.compilerLogs;
+            $scope.runStats = res.data.compilerRunLogs;
 
             $scope.totalCompilations = getTotal($scope.compilationStats, 'countProjectAccess');
             $scope.totalRuns = getTotal($scope.runStats, 'countProjectAccess');
@@ -417,9 +413,8 @@ angular.module('codeboardApp')
             $scope.pageRunsChanged();
 
             $scope.isLoadingCompilationRunDetails = false;
-          }).
-          error(function (reply) {
-            $log.debug('Unable to get compile and run logs statistics.');
+          }).catch(function (err) {
+            $log.debug('Unable to get compile and run logs statistics: ' + err.message);
           });
       };
 
@@ -436,9 +431,8 @@ angular.module('codeboardApp')
             startDateLogs: $scope.fromDate,
             endDateLogs: $scope.untilDate
           }
-        }).
-          success(function (success) {
-            $scope.accessStats = success.projectAccess;
+        }).then(function (res) {
+            $scope.accessStats = res.data.projectAccess;
             $scope.totalAccesses = getTotal($scope.accessStats, 'countProjectAccess');
 
             sortStats($scope.accessStats);
@@ -447,9 +441,8 @@ angular.module('codeboardApp')
             $scope.pageProjectAccessChanged();
 
             $scope.isLoadingProjectAccessDetails = false;
-          }).
-          error(function (reply) {
-            $log.debug('Unable to get compile and run logs statistics.');
+          }).catch(function (err) {
+            $log.debug('Unable to get compile and run logs statistics:' + err.message);
           });
       };
 
@@ -467,9 +460,8 @@ angular.module('codeboardApp')
             startDateLogs: $scope.fromDate,
             endDateLogs: $scope.untilDate
           }
-        }).
-          success(function(success) {
-            $scope.submissionStats = success.submitLogs;
+        }).then(function (res) {
+            $scope.submissionStats = res.data.submitLogs;
             $scope.totalSubmissions = getTotal($scope.submissionStats, 'countProjectAccess');
 
             sortStats($scope.submissionStats);
@@ -479,9 +471,8 @@ angular.module('codeboardApp')
 
             $scope.isLoadingSubmissionsDetails = false;
 
-          })
-          .error(function(err) {
-            $log.debug('Unable to get submission statistics.');
+          }).catch(function(err) {
+            $log.debug('Unable to get submission statistics: ' + err.message);
           });
       };
 
