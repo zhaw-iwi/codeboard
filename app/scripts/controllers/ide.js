@@ -26,7 +26,7 @@ app.controller('IdeCtrl', [
     'AISrv',
     function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv, AISrv) {
         // First we handle all data that was injected as part of the app.js resolve.
-        // set the ProjectFactory to contain the project loaded from the server
+        // set the project data in the ProjectFactory (files, description, etc.)
         ProjectFactory.setProjectFromJSONdata(projectData, ltiData);
 
         // store name of pressed Button

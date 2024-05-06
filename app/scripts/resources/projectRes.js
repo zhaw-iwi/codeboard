@@ -47,6 +47,7 @@ angular.module('codeboardApp')
       // however, if the user belongs to an LTI session, we need to send the LTI data as part of the get-request
       // this way, the server will determine if the user is allowed to access a (private) project because of LTI overwrite
 
+      // returns the initial project data
       return initialLtiData.then(function (ltiData) {
 
         // clone ltiData to use it as our payload

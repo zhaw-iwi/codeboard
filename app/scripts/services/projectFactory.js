@@ -740,9 +740,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       // check if current user is owner or user. Otherwise reject promise
       if (getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
 
+        // get all files based on user-role
         var files = getNodeArray(getProject().files);
-        // remove sample solution from user files
-        files = files.filter(file => file.filename !== "sampleSolution.html")
 
         var payload = {
           project: {
