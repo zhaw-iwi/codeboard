@@ -61,9 +61,6 @@ angular.module("codeboardApp").service("FilterSrv", [
         case "input":
           filters.searchTxt = data.searchTxt;
           break;
-        case "inputCrsView":
-          filters.searchTxt = data.searchTxt;
-          break;
         case "name":
           filters.sortByName = true;
           filters.sortByCreatedAt = false;

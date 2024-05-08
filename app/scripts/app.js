@@ -77,7 +77,20 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
       .when('/users/:username/courses', {
         // shows the :userId page (non-public projects are included when user is authorized)
         templateUrl: 'partials/userCourses',
-        controller: 'UserProjectsCtrl'
+        controller: 'UserCoursesCtrl'
+      })
+      .when('/users/:username/courses/:courseId/projects', {
+        // returns all the projects which are part of a specific course
+        templateUrl: 'partials/userCoursesProjects',
+        controller: 'courseProjectsCtrl',
+        resolve: {
+          courseProjects: ['$route', '$http', 'UserSrv', function($route, $http, UserSrv) {
+            return $http.get("/api/courses/" + $route.current.params.courseId + "/projects")
+                .then(function(result) {
+                  return result.data;
+                });
+          }]
+        }
       })
       .when('/users/:username/images', {
         templateUrl: 'partials/userImages',

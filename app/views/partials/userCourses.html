@@ -1,11 +1,9 @@
 <div ng-include="'partials/navbar.html'"></div>
-
-
 <div class="container">
   <div class="row">
     <div class="col-md-12">
       <div class="page-header">
-        <h1>Owns courses - {{user.username}}</h1>
+        <h1>Own courses - {{username}}</h1>
         <div class="row">
           <div class="col-md-12 text-right" ng-show="currentUserIsSelf">
             <a class="btn btn-success" id="userProjects_createCourse" href="/courses/new">Create new course</a>
@@ -16,16 +14,16 @@
         <div class="col-md-8"></div>
         <div class="col-md-4 text-right">
           <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
-            <input type="text" class="form-control" placeholder="Filter by name/id of course" ng-model="searchTxt" ng-change="filter('inputCrsView', 'crs')">
+            <input type="text" class="form-control" placeholder="Filter by name/id of course" ng-model="searchTxt" ng-change="filter('input')">
             <div class="dropdown">
               <a class="btn btn-default btn-sm dropdown-toggle" style="height: 34px; line-height: 25px;" data-toggle="dropdown" role="button">
                 <span class="glyphicon glyphicon-option-horizontal" style="padding: auto"></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                <li><a ng-click="filter('createdAt', 'crs')">Filter by createdAt</a></li>
-                <li><a ng-click="filter('name', 'crs')">Filter by name</a></li>
+                <li><a ng-click="filter('createdAt')">Filter by createdAt</a></li>
+                <li><a ng-click="filter('name')">Filter by name</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a ng-click="filter('reset', 'crs')"><b>Reset filter</b></a></li>
+                <li><a ng-click="filter('reset')"><b>Reset filter</b></a></li>
               </ul>
             </div>
           </div>
@@ -56,7 +54,7 @@
                 <label>Actions</label>
                 <p>
                   <a href="/courses/{{course.id}}/settings" role="button" class="btn btn-default" title="Edit project settings"><span class="glyphicon glyphicon-wrench"></span></a>
-                  <a href="/users/{{user.username}}?courseId={{course.id}}" role="button" class="btn btn-default" title="View Projects assigned to this course"><span class="glyphicon glyphicon-eye-open"></span></a>
+                  <a href="/users/{{username}}/courses/{{course.id}}/projects" role="button" class="btn btn-default" title="View Projects assigned to this course"><span class="glyphicon glyphicon-eye-open"></span></a>
                   <a href="/courses/{{course.id}}/userprojects" role="button" class="btn btn-default" title="Show course user projects"><span class="glyphicon glyphicon-user"></span></a>
                   <a href="/courses/{{course.id}}/submissions" role="button" class="btn btn-default" title="Show course submissions"><span class="glyphicon glyphicon-education"></span></a>
                   <a href="/courses/{{course.id}}/helprequests" role="button" class="btn btn-default" title="Show course help requests"><span class="glyphicon glyphicon-bell"></span></a>
@@ -68,4 +66,5 @@
       </div>
     </div>
   </div>
-</div> <!-- end of container -->
+</div> 
+<!-- end of container -->
