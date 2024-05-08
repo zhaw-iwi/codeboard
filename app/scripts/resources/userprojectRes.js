@@ -11,7 +11,7 @@ angular.module('codeboardApp')
 
     .factory('initialUserProjectData', ['$q', '$http', 'initialLtiData', function($q, $http, initialLtiData) {
 
-        // returns the inital user project data (current user version)
+        // returns the inital user project data (current user version) > project includes the initial project data (as stored in db)
         return function(project, username, projectId, courseId = -1) {
 
             // create the promise that is returned
@@ -47,7 +47,7 @@ angular.module('codeboardApp')
                             index++;
                         });
 
-                        // object to display everything in the ide
+                        // object to display everything in the ide (combine inital project data (project object) and user specific project data (result)
                         let userProjectData = {
                             // the name of the project
                             projectname: project.projectname,
