@@ -10,10 +10,12 @@ angular.module('codeboardApp')
 
     /* Determines whether we are on the course page or not */
     $scope.isCoursePage = false;
+    $scope.activePage = "";
 
 
     $scope.init = function () {
         $scope.isCoursePage = $location.path().includes('courses');
+        $scope.activePage = $location.path();
     };
     $scope.init();
 

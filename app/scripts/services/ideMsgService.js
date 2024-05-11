@@ -40,30 +40,6 @@ angular.module('codeboardApp')
     };
 
     /**
-     * Returns msg object for requests of new image.
-     * @author Janick Michot
-     * @return {{msg: string}}
-     */
-    this.msgNewImageNodeRequest = function () {
-      return {
-        msg: 'ide.newImageNodeRequest'
-      };
-    };
-
-    /**
-     * Returns msg object for storing a new image.
-     * @author Janick Michot
-     * @param {string} aNodeType which type of node was requested ('file' or 'folder')
-     * @return {{msg: string, data: {nodeType: *}}}
-     */
-    this.msgSaveImageNodeRequest = function (aImagePath, aImageName) {
-      return {
-        msg: 'ide.saveImageNodeRequest',
-        data: {imagePath: aImagePath, imageName: aImageName}
-      };
-    };
-
-    /**
      * Returns msg object used to signal that the user has provided a name for a new file or folder.
      * @param {string} aNodeName the name for the new node
      * @param {string} aNodeType the type of the node ('file' or 'folder')
@@ -444,10 +420,12 @@ angular.module('codeboardApp')
      * @param tabId
      * @returns {{msg: string, data: {tabId: *}}}
      */
-    this.msgNavBarRightOpenTab = function (tab) {
+    this.msgNavBarRightOpenTab = function (tab, doIoTest) {
+      // this is only relevant for the test-tab.. if the test-tab gets opened from the info-tab the test should not start automatically.. therefore we pass doIoTest as false in that broadcast call... default is doIoTest=true
+      if (typeof doIoTest === 'undefined') { doIoTest = true; }
       return {
         msg: 'ide.navBarRightOpenTab',
-        data: { "tab": tab }
+        data: { "tab": tab, "doIoTest": doIoTest },
       };
     };
 
@@ -476,4 +454,83 @@ angular.module('codeboardApp')
         data: { msg: msg, type: type, sender: sender, avatar: avatar }
       };
     };
+
+    /**
+     * This broadcast is triggered when a compiler chatbox should be removed 
+     * (started new compilation with errors / compilation with no errors)
+     * @param type
+     * @returns {{msg: string, data: {type: *}}}
+     */
+    this.msgRemoveChatLine = function (type) {
+      return {
+        msg: 'ide.removeChatLine',
+        data: { type: type }
+      };
+    };
+
+    /**
+     * This broadcast is triggered when the "no relevant hint" modal should be displayed
+     * @returns {{msg: string}}
+     */
+    this.msgShowNoRelevantHintModal= function () {
+      return {
+        msg: 'ide.showNoRelevantHintModal'
+      };
+    };
+
+    /**
+     * This broadcast is triggered when the code in the editor should be 
+     * reseted
+     * @returns {{msg: string}}
+     */
+    this.msgResetCode= function () {
+      return {
+        msg: 'ide.resetCode'
+      };
+    };
+
+    /**
+     * This broadcast is triggered when the code in the editor changes
+     * (close the variable marker window)
+     * @returns {{msg: string}}
+     */
+    this.msgCodeChanged= function () {
+      return {
+        msg: 'ide.codeChanged'
+      };
+    };
+
+    /**
+     * This broadcast is triggered when a java file is opened to explain 
+     * the code in the editor (coding-assistant)
+     * @returns {{msg: string}}
+     */
+    this.msgJavaFileOpened= function () {
+      return {
+        msg: 'ide.javaFileOpened'
+      };
+    };
+
+    /**
+     * This broadcast is triggered when a java tab (above the editor) is opened 
+     * to explain the code in the editor (coding-assistant)
+     * @returns {{msg: string}}
+     */
+    this.msgJavaTabOpened= function () {
+      return {
+        msg: 'ide.javaTabOpened'
+      };
+    };
+
+    /**
+     * This broadcast is triggered when a the explanation tab (coding-assistant)
+     * is opened
+     * @returns {{msg: string}}
+     */
+    this.msgExpTabClicked= function () {
+      return {
+        msg: 'ide.expTabClicked'
+      };
+    };
+
   });

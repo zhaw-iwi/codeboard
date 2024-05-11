@@ -24,6 +24,7 @@
     "url": "git://github.com/zhaw-iwi/codeboard"
   },
   "dependencies": {
+    "@azure/openai": "^1.0.0-beta.11",
     "bluebird": "3.7.1",
     "body-parser": "^1.19.0",
     "busboy": "^0.3.1",

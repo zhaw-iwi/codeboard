@@ -33,12 +33,13 @@
                 <div class="col-sm-8">
                   <div class="panel panel-default">
                     <div class="panel-body">
-                        <span ng-repeat="action in ['edit', 'compile', 'run', 'save', 'test', 'help', 'full-screen', 'tree-view', 'unredo', 'reset', 'editor-settings']"
+                        <span ng-repeat="e in actions"
                               class="label label-default"
-                              ng-class="{'label-danger': actionsSelected.indexOf(action) > -1}"
+                              title="{{e.desc}}"
+                              ng-class="{'label-danger': actionsSelected.indexOf(e.name) > -1}"
                               style="margin: 3px ; font-size: 12px; font-weight: 400; display: inline-block"
-                              ng-click="toggleSelection(action)">
-                          {{action}}
+                              ng-click="toggleSelection(e.name)">
+                          {{e.name}}
                         </span>
                     </div>
                   </div>
@@ -47,14 +48,14 @@
             </div>
 
             <button type="submit" id="projectNew_createButton" class="btn btn-success">Create</button>
-            <a type="button" class="btn btn-default" href="/">Cancel</a>
+            <a type="button" class="btn btn-default" href="/users/{{username}}/courses">Cancel</a>
           </form>
 
           <div ng-show="server.saveSuccess" class="alert alert-success" role="alert">
-            <strong>Project created!</strong> Redirecting to it's summary page.
+            <strong>Course created!</strong> Redirecting to it's summary page.
           </div>
           <div ng-show="server.saveFailure" class="alert alert-danger" role="alert">
-            <strong>Project not created!</strong> Problem while saving your changes. Check your data and try again. {{server.error}}
+            <strong>Course not created!</strong> Problem while saving your changes. Check your data and try again. {{server.error}}
           </div>
 
         </div>

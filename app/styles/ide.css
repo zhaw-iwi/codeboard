@@ -82,8 +82,6 @@
   color: #cce0d6;
 }
 
-
-
 .color-dark-blue {
   color: #4a5d68;
 }
@@ -100,7 +98,6 @@
   color: #dbdfe1;
 }
 
-
 .color-yellow-blue {
   color: #f0b600;
 }
@@ -116,7 +113,6 @@
 .color-yellow-blue-20 {
   color: #fcf0cc;
 }
-
 
 body {
   border: 1px solid #ccc;
@@ -157,9 +153,8 @@ body {
 
 .ideHeader .projectTitle.project-completed {
   background: #3da956 !important;
-  color: rgba(255, 255, 255, 0.8) !important
+  color: rgba(255, 255, 255, 0.8) !important;
 }
-
 
 #ideNavBar {
   border-radius: 0;
@@ -186,7 +181,7 @@ body {
 /** - - - - - - - Main Content of IDE - - - - - - - */
 #ideTabArea {
   overflow-y: hidden;
-  overflow-x: hidden;/* if we have too many tabs, a scroll bar appears */
+  overflow-x: hidden; /* if we have too many tabs, a scroll bar appears */
   padding: 0;
   height: 30px;
   margin-top: 20px;
@@ -208,7 +203,6 @@ body {
 
 #ideRightestPartOfMiddlePart {
   background-color: #4a80a5;
-  padding-top: 5px;
 }
 
 .ideSplitterOverflowVisible {
@@ -237,7 +231,6 @@ body {
   box-sizing: border-box !important;
 }
 
-
 /** - - - Tree View - - - */
 .ideTree {
   height: 100%;
@@ -262,11 +255,42 @@ body {
   white-space: nowrap;
 }
 
+/* Variable Scope */
+#ideVarScopePartOfMiddlePart {
+  background-color: #fff;
+}
+
+/* Make sure the kendo-splitter is not visible between variable scope div and the editor */
+#ideVarScopePartOfMiddlePart + .k-splitbar {
+  display: none;
+}
+
+.varScope {
+  width: 15px;
+  border: 1px solid black;
+  float: right;
+}
+
+.varScopeBlocks {
+  overflow: hidden;
+  background-color: #fff;
+  direction: rtl;
+  display: flex;
+  padding-right: 0;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
 /** - - - IDE Tabs - - - */
 .ideTabs {
   margin-bottom: 0;
   margin-left: 47px;
   padding: 0;
+}
+
+.ideTabs-expanded {
+  margin-left: 10.5%;
 }
 
 .ideTabs li {
@@ -276,7 +300,7 @@ body {
   margin-right: 4px;
   background-color: #fff;
   cursor: pointer;
-  opacity: .65;
+  opacity: 0.65;
   font-size: 0.75em;
   font-weight: bold;
   color: #bbb;
@@ -291,8 +315,8 @@ body {
 }
 
 .ideTabs li.ideTabStatic {
-  background: rgb(255,53,58);
-  background: linear-gradient(90deg, rgba(255,53,58,1) 0%, rgba(255,94,98,1) 100%);
+  background: rgb(255, 53, 58);
+  background: linear-gradient(90deg, rgba(255, 53, 58, 1) 0%, rgba(255, 94, 98, 1) 100%);
   color: #fff;
 }
 .ideTabs li.ideTabStatic .isStatic-icon {
@@ -303,24 +327,23 @@ body {
 }
 
 .ideTabs li .remove {
-    font-size: 7px;
-    padding-left: 5px;
-    color: #ccc;
+  font-size: 7px;
+  padding-left: 5px;
+  color: #ccc;
 }
 .ideTabs li:hover .remove {
-    color: #d9534f;
+  color: #d9534f;
 }
 
 .ideTabs img {
   margin: 0 0 0 4px;
 }
 
-
-
 /* - - - Main Area - - - */
 
 .ideEditorImage {
-  height: 100%; width: 100%;
+  height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -343,17 +366,21 @@ body {
   color: #aaa;
 }
 
-
 #ideEditorAndConsole {
   height: calc(100% - 50px);
-  overflow: hidden;
 }
+
+/* hide kendo scrollbar between console and ace editor */
+#ideEditorAndConsole .k-scrollable {
+  overflow: visible;
+}
+
 .ideEditor {
   overflow: hidden;
 }
 
 .ideEditorArea {
-  height:100%;
+  height: 100%;
   overflow: hidden !important;
 }
 
@@ -403,8 +430,6 @@ body {
   }
 }
 
-
-
 /* - - - Console - - - */
 .ideOutput {
   overflow: auto;
@@ -426,8 +451,8 @@ body {
 }
 
 .ideUserInput {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 .ideUserInput input {
   border: 0;
@@ -437,28 +462,54 @@ body {
 }
 
 @keyframes blink {
-    from { opacity: 1; }
-    to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 /** - - - Additional Tabs - - - */
-.ideAdditionalTabs .tab {
+
+.ideAdditionalTabs {
   writing-mode: vertical-rl;
+  white-space: nowrap; 
+  overflow-y: auto; 
+}
+
+.tab {
   text-orientation: mixed;
   padding-bottom: 10px;
-  margin-bottom: 5px;
   color: #eee;
   display: inline-block;
   width: 26px;
   line-height: 26px;
-  font-weight: 300;
+  font-weight: 500;
   cursor: pointer;
   font-size: 0.9em;
   border-bottom: 4px solid #d0d0d0;
 }
 
-.ideAdditionalTabs .tab .glyphicon {
+.tab-description {
+  border-top: 4px solid #d0d0d0;
+}
+
+.tab .glyphicon {
+  margin-top: 5px;
   margin-bottom: 8px;
+}
+
+.tab:hover {
+  text-decoration: none;
+  color: #355b7f;
+  background-color: #ffffff;
+  filter: brightness(95%);
+}
+
+.tabClicked {
+  color: #355b7f;
+  background-color: #ffffff;
 }
 
 /** todo nachfolgenden css-Angaben in separates File **/
@@ -476,51 +527,47 @@ body {
   background-color: #f5f5f5;
 }
 
-
 /** Spinninc Glyphicons **/
 .gly-spin {
-    -webkit-animation: spin 2s infinite linear;
-    -moz-animation: spin 2s infinite linear;
-    -o-animation: spin 2s infinite linear;
-    animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
 }
 @-moz-keyframes spin {
-    0% {
-        -moz-transform: rotate(0deg);
-    }
-    100% {
-        -moz-transform: rotate(359deg);
-    }
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
 }
 @-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-    }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
 }
 @-o-keyframes spin {
-    0% {
-        -o-transform: rotate(0deg);
-    }
-    100% {
-        -o-transform: rotate(359deg);
-    }
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
 }
 @keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(359deg);
-        transform: rotate(359deg);
-    }
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
-
-
-
 
 /** todo CSS-Angaben zu Test in separates File? */
 /* ioTests */
@@ -529,10 +576,10 @@ body {
   border-radius: 0;
 }
 
-.modal-dialog{
-  overflow-y: initial !important
+.modal-dialog {
+  overflow-y: initial !important;
 }
-.modal-body{
+.modal-body {
   max-height: calc(100vh - 240px);
   overflow-y: auto;
 }
@@ -542,7 +589,6 @@ body {
   border-radius: 0;
   border: 1px solid #fff;
 }
-
 
 /* Heading */
 .modalAccordion .panel-heading {
@@ -556,7 +602,7 @@ body {
   color: #bbb !important;
 }
 .modalAccordion .panel-heading.processing .glyphicon:before {
-  content: "\e030";
+  content: '\e030';
 }
 
 /* Pending */
@@ -566,7 +612,7 @@ body {
   color: #aaa !important;
 }
 .modalAccordion .panel-heading.pending .glyphicon:before {
-  content: "";
+  content: '\e030';
 }
 
 /* Fail */
@@ -576,7 +622,7 @@ body {
   color: #ab5c5c !important;
 }
 .modalAccordion .panel-heading.fail .glyphicon:before {
-  content: "\e083";
+  content: '\e083';
 }
 
 /* Success */
@@ -586,7 +632,7 @@ body {
   color: #77af87 !important;
 }
 .modalAccordion .panel-heading.success .glyphicon:before {
-  content: "\e084";
+  content: '\e084';
 }
 
 /* Ignored */
@@ -596,7 +642,7 @@ body {
   color: #c3ae2a !important;
 }
 .modalAccordion .panel-heading.ignored .glyphicon:before {
-  content: "\e086"
+  content: '\e086';
 }
 
 /* Unreachable */
@@ -616,8 +662,8 @@ body {
 /* Compile :: Success */
 .modalAccordion .compileTest .panel-heading.success,
 .modalAccordion .compileTest .panel-heading.success a {
-  background: #a7d5e6;
-  color: #5c89af !important;
+  background: #E7F3E8;
+  color: #7EBE86 !important;
 }
 
 /* disable click events */
@@ -670,11 +716,9 @@ body {
 }
 
 .list-group-item,
-.list-group-item:hover{
+.list-group-item:hover {
   z-index: auto !important;
 }
-
-
 
 /* - - - Avatare - - - */
 .test-result-avatar {
@@ -682,9 +726,6 @@ body {
   display: block;
   margin: 0 auto;
 }
-
-
-
 
 /** Avatar und Chat Effects **/
 
@@ -694,7 +735,7 @@ body {
   transition: opacity 0.6s linear;
 }
 
-.fadeOut{
+.fadeOut {
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s 0.6s, opacity 0.6s linear;

@@ -2,13 +2,8 @@
     "_comment": "Specify the main file used for compiling your application. Specify the main class used for running your application.",
     "MainFileForCompilation": "Main.java",
     "MainClassForRunning": "Main",
-    "userDisabledActions": [
-        "run",
-        "compile",
-        "save_project",
-        "help",
-        "test"
-    ],
+    "userEnabledActions": [],
+    "userDisabledActions": [],
     "Testing": {
         "onSuccess": "Gratulation! Alle Tests waren erfolgreich",
         "useCompileTests": true,

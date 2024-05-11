@@ -55,9 +55,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     let getSampleSolution = function() {
       return sampleSolution;
     };
+
     let setSampleSolution = function(aSampleSolution) {
       sampleSolution = aSampleSolution;
     };
+
     let hasSampleSolution = function() {
       return (sampleSolution !== "");
     };
@@ -736,13 +738,16 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       var deferred = $q.defer();
 
       // check if current user is owner or user. Otherwise reject promise
-      if(getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
+      if (getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
+
+        // get all files based on user-role
+        var files = getNodeArray(getProject().files);
 
         var payload = {
           project: {
             lastUId: getProject().lastUId
           },
-          files: getNodeArray(getProject().files),
+          files: files,
           courseId: getCourseId()
         };
 
@@ -830,10 +835,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @param runCleanCompile if true, a clean compile will be executed, otherwise a regular compilation
      * @param stream
      * @param compErrorHelp
+     * @param useAI if true, the compilation error explanation is generated using GPT
      * @returns a promise that resolves when a the compilation result is received
      */
     // todo var compileProject = function (_payload) { for more flexibility
-    var compileProject = function (runCleanCompile, stream = true, compErrorHelp = true) {
+    var compileProject = function (runCleanCompile, stream = true, compErrorHelp = true, useAI = false) {
 
       var payload = getPayloadForCompilation(runCleanCompile);
 
@@ -841,6 +847,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       payload.filesInDefaultFormat = getNodeArray(getProject().files);
       payload.stream = stream;
       payload.compErrorHelp = compErrorHelp;
+      // adjust payload with useAIHelp property which indicates wheter GPT is used for compilation error explanation
+      payload.useAIHelp = useAI;
       // todo replace the above three payload values with a parameter _payload
 
       // create the promise that is returned
@@ -1254,6 +1262,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       getProjectDescription: getProjectDescription,
       hasProjectDescription: hasProjectDescription,
       getSampleSolution: getSampleSolution,
+      setSampleSolution: setSampleSolution,
       hasSampleSolution: hasSampleSolution,
       addFile: addFile,
       addFolder: addFolder,

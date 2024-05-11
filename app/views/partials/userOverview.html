@@ -1,0 +1,52 @@
+<div ng-include="'partials/navbar.html'"></div>
+
+<!-- Profile view -->
+<div class="container">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-md-8">
+        <h1>{{user.username}}</h1>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-12 text-right" ng-show="currentUserIsSelf">
+        <a class="btn btn-default" ng-href="/users/{{user.username}}/settings"
+          >Edit user settings</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5">
+      <div ng-show="user.name">
+        <p></p>
+        <h3>Name</h3>
+        {{user.name}}
+      </div>
+      <div ng-show="user.email">
+        <p></p>
+        <h3>Email</h3>
+        <a href="mailto:{{user.email}}">{{user.email}}</a>
+      </div>
+      <div ng-show="user.url">
+        <p></p>
+        <h3>Web</h3>
+        <a href="{{user.url}}">{{user.url}}</a>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div ng-show="user.location">
+        <p></p>
+        <h3>Located in</h3>
+        {{user.location}}
+      </div>
+      <div ng-show="user.institution">
+        <p></p>
+        <h3>Institution</h3>
+        {{user.institution}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- end of container -->

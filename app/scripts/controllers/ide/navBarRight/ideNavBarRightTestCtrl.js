@@ -9,10 +9,10 @@
 angular.module('codeboardApp')
 
     /**
-     * Controller for Tips
+     * Controller for Tests in the "Test" tab
      */
-    .controller('ideNavBarRightTestCtrl', ['$scope', '$rootScope', '$log', 'IdeMsgService', 'ProjectFactory', 'ChatSrv',
-        function ($scope, $rootScope, $log, IdeMsgService, ProjectFactory, ChatSrv) {
+    .controller('ideNavBarRightTestCtrl', ['$scope', '$rootScope', '$log', 'IdeMsgService', 'ProjectFactory', 'ChatSrv', 'CodeboardSrv',
+        function ($scope, $rootScope, $log, IdeMsgService, ProjectFactory, ChatSrv, CodeboardSrv) {
 
             // enum for states and default state
             $scope.states = {
@@ -101,16 +101,13 @@ angular.module('codeboardApp')
                 $scope.compilation.output = compilationResult.output;
                 $scope.compilation.compilationErrorId = compilationResult.compilationErrorId;
                 $scope.compilation.compErrorHelpMessage = compilationResult.compErrorHelpMessage;
-                $scope.compilation.status = compilationResult.compilationError ? 'fail' : 'sccuess';
+                $scope.compilation.status = compilationResult.compilationError ? 'fail' : 'success';
             };
 
             /**
              * @returns {*}
              */
             let ioTesting = function(compilationId = 0) {
-
-                // reset tests
-                $scope.ioTestSet = _ioTestSet;
 
                 let hasErrors = false;
                 let i = 0;
@@ -173,10 +170,26 @@ angular.module('codeboardApp')
 
 
             /**
-             * Test Project
+             * Test Project via Test btn in the top navbar
              */
             $scope.doTheIoTesting = function() {
                 $log.debug('Test request received');
+
+                // reset tests
+                _ioTestSet.forEach((e, i) => {
+                    _ioTestSet[i].status = "pending";
+                })
+                $scope.ioTestSet = _ioTestSet;
+
+                // get disabled & enabled actions
+                let disabledActions = CodeboardSrv.getDisabledActions();
+                let enabledActions = CodeboardSrv.getEnabledActions();
+                let useAI = false;
+
+                // ai-compiler is enabled set useAI to true that compilation errors explanations are generated using GPT
+                if (!disabledActions.includes('ai-compiler') || enabledActions.includes('ai-compiler')) {
+                    useAI = true;
+                }
 
                 // trigger a save of the currently displayed content
                 $rootScope.$broadcast(IdeMsgService.msgSaveCurrentlyDisplayedContent().msg);
@@ -192,27 +205,44 @@ angular.module('codeboardApp')
                 }
 
                 // set clean compilation, stream and compErrorHelp
-                return ProjectFactory.compileProject(true, false, true)
+                return ProjectFactory.compileProject(true, false, true, useAI)
                     .then(function(compilationResult) {
                         setCompilationResult(compilationResult);
                         return compilationResult;
                     })
                     .then(function(compilationResult) {
-
                         $scope.state = (compilationResult.compilationError) ? $scope.states.compilationError : $scope.states.inProgress;
 
                         if (compilationResult.compilationError) {
+                            // the current displayed chatbox (if available) should be removed because new compilation is started
+                            let reqRmvChat = IdeMsgService.msgRemoveChatLine("error");
+                            $rootScope.$broadcast(reqRmvChat.msg, reqRmvChat.data);
 
+                            // broadcast event that the compiler tab should be opened to display the compiler error explanation chatbox (in case of testing with compiler error)
+                            let reqOpenCompilerTab = IdeMsgService.msgNavBarRightOpenTab('compiler');
+                            $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
+
+                            let chatLineCard = {
+                                cardHeader: 'Kompilierungsfehler beim Testen',
+                                cardBody: compilationResult.compErrorHelpMessage,
+                                cardType: 'compHelp',
+                                compilationOutput: compilationResult.output,
+                                compilationErrorId: compilationResult.compilationErrorId
+                            };
+
+                            // broadcast event that code was compiled and has an error (makes sure that the new chatbox is displayed in compiler tab)
+                            let reqAddMsg = IdeMsgService.msgAddHelpMessage(chatLineCard, 'compilerTest', 'Roby', 'worried');
+                            $rootScope.$broadcast(reqAddMsg.msg, reqAddMsg.data);
+                            
                             $scope.state = $scope.states.compilationError;
 
                         } else {
-
                             $scope.state = $scope.states.inProgress;
 
                             ioTesting(compilationResult.id)
                                 .then(function(hasIoErrors) {
 
-                                    if(hasIoErrors) {
+                                    if (hasIoErrors) {
                                         $scope.state = $scope.states.ioError;
                                     } else {
                                         $scope.state = $scope.states.correctSolution;
@@ -226,6 +256,9 @@ angular.module('codeboardApp')
                                     // force update of scope (used for status)
                                     $scope.$apply();
                                 });
+                            // broadcast event that code was compiled (tested) and has no syntax error (remove last displayed compiler error explanation chatbox))
+                            let reqAddMsg = IdeMsgService.msgRemoveChatLine("noError");
+                            $rootScope.$broadcast(reqAddMsg.msg, reqAddMsg.data);
                         }
                     })
                     .catch(function(error) {
@@ -239,7 +272,7 @@ angular.module('codeboardApp')
              * listen to test project events
              */
             $scope.$on(IdeMsgService.msgNavBarRightOpenTab().msg, function (event, data) {
-                if(data.tab === 'test') {
+                if(data.tab === 'test' && data.doIoTest) {
                     $scope.doTheIoTesting();
                 }
             });
@@ -255,19 +288,5 @@ angular.module('codeboardApp')
                     case 'ioTest':
                         return 'ideIoTestResult.html';
                 }
-            };
-
-            /**
-             * This method is bound to the chatLine rating directive.
-             * When the message is rated this method calls the chatService to
-             * send the rating to the api.
-             * @param messageId
-             * @param rating
-             */
-            $scope.onMessageRating = function (messageId, rating) {
-                ChatSrv.rateCompilationErrorMessage(messageId, rating)
-                    .then(function() {
-                        // console.log("Message rated");
-                    });
             };
         }]);

@@ -1,18 +1,43 @@
-# Codeboard
+<br />
+<div align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/ZHAW_Logo.svg" alt="Logo" width="120" height="120">
+  <h3 align="center">codeboard</h3>
+  codeboard is a web-based IDE to teach programming in the classroom. This is the core of the codeboard web application. 
+  <p>Part of the <a href="https://github.com/codeboardio">codeboard.io</a> project.</p>
+</div>
 
-Codeboard is a web-based IDE to teach programming in the classroom. This is the core of the Codeboard web application. Part of the codeboard.io project.
+<!-- INSTALLATION -->
+## Installation
+Clone the repository to your server
+```
+git clone https://github.com/zhaw-iwi/codeboard.git
+```
 
+Change into the codeboard folder and install all dependencies
+```
+cd codeboard
+
+# Install all server dependencies
+npm install 
+
+# Make sure to have Bower installed
+sudo npm install -g bower
+
+# Install all client dependencies
+bower install
+```
+
+codeboard uses Grunt to automate various tasks. Make sure to have the Grunt-CLI installed
+```
+sudo npm install -g grunt-cli 
+```
 ### Requirements
+codeboard requires NodeJS, MySQL, MongoDB.
 
-Codeboard requires NodeJS, MySQL, MongoDB, and graphicsmagick (for resizing user profile pictures).
-
-* Nodejs: tested with version 0.12.9
-* MongoDB: tested with version 2.6.4
-* Codeboard has been tested on an Ubuntu 14.04 system.
-
+* Nodejs: tested with version 18.18.0
+* MongoDB: tested with version 5.7.0
 
 ### Preparing the server
-
 We need to install MySQL and create a database:
 
 ```
@@ -35,35 +60,9 @@ sudo mysql_secure_installation
 
 We also need to install MongoDB. Follow the instructions [here](https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-14-04).
 
-## Installing Codeboard
-
-Clone the repository to your server
-```
-git clone https://github.com/codeboardio/codeboard.git
-```
-
-Change into the Codeboard folder and install all dependencies
-```
-cd codeboard
-
-# Install all server dependencies
-npm install 
-
-# Make sure to have Bower installed
-sudo npm install -g bower
-
-# Install all client dependencies
-bower install
-```
-
-Codeboard uses Grunt to automate various tasks. Make sure to have the Grunt-CLI installed
-```
-sudo npm install -g grunt-cli 
-```
-
-## Configuring Codeboard
-
-Codeboard requires a number of settings, like database names, passwords, etc.
+<!-- CONFIGURATION -->
+## Configuration
+codeboard requires a number of settings, like database names, passwords, etc.
 All those configurations must be set in the following files
 ```
 lib/config/env/all.js
@@ -72,21 +71,21 @@ lib/config/env/production.js
 lib/config/env/test.js
 ```
 
-## Run and Test Codeboard
-
-Use the following command to run Codeboard (in development mode)
+<!-- RUN AND TEST -->
+## Run and Test
+Use the following command to run codeboard (in development mode)
 ```
 grunt serve
 ```
 
 Build an optimize version for production deployment
 ```
-# Will create a folder dist
+# Will create a folder "dist"
 # Deploy from dist using command: NODE_ENV=production node server.js
 grunt build 
 ```
 
-Test Codeboard
+Test codeboard
 ```
 # run client-side tests
 grunt test:client
@@ -95,8 +94,12 @@ grunt test:client
 grunt test:server
 ```
 
+<!-- IMPLEMENTATION -->
+## Implementation
+### API Documentation
+Explore the API endpoints using the following [Postman collection](https://documenter.getpostman.com/view/18706406/2sA3BkcYVT). This collection includes all the necessary requests to interact with our application effectively.
 
-### Licensing
+## License
 This project is available under the MIT license. See [LICENSE](https://github.com/codeboardio/mantra/blob/master/LICENSE) for the full license text.
 
 _Important_: This project may use 3rd party software which uses others licenses. If you're planning to use this project, make sure your use-case complies with all 3rd party licenses.
