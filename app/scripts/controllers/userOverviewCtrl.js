@@ -3,7 +3,7 @@
 /**
  *
  * @author Samuel Truniger
- * This controller handles the functionality regarding a user and his data
+ * This controller handles the functionality regarding a user and his data in the profile tab
  */
 
 angular.module("codeboardApp").controller("UserOverviewCtrl", [
@@ -33,7 +33,7 @@ angular.module("codeboardApp").controller("UserOverviewCtrl", [
 
     /**
      * Function runs when the controller is loaded the first time.
-     * Gets the user and user's images from the server.
+     * Gets the user from the server.
      */
     $scope.init = function () {
       $http.get("/api/users/" + $routeParams.username).then(
@@ -47,7 +47,6 @@ angular.module("codeboardApp").controller("UserOverviewCtrl", [
             url: data.url,
             location: data.location,
             institution: data.institution,
-            imageUrl: data.imageUrl
           };
 
           $scope.currentUserIsSelf =

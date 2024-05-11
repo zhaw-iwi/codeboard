@@ -26,7 +26,7 @@ app.controller('IdeCtrl', [
     'AISrv',
     function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv, AISrv) {
         // First we handle all data that was injected as part of the app.js resolve.
-        // set the ProjectFactory to contain the project loaded from the server
+        // set the project data in the ProjectFactory (files, description, etc.)
         ProjectFactory.setProjectFromJSONdata(projectData, ltiData);
 
         // store name of pressed Button
@@ -639,7 +639,9 @@ app.controller('IdeCtrl', [
                 '$rootScope',
                 '$scope',
                 '$uibModalInstance',
-                function ($rootScope, $scope, $uibModalInstance) {
+                "$http",
+                "$timeout",
+                function ($rootScope, $scope, $uibModalInstance, $http, $timeout) {
                     // init scope variables
                     $scope.numTestsFailed = $scope.numTestsPassed = $scope.numTests = 0;
                     $scope.score = 0;
@@ -677,20 +679,46 @@ app.controller('IdeCtrl', [
 
                     /**
                      * Defines what to do to when all tests passed
-                     * When the passRates is reached we trigger the msgSuccessfulSubmission event
+                     * When the passRates is reached the sample solution is fetched and the the msgSuccessfulSubmission event is triggered
                      */
-                    let enoughTestsPassed = function () {
-                        $scope.title = 'Super gemacht!';
-                        $scope.textBeforeResult = 'Gratulation! Dein Programm hat alle Tests bestanden und du hast die maximale Punktzahl erhalten.';
-                        $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen.';
-                        $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
+                    let enoughTestsPassed = async function () {
+                      $scope.title = 'Super gemacht!';
+                      $scope.textBeforeResult = 'Gratulation! Dein Programm hat alle Tests bestanden und du hast die maximale Punktzahl erhalten.';
+                      $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen.';
+                      $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
 
-                        projectData.projectCompleted = true;
+                      projectData.projectCompleted = true;
+                        
+                      var url = "/api/projects/" + $routeParams.projectId + "/sampleSolution";
+    
+                      // check if courseId is available
+                      if ($routeParams.courseId) {
+                          url += "?courseId=" + $routeParams.courseId;
+                      }
 
-            // trigger successful submission event
-            let req = IdeMsgService.msgSuccessfulSubmission();
-            $rootScope.$broadcast(req.msg);
-          };
+                      // check if there is already a solution available if student make multiple submissions in one "session" (reduce api calls)
+                      const existingSolution = ProjectFactory.getSampleSolution();
+
+                      if (!existingSolution) {
+                        try {
+                          var res = await $http.get(url);
+                          ProjectFactory.setSampleSolution(res.data);
+    
+                          // trigger successful submission event after short delay to ensure sample solution is set
+                          $timeout(() => {
+                              let req = IdeMsgService.msgSuccessfulSubmission();
+                              $rootScope.$broadcast(req.msg);
+                          });
+                        } catch (err) {
+                          console.log("Error while fetching sample solution!" + err);
+                        }
+                      } else {
+                        $timeout(() => {
+                          let req = IdeMsgService.msgSuccessfulSubmission();
+                          $rootScope.$broadcast(req.msg);
+                        });
+                      }
+                    };
 
                     /**
                      * Defines what to do when a submission went wrong
@@ -775,7 +803,7 @@ app.controller('IdeCtrl', [
                     };
 
                     /**
-                     * Checks if the current project has a sample solution
+                     * Checks if the current project has a sample solution to display "Musterlösung anzeigen" button
                      * @returns {*}
                      */
                     $scope.hasSampleSolution = function () {
@@ -1215,10 +1243,6 @@ app.controller('IdeCtrl', [
                     req = IdeMsgService.msgNewNodeRequest('folder');
                     $rootScope.$broadcast(req.msg, req.data);
                     break;
-                case 'add_image':
-                    req = IdeMsgService.msgNewImageNodeRequest();
-                    $rootScope.$broadcast(req.msg);
-                    break;
                 case 'rename_node':
                     req = IdeMsgService.msgRenameNodeRequest();
                     $rootScope.$broadcast(req.msg);
@@ -1483,7 +1507,7 @@ app.controller('IdeCtrl', [
          */
         $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
             // $scope.uiSettings.disableSubmissionBtn = true;
-      });
+        });
 
         /**
          * Triggers a resize of the editor.
@@ -2070,26 +2094,6 @@ app.controller('TreeCtrl', [
         });
 
         /**
-         * Listens for the event when a image should be stored
-         * @author Janick Michot
-         */
-        $scope.$on(IdeMsgService.msgSaveImageNodeRequest().msg, function (aEvent, aMsgData) {
-            let lSelectedNodeUId = $scope.mytree.currentNode.uniqueId;
-
-            console.log({
-                imagePath: aMsgData.imagePath,
-                imageName: aMsgData.imageName,
-            });
-
-            let content = JSON.stringify({
-                imagePath: aMsgData.imagePath,
-                imageName: aMsgData.imageName,
-            });
-
-            ProjectFactory.addFile(lSelectedNodeUId, aMsgData.imageName, { content: content });
-        });
-
-        /**
          * Listens for the event that the tree should update.
          * Such an update is needed if the ProjectFactory changes the 'files' array (e.g.
          * when loading a user's version of a project) after the 'files' array was already
@@ -2465,15 +2469,13 @@ app.controller('RightBarCtrl', [
             };
         }
 
-        // tab for sampleSolution
-        if (ProjectFactory.hasSampleSolution()) {
-            $scope.rightBarTabs.sampleSolution = {
-                slug: 'sampleSolution',
-                title: 'Lösung',
-                icon: 'glyphicon-screenshot',
-                contentURL: 'partials/navBarRight/navBarRightSampleSolution',
-            };
-        }
+        // tab for sampleSolution > we have to initlize the tab (therefore no conditions) todo --> better solution?
+        $scope.rightBarTabs.sampleSolution = {
+            slug: 'sampleSolution',
+            title: 'Lösung',
+            icon: 'glyphicon-screenshot',
+            contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+        };
 
         // todo define other tabs
 

@@ -63,7 +63,6 @@ angular.module("codeboardApp").controller("UserImagesCtrl", [
             url: data.url,
             location: data.location,
             institution: data.institution,
-            imageUrl: data.imageUrl
           };
 
           $scope.currentUserIsSelf =

@@ -42,7 +42,6 @@
                         <li><a id="addFileButton" ng-click="navBarClick('add_file')">Add file</a></li>
                         <li><a ng-click="navBarClick('add_folder')">Add folder</a></li>
                         <li><a ng-click="navBarClick('rename_node')">Rename file/folder</a></li>
-                        <li><a ng-click="navBarClick('add_image')">Add Image</a></li>
                         <li class="divider"></li>
                         <li><a ng-click="navBarClick('remove_node')">Delete file/folder</a></li>
 
@@ -261,29 +260,6 @@
         <div class="modal-footer">
           <button type="submit" id="okAddFileNameButton" class="btn btn-primary" ng-disabled="ideAddNodeForm.dataNodeName.$error.pattern">{{labels.btnOk}}</button>
           <button class="btn btn-warning" ng-click="cancel()">{{labels.btnCancel}}</button>
-        </div>
-      </form>
-    </script>
-  </div>
-  <!-- end of modal window -->
-
-  <!-- the modal window used to add a file or folder -->
-  <div ng-controller="IdeImageActionCtrl">
-    <script type="text/ng-template" id="ideNewImageModal.html">
-      <div class="modal-header">
-        <h3>Bild hinzufügen</h3>
-      </div>
-      <form class="form" name="ideAddImageForm" ng-submit="submit(img)" enctype="multipart/form-data">
-        <div class="modal-body">
-
-          <div class="form-group">
-            <p>Bild auswählen und diesem Projekt hinzufügen.</p>
-            <input type="file" name="dataImage" ngf-select accept="image/*" ng-model="img"/>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="okAddImageNameButton" class="btn btn-primary">Bild hinzufügen</button>
-          <button class="btn btn-warning" ng-click="cancel()">Abbrechen</button>
         </div>
       </form>
     </script>

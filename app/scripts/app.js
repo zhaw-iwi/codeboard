@@ -77,7 +77,20 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
       .when('/users/:username/courses', {
         // shows the :userId page (non-public projects are included when user is authorized)
         templateUrl: 'partials/userCourses',
-        controller: 'UserProjectsCtrl'
+        controller: 'UserCoursesCtrl'
+      })
+      .when('/users/:username/courses/:courseId/projects', {
+        // returns all the projects which are part of a specific course
+        templateUrl: 'partials/userCoursesProjects',
+        controller: 'courseProjectsCtrl',
+        resolve: {
+          courseProjects: ['$route', '$http', 'UserSrv', function($route, $http, UserSrv) {
+            return $http.get("/api/courses/" + $route.current.params.courseId + "/projects")
+                .then(function(result) {
+                  return result.data;
+                });
+          }]
+        }
       })
       .when('/users/:username/images', {
         templateUrl: 'partials/userImages',
@@ -180,15 +193,17 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
           projectData: ['$q', '$route', 'initialProjectData', 'initialUserProjectData', 'UserSrv', function($q, $route, initialProjectData, initialUserProjectData, UserSrv) {
             let projectId = $route.current.params.projectId;
             let courseId = $route.current.params.courseId;
+            // returns the inital project data
             return initialProjectData(projectId, courseId)
               .then(function (_projectData) {
-                // if the current user in the role of 'user' (and not 'owner'), we check if there's a saved version that we could load
+                // if requested user is user of a project return current stored user version
                 if (_projectData.userRole === 'user' &&  UserSrv.isAuthenticated()) {
                   return initialUserProjectData(_projectData, UserSrv.getUsername(), projectId, courseId)
                       .catch(function (err) {
                         return _projectData; // return original project data
                       });
                 } else {
+                  // if non authenticated user access project return inital project data
                   return _projectData;
                 }
               });
@@ -205,9 +220,10 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             return initialLtiData;
           }],
           projectData: ['$route', 'initialProjectData', 'initialUserProjectData', 'UserSrv', function($route, initialProjectData, initialUserProjectData, UserSrv) {
+            // returns the inital project data
             return initialProjectData($route.current.params.projectId, $route.current.params.courseId)
                 .then(function (_projectData) {
-                  // if the current user in the role of 'user' (and not 'owner'), we check if there's a saved version that we could load
+                  // if requested user is user of a project return current stored user version
                   if (_projectData.userRole === 'user' && UserSrv.isAuthenticated()) {
                     return initialUserProjectData(_projectData, UserSrv.getUsername(), $route.current.params.projectId, $route.current.params.courseId)
                         .catch(function () {
@@ -221,6 +237,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
       })
 
       .when('/projects/:projectId/helprequests/:helpRequestId', {
+        // loads a help request of a user (only accessible as owner of a project > inspecting helprequests from user "{username}" )
         templateUrl: 'partials/ide',
         controller: 'IdeCtrl',
         resolve: {
@@ -236,7 +253,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         }
       })
       .when('/projects/:projectId/submissions/:submissionId', {
-        // loads a project in the ide (publicly accessible if project is public)
+        // loads a submitted version of a user (only accessible as owner of a project > inspecting submission from user "{username}" )
         templateUrl: 'partials/ide',
         controller: 'IdeCtrl',
         resolve: {
@@ -252,7 +269,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         }
       })
       .when('/projects/:projectId/userprojects/:userprojectId', {
-        // loads a version as stored by a user in the ide
+        // loads a version as stored by a user in the ide (only accessible as owner of a project > inspecting user-project from user "{username}" )
         templateUrl: 'partials/ide',
         controller: 'IdeCtrl',
         resolve: {

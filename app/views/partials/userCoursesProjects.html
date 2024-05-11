@@ -1,20 +1,23 @@
 <div ng-include="'partials/navbar.html'"></div>
 
-
 <div class="container">
   <div class="row">
     <div class="col-md-12">
       <div class="page-header">
-        <h1>Own projects - {{user.username}}</h1>
-        <div class="row">
-          <div class="col-md-12 text-right" ng-show="currentUserIsSelf">
-            <a class="btn btn-success" id="userProjects_createProject" href="/projects/new">Create new project</a>
+        <h1>Own projects in {{courseName}} - {{username}}</h1>
+      </div>
+      <div class="row mb-4" ng-show="currentUserIsSelf">
+        <div ng-class="{'col-md-12': courseId }">
+          <div class="mt-3">
+            <a class="btn btn-default" href="/users/{{username}}/courses">Show all courses</a>
           </div>
         </div>
-      </div>
-      <div class="row mb-4" ng-show="ownerSet.length >= 1">
-        <div class="col-md-8"></div>
-        <div class="col-md-4 text-right" ng-show="currentUserIsSelf">
+        <div ng-class="{'col-md-8': courseId }">
+          <div class="mt-3">
+            <a class="btn btn-default" href="/users/{{username}}">Show all projects</a>
+          </div>
+        </div>
+        <div class="col-md-4 text-right" ng-show="courseProjects.length >= 1">
           <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
             <input type="text" class="form-control" placeholder="Filter by name/id of project" ng-model="searchTxt" ng-change="filter('input')">
             <div class="dropdown">
@@ -31,8 +34,8 @@
           </div>
         </div>
       </div>
-      <h4 ng-show="!ownerSet.length">No projects found!</h4>
-      <div class="panel panel-default" ng-repeat="prj in filteredProjects">
+      <h4 ng-show="!courseProjects.length">No projects in {{courseName}}!</h4>
+      <div class="panel panel-default" ng-repeat="prj in filteredCourseProjects">
         <div class="panel-heading">
           <div class="row">
             <div class="col-md-6">
@@ -79,69 +82,5 @@
       </div>
     </div>
   </div>
-
-  <div class="row" ng-show="userSet.length > 0">
-    <div class="col-md-12">
-      <div class="page-header">
-        <h1>Uses projects</h1>
-      </div>
-
-
-      <div class="panel panel-default" ng-repeat="prj in userSet">
-        <div class="panel-heading">
-          <h3 class="panel-title"><a ng-href="/projects/{{prj.id}}/summary">{{prj.projectname}}</a></h3>
-        </div>
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-md-6">
-              <label>Description</label>
-              <p>{{prj.description}}</p>
-            </div>
-            <div class="col-md-2 col-md-offset-1">
-              <label>Language</label>
-              <p>{{prj.language}}</p>
-            </div>
-            <div class="col-md-2">
-              <label>Created</label>
-              <p>{{prj.createdAt | date}}</p>
-            </div>
-          </div>
-          <div class="row" ng-show="prj.isPrivate">
-            <div class="col-md-12">
-              <label>Access control</label>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-disabled="true" ng-checked="prj.isPrivate"> Private project
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label>Owners</label>
-              <p>
-                <span ng-repeat="owner in prj.ownerSet"><a href="/users/{{owner.username}}">{{owner.username}}</a> </span>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label>Share</label>
-              <p>
-                <a href="https://codeboard.sml.zhaw.ch/projects/{{prj.id}}">https://codeboard.sml.zhaw.ch/projects/{{prj.id}}</a>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <!--<a class="btn btn-default" href="/projects/{{prj.id}}/summary" role="button">Show summary</a>-->
-              <a class="btn btn-default" href="/projects/{{prj.id}}" role="button">Open in IDE</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+</div> 
 <!-- end of container -->
