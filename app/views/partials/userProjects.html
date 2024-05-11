@@ -13,6 +13,7 @@
         </div>
       </div>
       <div class="row mb-4" ng-show="ownerSet.length >= 1">
+        <div class="col-md-8"></div>
         <div class="col-md-4 text-right" ng-show="currentUserIsSelf">
           <div style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
             <input type="text" class="form-control" placeholder="Filter by name/id of project" ng-model="searchTxt" ng-change="filter('input')">
@@ -30,7 +31,7 @@
           </div>
         </div>
       </div>
-      <h4 ng-show="!ownerSet.length">Projects loading...</h4>
+      <h4 ng-show="!ownerSet.length">No projects found!</h4>
       <div class="panel panel-default" ng-repeat="prj in filteredProjects">
         <div class="panel-heading">
           <div class="row">
