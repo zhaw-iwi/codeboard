@@ -1082,7 +1082,8 @@ app.controller('IdeCtrl', [
          * @returns {Boolean|void|boolean}
          */
         $scope.userAllowedToSave = function () {
-            return UserSrv.isAuthenticated() && (ProjectFactory.getProject().userRole === 'user' || ProjectFactory.getProject().userRole === 'owner');
+            let projectData = ProjectFactory.getProject();
+            return UserSrv.isAuthenticated() && ((projectData.userRole === 'user' && Object.keys(projectData.courseData).length !== 0) || projectData.userRole === 'owner');
         };
 
         /** Returns true if the current role is that of project 'owner' */
@@ -2701,7 +2702,7 @@ app.controller('IdeFooterStatusBarCtrl', [
 
         $scope.hasCourse = function () {
             let courseData = ProjectFactory.getProject().courseData;
-            if (Object.keys(courseData).length === 0) {
+            if (Object.keys(courseData).length === 0 && !$scope.currentRoleIsOwner()) {
                 $scope.disabledActions.submit = true;
             }
             return typeof courseData !== 'undefined';
