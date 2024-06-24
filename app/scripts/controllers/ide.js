@@ -2700,7 +2700,11 @@ app.controller('IdeFooterStatusBarCtrl', [
         };
 
         $scope.hasCourse = function () {
-            return typeof ProjectFactory.getProject().courseData !== 'undefined';
+            let courseData = ProjectFactory.getProject().courseData;
+            if (Object.keys(courseData).length === 0) {
+                $scope.disabledActions.submit = true;
+            }
+            return typeof courseData !== 'undefined';
         };
     },
 ]);
