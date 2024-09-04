@@ -43,5 +43,11 @@ angular.module('codeboardApp').service('AceEditorSrv', [
         .split('\n');
       return inputCode;
     };
+
+    // get the selected code in the ace editor
+    service.getSelectedCode = function (aceEditor) {
+      var selectedCode = aceEditor.getSelectedText();
+      return selectedCode;
+    }
   },
 ]);
