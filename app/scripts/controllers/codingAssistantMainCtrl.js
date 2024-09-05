@@ -13,13 +13,15 @@ angular.module("codeboardApp").controller("CodingAssistantMainCtrl", [
   "$routeParams",
   "UserSrv",
   "AISrv",
+  "ProjectFactory",
   function (
     $scope,
     $timeout,
     AceEditorSrv,
     $routeParams,
     UserSrv,
-    AISrv
+    AISrv,
+    ProjectFactory
   ) {
     var aceEditor = $scope.ace.editor;
     var chatBoxes = [];
@@ -28,6 +30,7 @@ angular.module("codeboardApp").controller("CodingAssistantMainCtrl", [
     $scope.chatLines = [];
     $scope.showInfoMsg = true;
     $scope.expIsLoading = false;
+    $scope.userRole = ProjectFactory.getProject().userRole;    
 
     // function to get the explantion of the selected code
     $scope.getCodeExplanation = function () {

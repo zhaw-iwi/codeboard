@@ -16,7 +16,7 @@
                         </chat-line-simple>
                     </chat-line>
                 </li>
-                <button ng-disabled="expIsLoading" class="btn btn-info btn-100" ng-click="getCodeExplanation()"><span class="glyphicon glyphicon-question-sign"></span>Erkläre mir den ausgewählten Code</button>
+                <button ng-disabled="expIsLoading || userRole === 'owner'" class="btn btn-info btn-100" ng-click="getCodeExplanation()"><span class="glyphicon glyphicon-question-sign"></span>Erkläre mir den ausgewählten Code</button>
                 <p class="text-danger text-center">{{errTxt}}</p>
                 <hr class="chat-horizontal-line" />
             </before-chat>
