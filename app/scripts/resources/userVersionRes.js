@@ -21,6 +21,7 @@ angular.module('codeboardApp')
                     // we got the data from the sever but it's not in the exact form that the IdeCtrl expects
                     // thus we reformat it here; we also have to calculate the lastUId (though the user is not likely to add files)
 
+                    // what happens if user does not exist anymore?
                     let projectData = {
                         projectname: response.data.project.projectname,
                         language: response.data.project.language,

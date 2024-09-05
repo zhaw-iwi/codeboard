@@ -533,4 +533,13 @@ angular.module('codeboardApp')
       };
     };
 
+     /**
+     * This broadcast is triggered when the sample solution tab should be initialized
+     * @returns {{msg: string}}
+     */
+    this.msgDisplaySolutionTab = function () {
+      return {
+        msg: 'ide.displaySolutionTab'
+      };
+    }
   });

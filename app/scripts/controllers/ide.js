@@ -699,24 +699,20 @@ app.controller('IdeCtrl', [
                       // check if there is already a solution available if student make multiple submissions in one "session" (reduce api calls)
                       const existingSolution = ProjectFactory.getSampleSolution();
 
+                      // if there is no solution available fetch it from the db otherwise we don't need to do anything 
+                      // because it is already set and available
                       if (!existingSolution) {
                         try {
                           var res = await $http.get(url);
                           ProjectFactory.setSampleSolution(res.data);
     
-                          // trigger successful submission event after short delay to ensure sample solution is set
+                          // trigger event that solution tab gets displayed in the UI with the fetched sample solution
                           $timeout(() => {
-                              let req = IdeMsgService.msgSuccessfulSubmission();
-                              $rootScope.$broadcast(req.msg);
+                            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
                           });
                         } catch (err) {
                           console.log("Error while fetching sample solution!" + err);
                         }
-                      } else {
-                        $timeout(() => {
-                          let req = IdeMsgService.msgSuccessfulSubmission();
-                          $rootScope.$broadcast(req.msg);
-                        });
                       }
                     };
 
@@ -2470,13 +2466,19 @@ app.controller('RightBarCtrl', [
             };
         }
 
-        // tab for sampleSolution > we have to initlize the tab (therefore no conditions) todo --> better solution?
-        $scope.rightBarTabs.sampleSolution = {
-            slug: 'sampleSolution',
-            title: 'Lösung',
-            icon: 'glyphicon-screenshot',
-            contentURL: 'partials/navBarRight/navBarRightSampleSolution',
-        };
+        $scope.$on(IdeMsgService.msgDisplaySolutionTab().msg, function (aEvent, aMsgData) {            
+            $scope.rightBarTabs.sampleSolution = {
+                slug: 'sampleSolution',
+                title: 'Lösung',
+                icon: 'glyphicon-screenshot',
+                contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+            };
+        });
+
+        // if the sample solution is available (student submitted a solution / owner) the tab is displayed
+        if (ProjectFactory.hasSampleSolution()) {
+            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
+        }
 
         // todo define other tabs
 
