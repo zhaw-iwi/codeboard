@@ -62,8 +62,12 @@
                 </div>
 
                 <div ng-switch-when="explanation">
-                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" avatar="chatLine.avatar" link="{{chatLine.link}}" type="chatLine.type">
-                        <chat-line-explanation>{{chatLine.message}}</chat-line-explanation>
+                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" avatar="chatLine.avatar" card-type="{{chatLine.type}}">
+                        <chat-line-simple>
+                            <div ng-bind-html="chatLine.cardTitle"></div>
+                            <textarea class="mt-2 mb-2 w-75" rows="3" disabled>{{chatLine.selectedCode}}</textarea>
+                            <div ng-bind-html="chatLine.cardBody"></div>
+                        </chat-line-simple>
                     </chat-line>
                 </div>
 

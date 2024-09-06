@@ -312,9 +312,11 @@ angular.module('codeboardApp')
             }
 
             return AISrv.askForRelevantTip(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
-                if (res) {
+                const hint = res.answer;
+                const userReqLimitExceeded = res.limitExceeded;                   
+                if (hint) {
                     // the api call should return the id of the relevant hint which is then used to get the corresponding hint from the hints array
-                    let hintIndex = parseInt(res);
+                    let hintIndex = parseInt(hint);
                     // condition which checks wheter relevant hint was found by ai
                     if (hintIndex !== -1 && hintsForProject[hintIndex]) {
                         return hintsForProject[hintIndex];
@@ -325,7 +327,9 @@ angular.module('codeboardApp')
                         // case when ai returns an index other than -1 which is not part of array
                         return getHint();
                     }
-                } 
+                } else if (userReqLimitExceeded) {
+                    return getHint();
+                }
                 // fall back to default hint priorization (order)
                 return getHint();
                 
