@@ -16,7 +16,7 @@
         </chat>
     </div>
 
-    <hr class="chat-horizontal-line" />
+    <hr ng-show="currentRoleIsUser()"class="chat-horizontal-line" />
 
     <button ng-show="!sendRequestFormVisible" class="btn btn-info btn-100" ng-click="showSendRequestForm()"><span class="glyphicon glyphicon-question-sign"></span>Frage stellen</button>
 

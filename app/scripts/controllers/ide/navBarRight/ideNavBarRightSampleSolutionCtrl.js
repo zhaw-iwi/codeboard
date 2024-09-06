@@ -21,27 +21,16 @@ angular.module('codeboardApp')
       /**
        * init this tab
        */
-      $scope.init = function() {
+      $scope.init = function() {        
         // check if a sampleSolution is available and the user has already a correct submission,
         // otherwise we use broadcast to make tab disabled
-        if (ProjectFactory.getProject().projectCompleted || ProjectFactory.getProject().userRole !== 'user') {
-          $scope.sampleSolution = ProjectFactory.getSampleSolution();
-        } else {
+        if (ProjectFactory.hasSampleSolution() || ProjectFactory.getProject().userRole !== 'user') {                   
+          $scope.sampleSolution = ProjectFactory.getSampleSolution();          
+        } else {     
           let req = IdeMsgService.msgNavBarRightDisableTab(slug);
           $rootScope.$broadcast(req.msg, req.data);
         }
       };
 
       $scope.init();
-
-
-      /**
-       * Listen on successful submission in order to show the sample solution
-       * after successful submission
-       */
-      $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
-        $scope.sampleSolution = ProjectFactory.getSampleSolution();
-        let req = IdeMsgService.msgNavBarRightEnableTab("sampleSolution");
-        $rootScope.$broadcast(req.msg, req.data);
-      });
     }]);
