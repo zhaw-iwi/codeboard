@@ -694,7 +694,9 @@ app.controller('IdeCtrl', [
                       $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
 
                       projectData.projectCompleted = true;
-                        
+                      // we also have to set the completion status globally
+                      ProjectFactory.setCompletionStatus(true);
+                       
                       var url = "/api/projects/" + $routeParams.projectId + "/sampleSolution";
     
                       // check if courseId is available
@@ -711,15 +713,14 @@ app.controller('IdeCtrl', [
                         try {
                           var res = await $http.get(url);
                           ProjectFactory.setSampleSolution(res.data);
-    
-                          // trigger event that solution tab gets displayed in the UI with the fetched sample solution
-                          $timeout(() => {
-                            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
-                          });
                         } catch (err) {
                           console.log("Error while fetching sample solution!" + err);
                         }
                       }
+
+                      // trigger the event to indicate a successful submission
+                      let req = IdeMsgService.msgSuccessfulSubmission();
+                      $rootScope.$broadcast(req.msg);
                     };
 
                     /**
@@ -850,6 +851,17 @@ app.controller('IdeCtrl', [
                         let req = IdeMsgService.msgNavBarRightOpenTab('sampleSolution');
                         $rootScope.$broadcast(req.msg, req.data);
                     };
+
+                    /**
+                    * Open code review tab
+                    */
+                    $scope.openCodeReview = function() {
+                        $uibModalInstance.close();                        
+
+                        let req = IdeMsgService.msgNavBarRightOpenTab('codeReview');
+                        $rootScope.$broadcast(req.msg, req.data);
+                        
+                    }
                 },
             ];
 
@@ -2472,19 +2484,24 @@ app.controller('RightBarCtrl', [
             };
         }
 
-        $scope.$on(IdeMsgService.msgDisplaySolutionTab().msg, function (aEvent, aMsgData) {            
-            $scope.rightBarTabs.sampleSolution = {
-                slug: 'sampleSolution',
-                title: 'Lösung',
-                icon: 'glyphicon-screenshot',
-                contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+        // tab for code review
+        if (!$scope.isActionHidden('codeReview')) {
+            $scope.rightBarTabs.codeReview = {
+                slug: 'codeReview',
+                title: 'Code-Review',
+                disabled: false,
+                icon: 'glyphicon-eye-open',
+                contentURL: 'partials/navBarRight/navBarRightCodeReview',
             };
-        });
-
-        // if the sample solution is available (student submitted a solution / owner) the tab is displayed
-        if (ProjectFactory.hasSampleSolution()) {
-            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
         }
+
+        // tab for the sample solution
+        $scope.rightBarTabs.sampleSolution = {
+            slug: 'sampleSolution',
+            title: 'Lösung',
+            icon: 'glyphicon-screenshot',
+            contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+        };
 
         // todo define other tabs
 

@@ -53,6 +53,13 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
         avatar: 'idea',
         tab: 'questions',
       },
+      {
+        type: 'info',
+        message: "Im Tab <span class='glyphicon glyphicon-eye-open'></span> <b>Code-Review</b> kannst du deinen Code reviewen lassen, nachdem du deine Lösung submitted hast.",
+        author: 'Helper-System - Code-Review',
+        avatar: 'idea',
+        tab: 'codeReview',
+      },
     ];
 
     // only add info chatLines which are not in disabledActions

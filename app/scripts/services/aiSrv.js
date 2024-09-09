@@ -46,5 +46,17 @@ angular.module("codeboardApp").service("AISrv", [
           console.log(err);
         });
     };
+
+    // function to do the code review for the users last submission
+    service.askForCodeReview = function(courseId, projectId) {
+      return $http
+        .post("/api/ai/codeReview/" + courseId + "/" + projectId, { timeout: 15000 })
+        .then(function (res) {
+          return res.data;
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    }
   },
 ]);

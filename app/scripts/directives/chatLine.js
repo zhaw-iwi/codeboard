@@ -122,6 +122,11 @@ angular.module('codeboardApp').directive('chatLine', function () {
                             req = IdeMsgService.msgNavBarRightOpenTab('questions');
                             $rootScope.$broadcast(req.msg, req.data);
                             break;
+                        case 'codeReview':
+                            // open questions tab
+                            req = IdeMsgService.msgNavBarRightOpenTab('codeReview');
+                            $rootScope.$broadcast(req.msg, req.data);
+                            break;
                     }
                 };
             },
