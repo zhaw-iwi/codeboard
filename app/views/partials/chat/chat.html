@@ -24,7 +24,7 @@
                     <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" avatar="chatLine.avatar">
                         <chat-line-card card-title="{{chatLine.message.cardHeader}}" card-reference="{{chatLine.message.cardReference}}" card-type="{{chatLine.message.cardType}}">
                             <div ng-bind-html="chatLine.message.cardBody"></div>
-                            <textarea class="mt-4 w-100" rows="5" disabled>{{chatLine.message.compilationOutput}}</textarea>
+                            <pre class="mt-4 w-100" rows="5" disabled>{{chatLine.message.compilationOutput}}</pre>
                         </chat-line-card>
                     </chat-line>
                 </div>
@@ -33,7 +33,7 @@
                     <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" avatar="chatLine.avatar">
                         <chat-line-card card-title="{{chatLine.message.cardHeader}}" card-type="{{chatLine.message.cardType}}">
                             <div ng-bind-html="chatLine.message.cardBody"></div>
-                            <textarea class="mt-4 w-100" rows="5" disabled>{{chatLine.message.compilationOutput}}</textarea>
+                            <pre class="mt-4 w-100" rows="5" disabled>{{chatLine.message.compilationOutput}}</pre>
                             <!-- <chat-line-rating message-id="chatLine.message.compilationErrorId" on-rate-message="onMessageRating({messageId: messageId, rating: rating})" can-rate="false" /> -->
                         </chat-line-card>
                     </chat-line>
