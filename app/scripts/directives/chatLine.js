@@ -123,7 +123,7 @@ angular.module('codeboardApp').directive('chatLine', function () {
                             $rootScope.$broadcast(req.msg, req.data);
                             break;
                         case 'codeReview':
-                            // open questions tab
+                            // open code-review tab
                             req = IdeMsgService.msgNavBarRightOpenTab('codeReview');
                             $rootScope.$broadcast(req.msg, req.data);
                             break;

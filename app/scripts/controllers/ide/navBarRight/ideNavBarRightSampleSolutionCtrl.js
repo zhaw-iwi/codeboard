@@ -8,23 +8,20 @@
 angular.module('codeboardApp')
 
     /**
-     * Controller for Project Description
+     * Controller for the Sample Solution tab
      */
     .controller('ideNavBarRightSampleSolutionCtrl', ['$scope', '$rootScope', '$sce', '$timeout', 'IdeMsgService', 'ProjectFactory',
     function ($scope, $rootScope, $sce, $timeout, IdeMsgService, ProjectFactory) {
 
-      let slug = 'sampleSolution';
+      const slug = 'sampleSolution';
 
       // scope defaults
       $scope.sampleSolution = "";
 
-      /**
-       * init this tab
-       */
       $scope.init = function() {
         
         /**
-         * check if the a sample solution is available and that the user has a correct submission,
+         * check if the a sample solution is available and that the user has a correct submission / or is has not the role of a user (e.g. owner),
          * otherwise disable the tab
          */
         if (ProjectFactory.hasSampleSolution() && (ProjectFactory.getProject().projectCompleted || ProjectFactory.getProject().userRole !== 'user')) {                   
@@ -35,6 +32,7 @@ angular.module('codeboardApp')
         }
       };
 
+      // init this tab
       $scope.init();
 
       /**

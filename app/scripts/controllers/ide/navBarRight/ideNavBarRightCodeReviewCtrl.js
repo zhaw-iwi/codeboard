@@ -29,7 +29,9 @@ angular
         // check if the user already has a submission of the project or if the user is not of type `user` (e.g. `owner`)
         if (ProjectFactory.getProject().projectCompleted || ProjectFactory.getProject().userRole !== "user") {
           $scope.userRole = ProjectFactory.getProject().userRole;
-          ChatSrv.getChatHistory().then(function (res) {
+
+          // get the chat history and filter out the code review chatboxes
+          ChatSrv.getChatHistory().then((res) => {
             res.data.forEach((chatLine) => {
               if (chatLine.type === "codeReview") {
                 addChatLine(chatLine);
@@ -37,14 +39,13 @@ angular
             });
           });
         } else {
+          // if no submission is present broadcast an event to disable the tab
           let req = IdeMsgService.msgNavBarRightDisableTab(slug);
           $rootScope.$broadcast(req.msg, req.data);
         }
       };
 
-      /**
-       * init this tab
-       */
+      // init this tab
       $scope.init();
 
       // function to start the code review
@@ -56,6 +57,7 @@ angular
             const codeReview = res.answer;
             const userReqLimitExceeded = res.limitExceeded;
 
+            // if we get a code review from the AI service, add it to the chat
             if (codeReview) {
               $scope.reviewIsLoading = false;
 
@@ -71,8 +73,7 @@ angular
               $scope.reviewIsLoading = false;
 
               let chatBox = {
-                message:
-                  "Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.",
+                message: "Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.",
                 author: "Roby",
                 avatar: "worried",
               };
