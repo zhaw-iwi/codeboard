@@ -516,7 +516,7 @@ app.controller('IdeCtrl', [
          * @param payload The compiler error message displayed in the console
          */
         let compilerErrorAI = function(payload) {
-            return AISrv.askForCompilerExplanation(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, payload).then((res) => {
+            return AISrv.askForCompilerExplanation($routeParams.courseId, $routeParams.projectId, payload).then((res) => {
                 return res;                 
             }).catch((err) => {
                 if (err.status === 401) {
@@ -690,11 +690,13 @@ app.controller('IdeCtrl', [
                     let enoughTestsPassed = async function () {
                       $scope.title = 'Super gemacht!';
                       $scope.textBeforeResult = 'Gratulation! Dein Programm hat alle Tests bestanden und du hast die maximale Punktzahl erhalten.';
-                      $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen.';
+                      $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen oder ein Code-Review durchführen.';
                       $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
 
                       projectData.projectCompleted = true;
-                        
+                      // we also have to set the completion status globally
+                      ProjectFactory.setCompletionStatus(true);
+                       
                       var url = "/api/projects/" + $routeParams.projectId + "/sampleSolution";
     
                       // check if courseId is available
@@ -711,15 +713,14 @@ app.controller('IdeCtrl', [
                         try {
                           var res = await $http.get(url);
                           ProjectFactory.setSampleSolution(res.data);
-    
-                          // trigger event that solution tab gets displayed in the UI with the fetched sample solution
-                          $timeout(() => {
-                            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
-                          });
                         } catch (err) {
                           console.log("Error while fetching sample solution!" + err);
                         }
                       }
+
+                      // trigger the event to indicate a successful submission
+                      let req = IdeMsgService.msgSuccessfulSubmission();
+                      $rootScope.$broadcast(req.msg);
                     };
 
                     /**
@@ -813,6 +814,23 @@ app.controller('IdeCtrl', [
                     };
 
                     /**
+                     * Checks if the some buttons in the modal should not be displayed because the action is hidden
+                     */
+                    $scope.isActionHidden = function (action) {
+                        // if the current user is admin return false
+                        if (UserSrv.isAuthenticated() && ProjectFactory.getProject().userRole !== 'user') {
+                            return false;
+                        }
+            
+                        // array that hols the config
+                        const disabledActions = CodeboardSrv.getDisabledActions();
+                        const enabledActions = CodeboardSrv.getEnabledActions();
+            
+                        // check if disabled actions contains the action and there is no enabledAction in the project
+                        return disabledActions.includes(action) && !enabledActions.includes(action);
+                    };
+
+                    /**
                      * Close modal function
                      */
                     $scope.close = function () {
@@ -850,6 +868,18 @@ app.controller('IdeCtrl', [
                         let req = IdeMsgService.msgNavBarRightOpenTab('sampleSolution');
                         $rootScope.$broadcast(req.msg, req.data);
                     };
+
+                    /**
+                    * Open code review tab
+                    */
+                    $scope.openCodeReview = function() {
+                        // close the modal which gets showed after submission
+                        $uibModalInstance.close();                        
+
+                        let req = IdeMsgService.msgNavBarRightOpenTab('codeReview');
+                        $rootScope.$broadcast(req.msg, req.data);
+                        
+                    }
                 },
             ];
 
@@ -1147,11 +1177,8 @@ app.controller('IdeCtrl', [
             }
 
             // array that hols the config
-            let disabledActions = [];
-            let enabledActions = [];
-
-            disabledActions = CodeboardSrv.getDisabledActions();
-            enabledActions = CodeboardSrv.getEnabledActions();
+            const disabledActions = CodeboardSrv.getDisabledActions();
+            const enabledActions = CodeboardSrv.getEnabledActions();
 
             // check if disabled actions contains the action and there is no enabledAction in the project
             return disabledActions.includes(action) && !enabledActions.includes(action);
@@ -2472,19 +2499,30 @@ app.controller('RightBarCtrl', [
             };
         }
 
-        $scope.$on(IdeMsgService.msgDisplaySolutionTab().msg, function (aEvent, aMsgData) {            
-            $scope.rightBarTabs.sampleSolution = {
-                slug: 'sampleSolution',
-                title: 'Lösung',
-                icon: 'glyphicon-screenshot',
-                contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+        // tab for code review
+        if (!$scope.isActionHidden('codeReview')) {
+            $scope.rightBarTabs.codeReview = {
+                slug: 'codeReview',
+                title: 'Code-Review',
+                disabled: false,
+                icon: 'glyphicon-eye-open',
+                contentURL: 'partials/navBarRight/navBarRightCodeReview',
             };
-        });
-
-        // if the sample solution is available (student submitted a solution / owner) the tab is displayed
-        if (ProjectFactory.hasSampleSolution()) {
-            $rootScope.$broadcast(IdeMsgService.msgDisplaySolutionTab().msg);
         }
+
+        /**
+         * tab for the sample solution 
+         * sample solution will always be displayed if submission and solution is present in project
+         * therefore no isActionHidden check
+         */
+        $scope.rightBarTabs.sampleSolution = {
+            slug: 'sampleSolution',
+            title: 'Lösung',
+            disabled: false,
+            icon: 'glyphicon-screenshot',
+            contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+        };
+
 
         // todo define other tabs
 

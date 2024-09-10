@@ -16,6 +16,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       project = aProject;
     };
 
+    // after a project has been completed we set the projectCompleted property to true
+    let setCompletionStatus = function(aStatus) {
+      project.projectCompleted = aStatus;
+    }
+
     // an object that represents the configuration for this project
     let configuration = {};
 
@@ -1257,6 +1262,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     // Public API here
     return {
       getProject: getProject,
+      setCompletionStatus: setCompletionStatus,
       getConfig: getConfig,
       hasConfig: hasConfig,
       getProjectDescription: getProjectDescription,

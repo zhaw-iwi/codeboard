@@ -11,7 +11,6 @@ angular.module("codeboardApp").controller("CodingAssistantMainCtrl", [
   "$timeout",
   "AceEditorSrv",
   "$routeParams",
-  "UserSrv",
   "AISrv",
   "ProjectFactory",
   function (
@@ -19,7 +18,6 @@ angular.module("codeboardApp").controller("CodingAssistantMainCtrl", [
     $timeout,
     AceEditorSrv,
     $routeParams,
-    UserSrv,
     AISrv,
     ProjectFactory
   ) {
@@ -51,7 +49,7 @@ angular.module("codeboardApp").controller("CodingAssistantMainCtrl", [
 
         // request explanation from the backend (ai)
         // gpt should return -1 if no explanation is found or insufficient data (code) is provided
-        return AISrv.askForCodeExplanation(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, data)
+        return AISrv.askForCodeExplanation($routeParams.courseId, $routeParams.projectId, data)
           .then((res) => {
             const codeExplanation = res.answer;
             const userReqLimitExceeded = res.limitExceeded;

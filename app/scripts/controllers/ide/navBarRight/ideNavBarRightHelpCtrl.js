@@ -311,7 +311,7 @@ angular.module('codeboardApp')
                 hints: hintsForProject
             }
 
-            return AISrv.askForRelevantTip(UserSrv.getUserId(), $routeParams.courseId, $routeParams.projectId, data).then((res) => {
+            return AISrv.askForRelevantTip($routeParams.courseId, $routeParams.projectId, data).then((res) => {
                 const hint = res.answer;
                 const userReqLimitExceeded = res.limitExceeded;                   
                 if (hint) {

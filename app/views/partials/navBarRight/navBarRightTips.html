@@ -13,13 +13,12 @@
                         </chat-line-simple>
                     </chat-line>
                 </li>
+                <!-- User Actions -->
+                <button ng-show="currentRoleIsUser()" ng-disabled="requestTipDisabled" class="btn btn-success btn-100" ng-click="askForTip()"><span ng-if="!searchForHint" class="glyphicon glyphicon-info-sign"></span><span ng-if="searchForHint" class="glyphicon glyphicon-search"></span>{{hintBtnTxt}}</button>
                 <hr class="chat-horizontal-line" />
             </before-chat>
         </chat>
     </div>
-
-    <!-- User Actions -->
-    <button ng-show="currentRoleIsUser()" ng-disabled="requestTipDisabled" class="btn btn-success btn-100" ng-click="askForTip()"><span ng-if="!searchForHint" class="glyphicon glyphicon-info-sign"></span><span ng-if="searchForHint" class="glyphicon glyphicon-search"></span>{{hintBtnTxt}}</button>
     <div id="targetinto" style="height: 1px; width: 100%"></div>
 </div>
 

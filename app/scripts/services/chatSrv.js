@@ -17,7 +17,7 @@ angular.module('codeboardApp').service('ChatSrv', [
     'ProjectFactory',
     function ChatService($rootScope, $routeParams, $q, SessionRes, $location, ChatRes, ChatLineRes, UserSrv, ProjectFactory) {
         /**
-         * add chat line
+         * this function stores a chatbox in the db
          */
         let addChatLine = function (aMessage, helpRequestId = null, user = null, type = 'text') {
             // data used for this call
