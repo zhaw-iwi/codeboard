@@ -21,6 +21,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       project.projectCompleted = aStatus;
     }
 
+    // after a project has been submitted again we set the review status to false
+    let setReviewStatus = function(aStatus) {
+      project.lastSubmissionHasReview = aStatus;
+    }
+
     // an object that represents the configuration for this project
     let configuration = {};
 
@@ -612,6 +617,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
         // has the user already completed this project?
         projectCompleted: projectDataFromServer.projectCompleted ? projectDataFromServer.projectCompleted : false,
+
+        // check if the last submission is already reviewed
+        lastSubmissionHasReview: projectDataFromServer.lastSubmissionHasReview ? projectDataFromServer.lastSubmissionHasReview : false,
       };
 
       setProject(lProject);
@@ -1263,6 +1271,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     return {
       getProject: getProject,
       setCompletionStatus: setCompletionStatus,
+      setReviewStatus: setReviewStatus,
       getConfig: getConfig,
       hasConfig: hasConfig,
       getProjectDescription: getProjectDescription,

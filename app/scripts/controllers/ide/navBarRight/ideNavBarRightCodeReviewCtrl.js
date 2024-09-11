@@ -19,25 +19,52 @@ angular
     "ProjectFactory",
     "AISrv",
     "ChatSrv",
-    function ($scope, $rootScope, $routeParams, IdeMsgService, ProjectFactory, AISrv, ChatSrv) {
+    "UITexts",
+    function ($scope, $rootScope, $routeParams, IdeMsgService, ProjectFactory, AISrv, ChatSrv, UITexts) {
       const slug = "codeReview";
       const avatarName = "Roby";
+      const chatBoxLimit = 1;
+      var allChatBoxes = [];
+      $scope.newestChatLines = [];
+      $scope.oldChatLines = [];
+      $scope.infoChatBoxTxt = UITexts.CODE_REVIEW_INFO;
+      $scope.hideShowMore = false;
+      $scope.oldChatBoxes = false;
+      $scope.displayOldChatBoxes = false;
       $scope.reviewIsLoading = false;
-      $scope.chatLines = [];
+      $scope.disableReviewBtn = false;
 
       $scope.init = function () {
+        $scope.disableReviewBtn = true; 
+        const project = ProjectFactory.getProject();
         // check if the user already has a submission of the project or if the user is not of type `user` (e.g. `owner`)
-        if (ProjectFactory.getProject().projectCompleted || ProjectFactory.getProject().userRole !== "user") {
-          $scope.userRole = ProjectFactory.getProject().userRole;
+        if (project.projectCompleted || project.userRole !== "user") {
+          $scope.userRole = project.userRole;
 
           // get the chat history and filter out the code review chatboxes
           ChatSrv.getChatHistory().then((res) => {
-            res.data.forEach((chatLine) => {
-              if (chatLine.type === "codeReview") {
-                addChatLine(chatLine);
-              }
+            let data = res.data;
+            data = data
+              .filter(chatBox => chatBox.type === "codeReview")
+              .map(chatBox => ({ ...chatBox, avatar: "idea" }));
+            
+            data.forEach((chatLine) => {
+              addChatBoxToList(chatLine);
             });
-          });
+            
+            // display the chatboxes after they were added to the list
+            displayChatBoxes();
+
+            // check if the last submission has a code review to disable the button for a new review
+            if (project.lastSubmissionHasReview) {
+              $scope.disableReviewBtn = true;
+              $scope.infoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
+            } else {
+              $scope.disableReviewBtn = false; 
+            }
+          }).catch((err) => {
+            handleError(err);
+          })      
         } else {
           // if no submission is present broadcast an event to disable the tab
           let req = IdeMsgService.msgNavBarRightDisableTab(slug);
@@ -61,13 +88,19 @@ angular
             if (codeReview) {
               $scope.reviewIsLoading = false;
 
+              // store the chatbox in the db
               return ChatSrv.addChatLine(codeReview, null, avatarName, "codeReview")
                 .then((res) => {
-                  addChatLine(res);
+                  const data = res;                  
+                  addChatBoxToList(data);
+                  displayChatBoxes();
+
+                  // disable the review button after a successful review
+                  $scope.disableReviewBtn = true;
+                  $scope.infoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
                 })
                 .catch((err) => {
-                  $scope.errTxt = err;
-                  $scope.reviewIsLoading = false;
+                  handleError(err);
                 });
             } else if (userReqLimitExceeded) {
               $scope.reviewIsLoading = false;
@@ -77,29 +110,61 @@ angular
                 author: "Roby",
                 avatar: "worried",
               };
-              addChatLine(chatBox);
+              addChatBoxToList(chatBox);
+              displayChatBoxes();
             }
           })
           .catch((err) => {
-            $scope.errTxt = err;
-            $scope.reviewIsLoading = false;
+            handleError(err);
           });
       };
 
-      let addChatLine = function (chatBox) {
-        chatBox.message = chatBox.message;
-        chatBox.author = chatBox.author.name || chatBox.author.username;
-        chatBox.avatar = "idea";
+      let addChatBoxToList = function (chatBox) {
+        chatBox.author = chatBox.author.name || chatBox.author.username || "Roby";
+        chatBox.avatar = chatBox.avatar || "idea";
 
         // add card to the list
-        $scope.chatLines.unshift(chatBox);
+        allChatBoxes.unshift(chatBox);
       };
+
+      // function to display the chatboxes in the UI
+      let displayChatBoxes = function () {
+        // if more chatboxes are available than the limit, update the UI accordingly
+        if (allChatBoxes.length > chatBoxLimit) {
+          $scope.hideShowMore = false;
+          $scope.oldChatBoxes = true;
+          $scope.newestChatLines = allChatBoxes.slice(0, chatBoxLimit);
+        } else {
+          $scope.newestChatLines = allChatBoxes;
+          $scope.hideShowMore = true;
+          $scope.oldChatBoxes = false;
+        }
+        // hide the old chatboxes every time a new chatbox was added
+        $scope.displayOldChatBoxes = false;
+      };
+
+      // function which gets called when user wants to display all code-reviews
+      $scope.showMore = function() {        
+        $scope.hideShowMore = true;
+        $scope.displayOldChatBoxes = true;
+        // remove the newest chatboxes from the array because it is already displayed
+        $scope.oldChatLines = allChatBoxes.slice(chatBoxLimit);
+      }
+
+      let handleError = function(err) {
+        $scope.errTxt = err;
+        $scope.reviewIsLoading = false;
+      }
 
       /**
        * if a submission was successful initialize the tab
        * this operation is only executed if the tab has to be enabled during runtime
        */
       $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
+        // if the user makes a new submission we have to enable the review button
+        $scope.disableReviewBtn = false;
+        $scope.infoChatBoxTxt = UITexts.CODE_REVIEW_INFO;
+        
         let req = IdeMsgService.msgNavBarRightEnableTab("codeReview");
         $rootScope.$broadcast(req.msg, req.data);
         $scope.init();

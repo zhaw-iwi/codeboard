@@ -694,8 +694,12 @@ app.controller('IdeCtrl', [
                       $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
 
                       projectData.projectCompleted = true;
-                      // we also have to set the completion status globally
-                      ProjectFactory.setCompletionStatus(true);
+                      // we have to set the lastSubmissionHasReview to false because the user submitted a new solution
+                      projectData.lastSubmissionHasReview = false;
+                      
+                      // we also have to set the completion and review status globally
+                      ProjectFactory.setCompletionStatus(projectData.projectCompleted);
+                      ProjectFactory.setReviewStatus(projectData.lastSubmissionHasReview);
                        
                       var url = "/api/projects/" + $routeParams.projectId + "/sampleSolution";
     
