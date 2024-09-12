@@ -24,7 +24,8 @@ app.controller('IdeCtrl', [
     'CodeboardSrv',
     'AceEditorSrv',
     'AISrv',
-    function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv, AISrv) {
+    'UITexts',
+    function ($scope, $rootScope, $log, $sce, $location, $routeParams, $window, $http, $timeout, $uibModal, ProjectFactory, projectData, ltiData, IdeMsgService, UserSrv, WebsocketSrv, ChatSrv, CodingAssistantCodeMatchSrv, CodeboardSrv, AceEditorSrv, AISrv, UITexts) {
         // First we handle all data that was injected as part of the app.js resolve.
         // set the project data in the ProjectFactory (files, description, etc.)
         ProjectFactory.setProjectFromJSONdata(projectData, ltiData);
@@ -32,7 +33,7 @@ app.controller('IdeCtrl', [
         // store name of pressed Button
         $scope.pressedButton = '';
         // state if loading gif should be displayed (compileAndRun project)
-        $scope.showLoadingForCompiler = false;
+        $scope.compilationIsLoading = false;
 
         /**
          * Contains functions and events to save the project automatically
@@ -425,7 +426,7 @@ app.controller('IdeCtrl', [
                                 $rootScope.$broadcast(reqOpenCompilerTab.msg, reqOpenCompilerTab.data);
 
                                 // show loader because request take some time
-                                $scope.showLoadingForCompiler = true;
+                                $scope.compilationIsLoading = true;
                             
                                 let payload = ProjectFactory.getPayloadForCompilation();
                                 payload.compilation = {
@@ -548,7 +549,7 @@ app.controller('IdeCtrl', [
          */
         let displayErrorChatbox = function(data) {
             // hide loader because request is finished
-            $scope.showLoadingForCompiler = false;
+            $scope.compilationIsLoading = false;
             let compilationOutputTxt = "";
             if (typeof data.data !== 'undefined' || typeof data.answer !== "undefined") {
                 // get error message if data.config is available (only in default)    
@@ -2488,7 +2489,7 @@ app.controller('RightBarCtrl', [
                 title: 'Tipps',
                 disabled: false,
                 icon: 'glyphicon-gift',
-                contentURL: 'partials/navBarRight/navBarRightTips',
+                contentURL: 'partials/navBarRight/navBarRightHints',
             };
         }
 
