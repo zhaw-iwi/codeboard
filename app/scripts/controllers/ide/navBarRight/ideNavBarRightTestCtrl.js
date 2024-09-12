@@ -248,7 +248,7 @@ angular.module('codeboardApp')
                                         $scope.state = $scope.states.correctSolution;
                                         changeAvatarText($scope.onSuccess);
                                     }
-                                    $scope.texts.testButton = "Lösung erneut überprüfen?";
+                                    $scope.texts.testButton = "Lösung erneut überprüfen";
 
                                     // change avatar
                                     $scope.avatar = "thumbUp";
