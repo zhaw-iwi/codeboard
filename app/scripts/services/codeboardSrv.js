@@ -47,7 +47,7 @@ angular.module('codeboardApp').service('CodeboardSrv', [
       return variableMap;
     };
 
-    // function which sets the variableMap based on the result of the CodingAssistantMainCtrl
+    // function which sets the variableMap based on the result of the ideNavBarRightCodingAssistantCtrl
     service.setVariableMap = function (newVariableMap) {
       variableMap = newVariableMap;
     };

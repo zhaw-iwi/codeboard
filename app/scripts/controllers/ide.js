@@ -2673,7 +2673,7 @@ app.controller('RightBarCtrl', [
     },
 ]);
 
-// this service is used to make the clicked tab available in the CodingAssistantMainCtrl
+// this service is used to make the clicked tab available in the ideNavBarRightCodingAssistantCtrl
 app.service('TabService', function() {
     var slug;
     var service = this;
