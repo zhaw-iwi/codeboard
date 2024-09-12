@@ -42,6 +42,7 @@ angular.module('codeboardApp').directive('chatLine', function () {
             avatarSize: '@?',
             author: '@?',
             createdAt: '@?',
+            helpRequestId: '@?',
             link: '@?',
             cardType: '@?',
             cardReference: '@?',

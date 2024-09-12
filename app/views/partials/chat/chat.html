@@ -13,7 +13,7 @@
                 </div>
 
                 <div ng-switch-when="helpRequest">
-                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" created-at="{{chatLine.createdAt}}" avatar="chatLine.avatar">
+                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" created-at="{{chatLine.createdAt}}" avatar="chatLine.avatar" help-request-id="{{chatLine.subjectId}}">
                         <chat-line-card card-title="{{chatLine.message.cardHeader}}" card-reference="{{chatLine.message.cardReference}}" card-type="{{chatLine.message.cardType}}">
                             <div ng-bind-html="chatLine.message.cardBody"></div>
                         </chat-line-card>
@@ -48,7 +48,7 @@
                 </div>
 
                 <div ng-switch-when="helpRequestAnswer">
-                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" created-at="{{chatLine.createdAt}}" avatar="chatLine.avatar">
+                    <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" created-at="{{chatLine.createdAt}}" avatar="chatLine.avatar" help-request-id="{{chatLine.subjectId}}">
                         <chat-line-simple>
                             <div ng-bind-html="chatLine.message"></div>
                         </chat-line-simple>

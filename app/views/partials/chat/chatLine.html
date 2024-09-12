@@ -14,6 +14,7 @@
                 <a href="{{link}}" target="_blank" ng-if="type === 'explanation'"> | Docs</a>
                 <span ng-if="type === 'error'"> | Achtung Fehler</span>
                 <span ng-if="cardType === 'tip'"> | {{cardTitle}}</span>
+                <span ng-hide="!helpRequestId">| Referenz: {{helpRequestId}}</span>
             </span>
         </div>
 

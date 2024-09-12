@@ -1212,8 +1212,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       // create the promise that is returned
       let deferred = $q.defer();
 
-      // check if content has not changed
-      if(prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {
+      // check if content has not changed (if a user makes multiple help requests in a session there will be no new entry in the db (helprequest table))
+      if (prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {        
         deferred.resolve(prevHelpRequest);
       }
 
