@@ -337,7 +337,7 @@
                   <div class="text-right">
                     <button class="btn btn-info" ng-show="hasSampleSolution() && passed" ng-click="openSampleSolution()">Musterlösung</button>
                     <button class="btn btn-success" ng-show="!isActionHidden('codeReview') && passed" ng-click="openCodeReview()">Code-Review</button>
-                    <button class="btn btn-info" ng-if="!isActionHidden('info')" ng-show="!passed" ng-click="requestHelp()">Hilfe</button>
+                    <button class="btn btn-info" ng-if="!isActionHidden('info')" ng-show="!passed && !submissionIsLoading" ng-click="requestHelp()">Hilfe</button>
                   </div>
                   
                   <p></p>
@@ -346,7 +346,7 @@
                     <button class="btn btn-default" ng-show="passed" ng-click="goToCourse()">Zur Kursübersicht</button>
                   </div>                
                   <div style="float: right; display: inline-block;">
-                    <button class="btn btn-default" ng-click="close()">Zurück zur Aufgabe</button>
+                    <button class="btn btn-default" ng-click="close()" ng-show="!submissionIsLoading">Zurück zur Aufgabe</button>
                   </div>
                 </div>                
               </div>

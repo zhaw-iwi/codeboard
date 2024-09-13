@@ -656,6 +656,7 @@ app.controller('IdeCtrl', [
                     $scope.passRate = 1;
                     $scope.passed = false;
                     $scope.hasResult = false;
+                    $scope.submissionIsLoading = true;
 
                     // default texts
                     $scope.title = 'Deine Lösung wird überprüft';
@@ -787,6 +788,8 @@ app.controller('IdeCtrl', [
 
                                 // enable compilation and submission (not running, because what the submission compiles might differ from the last compilation if the user changed something; that could be confusing for the user)
                                 setEnabledActions(1, 0, 1, 1, 1);
+
+                                $scope.submissionIsLoading = false;
                             },
                             function (reason) {
                                 $log.debug('Submission failed.' + reason.data.msg);

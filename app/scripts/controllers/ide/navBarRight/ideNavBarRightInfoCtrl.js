@@ -11,11 +11,13 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
   'CodeboardSrv',
   'UserSrv',
   'ProjectFactory',
-  function ($scope, CodeboardSrv, UserSrv, ProjectFactory) {
+  'IdeMsgService',
+  function ($scope, CodeboardSrv, UserSrv, ProjectFactory, IdeMsgService) {
     $scope.chatLines = [];
 
     var disabledActions = CodeboardSrv.getDisabledActions();
     var enabledActions = CodeboardSrv.getEnabledActions();
+    const reviewTabSlug = "codeReview";
 
     let infoChatLines = [
       {
@@ -64,6 +66,10 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
 
     // only add info chatLines which are not in disabledActions
     infoChatLines.forEach((chatLine) => {
+      // check if the chatLine is a codeReview and do not add it if the project is not completed
+      if (chatLine.tab === reviewTabSlug && !ProjectFactory.getProject().projectCompleted) {
+        return;
+      }
       if (!disabledActions.includes(chatLine.tab) || enabledActions.includes(chatLine.tab)) {
         $scope.chatLines.push(chatLine);
       } else if (UserSrv.isAuthenticated() && ProjectFactory.getProject().userRole !== 'user') {
@@ -79,5 +85,17 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
 
       return disabledActions.includes(action) && !enabledActions.includes(action);
     };
+
+    /**
+       * if a submission was successful display the code-review chatbox in the review tab
+       * this operation is only executed if the chatbox has to be displayed during runtime
+       */
+    $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {      
+      const reviewInfoBox = infoChatLines.find((chatLine) => chatLine.tab === reviewTabSlug);
+      const isAlreadyAdded = $scope.chatLines.some((chatLine) => chatLine.tab === reviewTabSlug);
+      if (reviewInfoBox && !isAlreadyAdded) {
+        $scope.chatLines.push(reviewInfoBox)
+      };
+    });
   },
 ]);
