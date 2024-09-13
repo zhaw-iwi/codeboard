@@ -25,7 +25,7 @@ angular
       const slug = "codeReview";
       const avatarName = "Roby";
       const chatBoxLimit = 1;
-      const allChatBoxes = [];
+      var allChatBoxes = [];
       $scope.newestReviewChatLines = [];
       $scope.oldReviewChatLines = [];
       $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_INFO;
@@ -52,7 +52,7 @@ angular
         chatBox.avatar = chatBox.avatar || "idea";
 
         // add card to the list
-        allChatBoxes.push(chatBox);        
+        allChatBoxes.push(chatBox);
       };
 
       // function to display the chatboxes in the UI
@@ -61,6 +61,7 @@ angular
         if (allChatBoxes.length > chatBoxLimit) {              
           $scope.hideShowMore = false;
           $scope.oldChatBoxes = true;
+          // get the last chatboxes from the array
           $scope.newestReviewChatLines = allChatBoxes.slice(-chatBoxLimit);
         } else {
           $scope.newestReviewChatLines = allChatBoxes;
@@ -79,7 +80,7 @@ angular
         // scroll to the bottom of the chat history
         chatScrollToBottom();
 
-        // remove the newest chatboxes from the array because it is already displayed
+        // remove the newest (last) chatboxes from the array because they are already displayed
         $scope.oldReviewChatLines = allChatBoxes.slice(0, -chatBoxLimit);        
       }
 
@@ -127,6 +128,9 @@ angular
       };
 
       $scope.init = function () {
+        // we have to empty the allChatBoxes array to avoid duplicates
+        allChatBoxes = [];
+
         $scope.disableReviewBtn = true; 
         const project = ProjectFactory.getProject();
         // check if the user already has a submission of the project or if the user is not of type `user` (e.g. `owner`)
