@@ -50,9 +50,9 @@
         <hr class="chat-horizontal-line" />
         <h2 class="modal-title">Ältere Fragen und Antworten</h2>
         <div class="text-center">
-            <button ng-if="!hideShowMore" class="btn btn-info" ng-click="showMore()">Q&A laden</button>
+            <button ng-show="!hideShowMore" class="btn btn-info" ng-click="showMore()">Q&A laden</button>
         </div>
-        <div ng-if="displayOldChatBoxes" class="conversation">
+        <div ng-show="displayOldChatBoxes" class="conversation">
             <chat chat-lines="oldQAChatLines" class="px-4" cursor-position="cursorPosition"></chat>
         </div>
         <div id="scroll-target-qa"></div>

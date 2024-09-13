@@ -81,8 +81,10 @@ angular
         // if there are multiple different subjectIds show the "display more" button
         if (allChatBoxes.length > 1) {
           $scope.oldChatBoxes = true;
+          $scope.hideShowMore = false;
         } else {
           $scope.oldChatBoxes = false;
+          $scope.hideShowMore = true;
         }
 
         // hide the old chatboxes each time a new chatbox is added

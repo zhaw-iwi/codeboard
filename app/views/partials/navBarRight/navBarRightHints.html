@@ -28,9 +28,9 @@
         <hr class="chat-horizontal-line" />
         <h2 class="modal-title">Ältere Tipps</h2>
         <div class="text-center">
-            <button ng-if="!hideShowMore" class="btn btn-info" ng-click="showMore()">Tipps laden</button>
+            <button ng-show="!hideShowMore" class="btn btn-info" ng-click="showMore()">Tipps laden</button>
         </div>
-        <div ng-if="displayOldChatBoxes" class="conversation">
+        <div ng-show="displayOldChatBoxes" class="conversation">
             <chat chat-lines="oldHintChatLines" class="px-4" cursor-position="cursorPosition">
             </chat>
         </div>
