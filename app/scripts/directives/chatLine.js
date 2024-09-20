@@ -42,6 +42,7 @@ angular.module('codeboardApp').directive('chatLine', function () {
             avatarSize: '@?',
             author: '@?',
             createdAt: '@?',
+            helpRequestId: '@?',
             link: '@?',
             cardType: '@?',
             cardReference: '@?',
@@ -120,6 +121,11 @@ angular.module('codeboardApp').directive('chatLine', function () {
                         case 'questions':
                             // open questions tab
                             req = IdeMsgService.msgNavBarRightOpenTab('questions');
+                            $rootScope.$broadcast(req.msg, req.data);
+                            break;
+                        case 'codeReview':
+                            // open code-review tab
+                            req = IdeMsgService.msgNavBarRightOpenTab('codeReview');
                             $rootScope.$broadcast(req.msg, req.data);
                             break;
                     }

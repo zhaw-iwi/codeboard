@@ -16,6 +16,16 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       project = aProject;
     };
 
+    // after a project has been completed we set the projectCompleted property to true
+    let setCompletionStatus = function(aStatus) {
+      project.projectCompleted = aStatus;
+    }
+
+    // after a project has been submitted again we set the review status to false
+    let setReviewStatus = function(aStatus) {
+      project.lastSubmissionHasReview = aStatus;
+    }
+
     // an object that represents the configuration for this project
     let configuration = {};
 
@@ -607,6 +617,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
         // has the user already completed this project?
         projectCompleted: projectDataFromServer.projectCompleted ? projectDataFromServer.projectCompleted : false,
+
+        // check if the last submission is already reviewed
+        lastSubmissionHasReview: projectDataFromServer.lastSubmissionHasReview ? projectDataFromServer.lastSubmissionHasReview : false,
       };
 
       setProject(lProject);
@@ -1199,8 +1212,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       // create the promise that is returned
       let deferred = $q.defer();
 
-      // check if content has not changed
-      if(prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {
+      // check if content has not changed (if a user makes multiple help requests in a session there will be no new entry in the db (helprequest table))
+      if (prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {        
         deferred.resolve(prevHelpRequest);
       }
 
@@ -1257,6 +1270,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     // Public API here
     return {
       getProject: getProject,
+      setCompletionStatus: setCompletionStatus,
+      setReviewStatus: setReviewStatus,
       getConfig: getConfig,
       hasConfig: hasConfig,
       getProjectDescription: getProjectDescription,

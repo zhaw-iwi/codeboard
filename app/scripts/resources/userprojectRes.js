@@ -70,7 +70,9 @@ angular.module('codeboardApp')
                             // submission allowed?
                             isSubmissionAllowed: project.isSubmissionAllowed,
                             // has the user already completed this project?
-                            projectCompleted: result.data.projectCompleted
+                            projectCompleted: result.data.projectCompleted,
+                            // the status of the last submission review
+                            lastSubmissionHasReview: result.data.lastSubmissionHasReview,
                         };
 
                         deferred.resolve(userProjectData);

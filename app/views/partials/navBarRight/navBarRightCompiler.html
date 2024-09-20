@@ -1,16 +1,15 @@
-<div class="tab-body ide-tab-help ide-tab-chat" ng-controller="ideNavBarRightHelpCtrl" id="chat-wrapper">
+<div class="tab-body ide-tab-help ide-tab-chat" ng-controller="ideNavBarRightCompilerCtrl" id="chat-wrapper">
     <h1 class="modal-title">Hier findest du die Erklärungen zu den Compiler-Meldungen</h1>
     <div class="conversation">
-        <chat chat-lines="filteredCompilerChatLines" class="px-4" show-compiler-info-message="showCompilerInfoMessage" on-message-rating="onMessageRating(messageId, rating)">
+        <chat chat-lines="compilerChatLines" class="px-4" show-compiler-info-message="showCompilerInfoMessage" on-message-rating="onMessageRating(messageId, rating)">
             <before-chat>
                 <li class="clear chat-line my-4 clearfix text">
                     <chat-line author="Roby" avatar-size="" alignment="left" >
                         <chat-line-simple message-type="compilerMessage">
-                            <p class="mb-0" ng-show="showCompilerIntroMessage && !showLoadingForCompiler">Nutze diesen Tab, um dir Exceptions erklären zu lassen. Wenn du das Programm ausführst und dieses Fehler beinhaltet, wird automatisch in diesen Tab gewechselt.</p>
-                            <p class="mb-0" ng-show="showCompilerInfoMessage && !showLoadingForCompiler">Wie es scheint hast du Änderungen im Code vorgenommen. Bitte führe den Code erneut aus, oder teste das Programm, um diese zu überprüfen.</p>
-                            <p class="mb-0" ng-show="showLoadingForCompiler">Die Erklärung für den Kompilierungsfehler wird geladen...   <span class="progress-loading-icon glyphicon glyphicon-repeat gly-spin pull-right" aria-hidden="true"></span></p>
-                            <p class="mb-0" ng-show="showCompilationErrorMessage && !showLoadingForCompiler">Pass auf! Dein Code weist einen Fehler auf.</p>
-                            <p class="mb-0" ng-show="showNoCompilationErrorMessage && !showLoadingForCompiler">Super, dein Programm lässt sich ohne Fehler Ausführen. Prüfe mit dem Test, ob dein Programm auch die richtigen Ausgaben macht.</p>
+                            <p class="mb-0" ng-show="!compilationIsLoading">{{compInfoChatBoxTxt}}</p>
+                            <p class="mb-0" ng-show="compilationIsLoading">{{compLoadingChatBoxTxt}} 
+                                <span class="progress-loading-icon glyphicon glyphicon-repeat gly-spin pull-right" aria-hidden="true"></span>
+                            </p>
                         </chat-line-simple>
                     </chat-line>
                 </li>
