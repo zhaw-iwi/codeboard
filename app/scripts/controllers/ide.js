@@ -2523,13 +2523,15 @@ app.controller('RightBarCtrl', [
          * sample solution will always be displayed if submission and solution is present in project
          * therefore no isActionHidden check
          */
-        $scope.rightBarTabs.sampleSolution = {
-            slug: 'sampleSolution',
-            title: 'Lösung',
-            disabled: false,
-            icon: 'glyphicon-screenshot',
-            contentURL: 'partials/navBarRight/navBarRightSampleSolution',
-        };
+        if (!$scope.isActionHidden('sampleSolution')) {
+            $scope.rightBarTabs.sampleSolution = {
+                slug: 'sampleSolution',
+                title: 'Lösung',
+                disabled: false,
+                icon: 'glyphicon-screenshot',
+                contentURL: 'partials/navBarRight/navBarRightSampleSolution',
+            };
+        }
 
 
         // todo define other tabs

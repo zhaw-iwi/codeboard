@@ -80,6 +80,7 @@ angular.module('codeboardApp').service('CodeboardSrv', [
       { name: 'questions', desc: 'The questions tab (Fragen)' },
       { name: 'reset', desc: 'Reset button (Original wiederherstellen)' },
       { name: 'run', desc: 'Run button' },
+      { name: 'sampleSolution', desc: 'The sample-solution tab (Musterlösung)' },
       { name: 'save', desc: 'Save project button' },
       { name: 'syntax-checker', desc: 'The syntax-checker which highlights errors on the left side of the editor' },
       { name: 'test', desc: 'The test tab (Test)' },
