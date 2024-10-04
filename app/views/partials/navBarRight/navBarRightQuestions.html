@@ -21,10 +21,10 @@
                 <div ng-show="sendRequestFormVisible">
                     <!-- The question form for users -->
                     <form ng-show="currentRoleIsUser()" id="sendHelpRequest" class="form-inline text-center" ng-submit="sendHelpRequest()">
-                        <div class="form-group w-75 mb-2">
-                            <textarea class="topic w-75 border-box p-4" ng-model="formData.noteStudent" name="noteStudent" placeholder="Erfasse hier deine Frage"></textarea>
+                        <div class="form-group mb-2">
+                            <textarea class="topic w-100 border-box p-4" style="width: 550px; height: 100px;" ng-model="formData.noteStudent" name="noteStudent" placeholder="Erfasse hier deine Frage"></textarea>
                         </div>
-                        <div class="form-group w-100">
+                        <div class="form-group">
                             <button class="btn btn-info"><span class="glyphicon glyphicon-question-sign"></span>Frage senden</button>
                             <p class="text-danger mt-3">{{sendHelpFormErrors}}</p>
                         </div>
@@ -32,8 +32,8 @@
 
                     <!-- The answer form for owners -->
                     <form ng-show="currentRoleIsHelp()" id="answerHelpRequest" class="form-inline text-center" ng-submit="answerHelpRequest()">
-                        <div class="form-group w-75 mb-2">
-                            <textarea class="topic w-75 border-box p-4" ng-model="formData.noteTeacher" name="noteTeacher" placeholder="Antwort an den Studenten"></textarea>
+                        <div class="form-group mb-2">
+                            <textarea class="topic border-box p-4" style="width: 550px; height: 100px;" ng-model="formData.noteTeacher" name="noteTeacher" placeholder="Antwort an den Studenten"></textarea>
                         </div>
                         <div class="form-group w-100">
                             <button class="btn btn-info">Nachricht senden</button>

@@ -19,7 +19,7 @@ angular.module("codeboardApp").service("AISrv", [
           return res.data;
         })
         .catch(function (err) {
-          console.log(err);
+          throw err.data;
         });
     };
 
@@ -31,7 +31,7 @@ angular.module("codeboardApp").service("AISrv", [
           return res.data;
         })
         .catch(function (err) {
-          console.log(err);
+          throw err.data;
         });
     };
 
@@ -43,7 +43,7 @@ angular.module("codeboardApp").service("AISrv", [
           return res.data;
         })
         .catch(function (err) {
-          console.log(err);
+          throw err.data;
         });
     };
 
@@ -55,7 +55,7 @@ angular.module("codeboardApp").service("AISrv", [
           return res.data;
         })
         .catch(function (err) {
-          console.log(err);
+          throw err.data;
         });
     }
   },
