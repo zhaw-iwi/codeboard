@@ -455,7 +455,7 @@ app.controller('IdeCtrl', [
                                             fallBackExpGeneration(payload);
                                         }
                                     }).catch((err) => {
-                                        console.log("Error fetching compiler error explanation using AI: " + err);
+                                        console.log("Error fetching compiler error explanation using AI: " + err.message);
                                         // fall back to default generation
                                         fallBackExpGeneration(payload);
                                     })
@@ -519,13 +519,7 @@ app.controller('IdeCtrl', [
         let compilerErrorAI = function(payload) {
             return AISrv.askForCompilerExplanation($routeParams.courseId, $routeParams.projectId, payload).then((res) => {
                 return res;                 
-            }).catch((err) => {
-                if (err.status === 401) {
-                    console.error("Incorrect API key provided.");
-                } else {
-                    console.log("Error fetching compiler message using AI: " + err);
-                }
-            });
+            })
         }
 
         /**

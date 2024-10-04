@@ -43,7 +43,7 @@ angular
       }
 
       let handleError = function(err) {
-        $scope.errTxt = err;
+        $scope.errTxt = err ? err.message : "Fehler beim laden des Code-Reviews";
         $scope.reviewIsLoading = false;
       }
 

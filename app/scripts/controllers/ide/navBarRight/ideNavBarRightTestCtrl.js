@@ -186,7 +186,7 @@ angular.module('codeboardApp')
                 let enabledActions = CodeboardSrv.getEnabledActions();
                 let useAI = false;
 
-                // ai-compiler is enabled set useAI to true that compilation errors explanations are generated using GPT
+                // if ai-compiler is enabled set useAI to true that compilation errors (which occur during testing) explanations are generated using GPT
                 if (!disabledActions.includes('ai-compiler') || enabledActions.includes('ai-compiler')) {
                     useAI = true;
                 }

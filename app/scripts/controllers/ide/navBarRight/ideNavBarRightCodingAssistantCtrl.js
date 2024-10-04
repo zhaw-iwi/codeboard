@@ -86,9 +86,13 @@ angular.module("codeboardApp").controller("ideNavBarRightCodingAssistantCtrl", [
             $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
             $scope.chatLines = chatBoxes;
           })
-          .catch((err) => {
-            $scope.errTxt = err;
+          .catch((err) => {            
             $scope.expIsLoading = false;
+            $scope.errTxt = err ? err.message : "Fehler beim Laden der Erklärung.";
+            $timeout(() => {
+              $scope.errTxt = "";
+            }, 2000);
+            $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
           });
       }
     };
