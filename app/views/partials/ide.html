@@ -3,7 +3,13 @@
   <!-- Start of Kendo splitter layout -->
   <div class="ideSplitterFullHeight">
     <!-- the outermost splitter that splits into header, middle, and footer -->
-    <div kendo-splitter k-orientation="'vertical'" k-on-resize="splitterResizeEvent()" k-panes='[{resizable: false, collapsible: false, size: "51px"}, {collapsible: false}, {collapsible: true, size: "180px" }]' style="height: 100%; border: none; box-shadow: none; webkit-box-shadow: none; background-color: #e8e8e8">
+    <div
+      kendo-splitter
+      k-orientation="'vertical'"
+      k-on-resize="splitterResizeEvent()"
+      k-panes='[{resizable: false, collapsible: false, size: "51px"}, {collapsible: false}, {collapsible: true, size: "180px" }]'
+      style="height: 100%; border: none; box-shadow: none; background-color: #e8e8e8"
+    >
       <div id="ideHeaderPartId" class="ideSplitterOverflowVisible">
         <div class="ideHeader">
           <nav class="navbar navbar-default navbar-static-top" role="navigation" id="ideNavBar">
@@ -24,17 +30,32 @@
 
                 <div class="col-xs-9 col-md-6 col-md-pull-2">
                   <div class="navbar-form navbar-left pull-left px-0 mr-3">
-                    <a class="btn btn-default btn-sm" ng-if="!isActionHidden('home')" ng-click="navBarClick('home')" title="Zurück zur Übersicht">
+                    <a
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('home')"
+                      ng-click="navBarClick('home')"
+                      title="Zurück zur Übersicht"
+                    >
                       <span class="glyphicon glyphicon-home"></span>
                     </a>
 
-                    <button class="btn btn-default btn-sm" ng-if="!isActionHidden('full-screen')" ng-click="fullscreenCtrl.toggleFullscreen()" show-if-fullscreen-enabled>
+                    <button
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('full-screen')"
+                      ng-click="fullscreenCtrl.toggleFullscreen()"
+                      show-if-fullscreen-enabled
+                    >
                       <span class="glyphicon glyphicon-resize-full" show-if-fullscreen="false"></span>
                       <span class="glyphicon glyphicon-resize-small" show-if-fullscreen="true"></span>
                     </button>
 
                     <div class="dropdown" ng-show="currentRoleIsOwner()" style="display: inline-block">
-                      <a id="projectButton" class="btn btn-default btn-sm dropdown" data-toggle="dropdown" role="button">
+                      <a
+                        id="projectButton"
+                        class="btn btn-default btn-sm dropdown"
+                        data-toggle="dropdown"
+                        role="button"
+                      >
                         <span class="glyphicon glyphicon-option-horizontal"></span>
                       </a>
 
@@ -46,19 +67,40 @@
                         <li><a ng-click="navBarClick('remove_node')">Delete file/folder</a></li>
 
                         <li ng-show="currentRoleIsOwner()" class="divider"></li>
-                        <li><a ng-show="currentRoleIsOwner()" ng-click="navBarClick('hide_file')">Hide/Unhide file</a></li>
-                        <li><a ng-show="currentRoleIsOwner()" ng-click="navBarClick('make_file_static')">Make file static or not</a></li>
+                        <li>
+                          <a ng-show="currentRoleIsOwner()" ng-click="navBarClick('hide_file')">Hide/Unhide file</a>
+                        </li>
+                        <li>
+                          <a ng-show="currentRoleIsOwner()" ng-click="navBarClick('make_file_static')"
+                            >Make file static or not</a
+                          >
+                        </li>
 
                         <li ng-show="userAllowedToSave() && !isActionHidden('save')" class="divider"></li>
-                        <li><a ng-show="userAllowedToSave() && !isActionHidden('save')" ng-click="navBarClick('save_project')">Save changes</a></li>
+                        <li>
+                          <a
+                            ng-show="userAllowedToSave() && !isActionHidden('save')"
+                            ng-click="navBarClick('save_project')"
+                            >Save changes</a
+                          >
+                        </li>
 
                         <li ng-show="currentRoleIsOwner()" class="divider"></li>
-                        <li><a ng-show="currentRoleIsOwner()" ng-click="navBarClick('show_share_project')">Share project</a></li>
+                        <li>
+                          <a ng-show="currentRoleIsOwner()" ng-click="navBarClick('show_share_project')"
+                            >Share project</a
+                          >
+                        </li>
                       </ul>
                     </div>
 
                     <div class="dropdown" ng-if="!isActionHidden('editor-settings')" style="display: inline-block">
-                      <a id="settingsButton" class="btn btn-default btn-sm dropdown" data-toggle="dropdown" role="button">
+                      <a
+                        id="settingsButton"
+                        class="btn btn-default btn-sm dropdown"
+                        data-toggle="dropdown"
+                        role="button"
+                      >
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
 
@@ -67,30 +109,129 @@
                       </ul>
                     </div>
 
-                    <button ng-hide="currentRoleIsOwner()" ng-if="!isActionHidden('reset')" class="btn btn-default btn-sm nav-link" ng-click="navBarClick('reset')">
+                    <button
+                      ng-hide="currentRoleIsOwner()"
+                      ng-if="!isActionHidden('reset')"
+                      class="btn btn-default btn-sm nav-link"
+                      ng-click="navBarClick('reset')"
+                    >
                       <span class="glyphicon glyphicon-repeat icon-flipped" title="Original wiederherstellen"></span>
                     </button>
 
-                    <a class="btn btn-default btn-sm" ng-if="userAllowedToSave() && !isActionHidden('save')" ng-click="navBarClick('save_project')" ng-class="{'unsavedChanges': isProjectModified}" title="Save Project">
+                    <a
+                      class="btn btn-default btn-sm"
+                      ng-if="userAllowedToSave() && !isActionHidden('save')"
+                      ng-click="navBarClick('save_project')"
+                      ng-class="{'unsavedChanges': isProjectModified}"
+                      title="Save Project"
+                    >
                       <span class="glyphicon glyphicon-floppy-disk"></span>
                     </a>
 
-                    <a class="btn btn-default btn-sm" ng-if="!isActionHidden('unredo')" ng-click="ace.editor.getSession().getUndoManager().undo(false)" title="Undo">
+                    <a
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('unredo')"
+                      ng-click="ace.editor.getSession().getUndoManager().undo(false)"
+                      title="Undo"
+                    >
                       <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
                     </a>
 
-                    <a class="btn btn-default btn-sm" ng-if="!isActionHidden('unredo')" ng-click="ace.editor.getSession().getUndoManager().redo(false)" title="Redo">
+                    <a
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('unredo')"
+                      ng-click="ace.editor.getSession().getUndoManager().redo(false)"
+                      title="Redo"
+                    >
                       <span class="glyphicon glyphicon-share-alt"></span>
                     </a>
-                    <button id="compileAndRunButton" class="btn btn-warning btn-sm" ng-if="!isActionHidden('compile')" ng-show="isCompileAndRun() && isCompilationNeeded()" ng-disabled="disabledActions.compile" ng-click="navBarClick('compileAndRun')" title="Compile and Run this program"><span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span></button>
-                    <button id="compileButton" class="btn btn-warning btn-sm" ng-if="!isActionHidden('compile')" ng-show="!isCompileAndRun() && isCompilationNeeded()" ng-disabled="disabledActions.compile" ng-click="navBarClick('compile')" title="Compile this program"><span class="glyphicon glyphicon-cog"></span> <span class="hidden-sm hidden-xs">Compile</span></button>
-                    <button id="compileRunBtn" class="btn btn-warning btn-sm" ng-if="!isActionHidden('compile')" ng-show="!isCompilationNeeded()" ng-disabled="disabledActions.compile" ng-click="navBarClick('compileDynamic')" title="Run this program"><span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span></button>
-                    <button id="runButton" class="btn btn-default btn-sm" ng-if="!isActionHidden('compile')" ng-show="!isCompileAndRun() && isCompilationNeeded()" ng-disabled="disabledActions.run" ng-click="navBarClick('run')" title="Run the last compiled program"><span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span></button>
-                    <button id="stopBtn" class="btn btn-default btn-sm" ng-if="!isActionHidden('compile')" ng-hide="hiddenActions.stop" ng-click="navBarClick('stop')" title="Stop this program"><span class="glyphicon glyphicon-remove-circle"></span> <span class="hidden-sm">Stop</span></button>
-                    <button id="ideTestButton" class="btn btn-success btn-sm" ng-if="!isActionHidden('test')" ng-disabled="disabledActions.test" ng-click="navBarClick('test')" ng-show="isTestSupported()" title="Run the tests of this project"><span class="glyphicon glyphicon-check"></span> <span class="hidden-sm hidden-xs">Test</span></button>
-                    <button id="ideToolButton" class="btn btn-default btn-sm" ng-if="!isActionHidden('tool')" ng-disabled="disabledActions.tool" ng-click="navBarClick('tool')" ng-show="isToolSupported()" title="Analyze this project"><span class="glyphicon glyphicon-check"></span> <span class="hidden-sm hidden-xs">Analyze</span></button>
-                    <button ng-show="uiSettings.showSubmissionBtn" class="btn btn-primary btn-sm" ng-if="!isActionHidden('submit')" ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn" ng-click="navBarClick('submit')" title="{{!isProjectCompleted() ? 'Deine Lösung submitten': 'Es zählt immer das beste Ergebnis'}}">
-                      <span class="glyphicon glyphicon-send"></span> <span class="hidden-sm hidden-xs" ng-hide="isProjectCompleted()">Submit</span> <span class="hidden-sm hidden-xs" ng-show="isProjectCompleted()">Re-Submit</span>
+                    <button
+                      id="compileAndRunButton"
+                      class="btn btn-warning btn-sm"
+                      ng-if="!isActionHidden('compile')"
+                      ng-show="isCompileAndRun() && isCompilationNeeded()"
+                      ng-disabled="disabledActions.compile"
+                      ng-click="navBarClick('compileAndRun')"
+                      title="Compile and Run this program"
+                    >
+                      <span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span>
+                    </button>
+                    <button
+                      id="compileButton"
+                      class="btn btn-warning btn-sm"
+                      ng-if="!isActionHidden('compile')"
+                      ng-show="!isCompileAndRun() && isCompilationNeeded()"
+                      ng-disabled="disabledActions.compile"
+                      ng-click="navBarClick('compile')"
+                      title="Compile this program"
+                    >
+                      <span class="glyphicon glyphicon-cog"></span> <span class="hidden-sm hidden-xs">Compile</span>
+                    </button>
+                    <button
+                      id="compileRunBtn"
+                      class="btn btn-warning btn-sm"
+                      ng-if="!isActionHidden('compile')"
+                      ng-show="!isCompilationNeeded()"
+                      ng-disabled="disabledActions.compile"
+                      ng-click="navBarClick('compileDynamic')"
+                      title="Run this program"
+                    >
+                      <span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span>
+                    </button>
+                    <button
+                      id="runButton"
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('compile')"
+                      ng-show="!isCompileAndRun() && isCompilationNeeded()"
+                      ng-disabled="disabledActions.run"
+                      ng-click="navBarClick('run')"
+                      title="Run the last compiled program"
+                    >
+                      <span class="glyphicon glyphicon-play-circle"></span> <span class="hidden-sm hidden-xs">Run</span>
+                    </button>
+                    <button
+                      id="stopBtn"
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('compile')"
+                      ng-hide="hiddenActions.stop"
+                      ng-click="navBarClick('stop')"
+                      title="Stop this program"
+                    >
+                      <span class="glyphicon glyphicon-remove-circle"></span> <span class="hidden-sm">Stop</span>
+                    </button>
+                    <button
+                      id="ideTestButton"
+                      class="btn btn-success btn-sm"
+                      ng-if="!isActionHidden('test')"
+                      ng-disabled="disabledActions.test"
+                      ng-click="navBarClick('test')"
+                      ng-show="isTestSupported()"
+                      title="Run the tests of this project"
+                    >
+                      <span class="glyphicon glyphicon-check"></span> <span class="hidden-sm hidden-xs">Test</span>
+                    </button>
+                    <button
+                      id="ideToolButton"
+                      class="btn btn-default btn-sm"
+                      ng-if="!isActionHidden('tool')"
+                      ng-disabled="disabledActions.tool"
+                      ng-click="navBarClick('tool')"
+                      ng-show="isToolSupported()"
+                      title="Analyze this project"
+                    >
+                      <span class="glyphicon glyphicon-check"></span> <span class="hidden-sm hidden-xs">Analyze</span>
+                    </button>
+                    <button
+                      ng-show="uiSettings.showSubmissionBtn"
+                      class="btn btn-primary btn-sm"
+                      ng-if="!isActionHidden('submit')"
+                      ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn"
+                      ng-click="navBarClick('submit')"
+                      title="{{!isProjectCompleted() ? 'Deine Lösung submitten': 'Es zählt immer das beste Ergebnis'}}"
+                    >
+                      <span class="glyphicon glyphicon-send"></span>
+                      <span class="hidden-sm hidden-xs" ng-hide="isProjectCompleted()">Submit</span>
+                      <span class="hidden-sm hidden-xs" ng-show="isProjectCompleted()">Re-Submit</span>
                     </button>
                   </div>
                 </div>
@@ -99,15 +240,42 @@
                   <div class="navbar-form navbar-right">
                     <ul class="nav navbar-nav m-0">
                       <li class="nav-item pull-right">
-                        <button ng-hide="currentRoleIsOwner()" class="btn btn-info btn-sm nav-link" ng-if="!isActionHidden('info')" ng-click="navBarClick('help')" title="Hilfe anfordern"><span class="glyphicon glyphicon-question-sign"></span> <span class="hidden-xs">Ich brauche Hilfe</span></button>
+                        <button
+                          ng-hide="currentRoleIsOwner()"
+                          class="btn btn-info btn-sm nav-link"
+                          ng-if="!isActionHidden('info')"
+                          ng-click="navBarClick('help')"
+                          title="Hilfe anfordern"
+                        >
+                          <span class="glyphicon glyphicon-question-sign"></span>
+                          <span class="hidden-xs">Ich brauche Hilfe</span>
+                        </button>
                       </li>
 
                       <li class="nav-item pull-right">
-                        <button id="codeBeautifyButton" class="btn btn-info btn-sm" ng-if="!isActionHidden('beautify')" ng-disabled="disabledActions.beautify" ng-click="navBarClick('beautify_code')" title="Beautify code"><span class="glyphicon glyphicon-flash"></span><span class="hidden-xs">Beautify</span></button>
+                        <button
+                          id="codeBeautifyButton"
+                          class="btn btn-info btn-sm"
+                          ng-if="!isActionHidden('beautify')"
+                          ng-disabled="disabledActions.beautify"
+                          ng-click="navBarClick('beautify_code')"
+                          title="Beautify code"
+                        >
+                          <span class="glyphicon glyphicon-flash"></span><span class="hidden-xs">Beautify</span>
+                        </button>
                       </li>
 
                       <li class="nav-item pull-right">
-                        <button id="varScopeButton" class="btn btn-info btn-sm" ng-if="!isActionHidden('varScope')" ng-disabled="disabledActions.varScope" ng-click="navBarClick('show_var_scope')" title="Show variable scope"><span class="glyphicon glyphicon-resize-vertical"></span></button>
+                        <button
+                          id="varScopeButton"
+                          class="btn btn-info btn-sm"
+                          ng-if="!isActionHidden('varScope')"
+                          ng-disabled="disabledActions.varScope"
+                          ng-click="navBarClick('show_var_scope')"
+                          title="Show variable scope"
+                        >
+                          <span class="glyphicon glyphicon-resize-vertical"></span>
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -121,16 +289,37 @@
 
       <div id="ideMiddlePartId" class="ideSplitterOverflowVisible">
         <!-- the inner split part; left is the tree view, in the middle is the variable scope and right is the editor -->
-        <div kendo-splitter="splitter" k-orientation="'horizontal'" k-panes="{{kPanes}}" id="innerSplitPart" ng-controller="RightBarCtrl" class="ideSplitterOverflowVisible ideSplitterFullHeight">
+        <div
+          kendo-splitter="splitter"
+          k-orientation="'horizontal'"
+          k-panes="{{kPanes}}"
+          id="innerSplitPart"
+          ng-controller="RightBarCtrl"
+          class="ideSplitterOverflowVisible ideSplitterFullHeight"
+        >
           <!-- everything related to the tree view -->
           <div id="ideTreeviewPartOfMiddlePart" ng-if="!isActionHidden('tree-view')" class="ideSplitterOverflowVisible">
-            <div kendo-splitter k-orientation="'vertical'" k-panes="[{resizable: false, size: '29px'},{}]" class="ideSplitterOverflowVisible ideSplitterFullHeight">
+            <div
+              kendo-splitter
+              k-orientation="'vertical'"
+              k-panes="[{resizable: false, size: '29px'},{}]"
+              class="ideSplitterOverflowVisible ideSplitterFullHeight"
+            >
               <!-- the project name -->
               <div id="ideTreeViewProjectName">{{projectName}}</div>
 
               <!-- the tree view -->
               <div ng-controller="TreeCtrl" ng-init="init()" class="ideTree">
-                <div data-angular-treeview="true" data-tree-id="mytree" data-tree-model="projectNodes" data-node-id="uniqueId" data-node-label="filename_annotated" data-node-is-folder="isFolder" data-node-children="children" data-node-click="nodeClick"></div>
+                <div
+                  data-angular-treeview="true"
+                  data-tree-id="mytree"
+                  data-tree-model="projectNodes"
+                  data-node-id="uniqueId"
+                  data-node-label="filename_annotated"
+                  data-node-is-folder="isFolder"
+                  data-node-children="children"
+                  data-node-click="nodeClick"
+                ></div>
               </div>
               <!-- end of the select box that lists library interface files -->
             </div>
@@ -144,20 +333,44 @@
             <div ng-controller="TabCtrl" id="ideTabArea">
               <!-- the tabs -->
               <ul class="ideTabs" ng-style="ideTabsStyle">
-                <li ng-repeat="tab in tabs" ng-class="{ideTabActive: tab.isActive, ideTabStatic: tab.isStatic}" ng-click="selectClick(tab.arrayIndex)" style="float: left">
-                  <i ng-show="tab.isStatic" title="Dieser Tab kann nicht bearbeitet werden" class="isStatic-icon glyphicon glyphicon-eye-open"></i>
+                <li
+                  ng-repeat="tab in tabs"
+                  ng-class="{ideTabActive: tab.isActive, ideTabStatic: tab.isStatic}"
+                  ng-click="selectClick(tab.arrayIndex)"
+                  style="float: left"
+                >
+                  <i
+                    ng-show="tab.isStatic"
+                    title="Dieser Tab kann nicht bearbeitet werden"
+                    class="isStatic-icon glyphicon glyphicon-eye-open"
+                  ></i>
                   <span title="{{tab.title}}">{{tab.name}}</span>
                   <span class="remove glyphicon glyphicon-remove" ng-click="closeClick(tab.arrayIndex)"></span>
                 </li>
               </ul>
             </div>
 
-            <div id="ideEditorAndConsole" kendo-splitter="splitter" k-orientation="'vertical'" k-panes="[{ collapsible: false }, { collapsible: false, size: '120px' }]">
-              <div kendo-splitter="innerSplitter" k-orientation="'horizontal'" k-panes="[{ collapsible: true, resizable: false, collapsed: true , size: '10%' }, { collapsible: true }]" sync-scroll>
+            <div
+              id="ideEditorAndConsole"
+              kendo-splitter="splitter"
+              k-orientation="'vertical'"
+              k-panes="[{ collapsible: false }, { collapsible: false, size: '120px' }]"
+            >
+              <div
+                kendo-splitter="innerSplitter"
+                k-orientation="'horizontal'"
+                k-panes="[{ collapsible: true, resizable: false, collapsed: true , size: '10%' }, { collapsible: true }]"
+                sync-scroll
+              >
                 <!-- variable Scope pane -->
                 <div id="ideVarScopePartOfMiddlePart">
                   <div class="varScopeBlocks" id="varScope_editor">
-                    <div ng-repeat="(key, value) in variableMap" id="{{key}}" class="varScope" ng-style="{'height': value.height, 'marginTop': value.margin, 'backgroundColor': value.color}"></div>
+                    <div
+                      ng-repeat="(key, value) in variableMap"
+                      id="{{key}}"
+                      class="varScope"
+                      ng-style="{'height': value.height, 'marginTop': value.margin, 'backgroundColor': value.color}"
+                    ></div>
                   </div>
                 </div>
                 <!-- end of variable Scope pane -->
@@ -169,7 +382,17 @@
 
                   <div ng-hide="ace.isVisible" id="ideAceNotVisible">
                     <div id="ideMsgNoFilesOpen">No files are open.<br />Click on a file from the project tree.</div>
-                    <div id="ideMsgNotSignedIn" class="alert alert-warning" ng-hide="signinSettings.userIsAuthenticated()"><strong>You're not signed in.</strong><br /><a ng-href="{{signinSettings.signinPathWithRedirect()}}">Sign in now </a> to save your progress or load your previously saved version.</div>
+                    <div
+                      id="ideMsgNotSignedIn"
+                      class="alert alert-warning"
+                      ng-hide="signinSettings.userIsAuthenticated()"
+                    >
+                      <strong>You're not signed in.</strong><br /><a
+                        ng-href="{{signinSettings.signinPathWithRedirect()}}"
+                        >Sign in now
+                      </a>
+                      to save your progress or load your previously saved version.
+                    </div>
                   </div>
 
                   <!-- the ace editor -->
@@ -183,7 +406,8 @@
                           showGutter: true,
                           useWrapMode: false,
                           theme: 'eclipse',
-                          onLoad: aceLoaded}"></div>
+                          onLoad: aceLoaded}"
+                  ></div>
                 </div>
               </div>
               <!-- end of everything related to the editor -->
@@ -193,7 +417,16 @@
                 <div scroll-glue class="ideOutput ideOutputText ideOutputBorder" ng-focus-child="#idFooterUserInput">
                   <span class="console-output" ng-bind-html="output"></span>
                   <div class="ideUserInput">
-                    <input type="text" id="idFooterUserInput" ng-select-on-focus [ng-value]="userInputData" ng-model="userInputData" ng-enter="sendUserInputClick(userInputData, 'idFooterUserInput')" class="ideOutputText ideOutputBorder" autocomplete="off" />
+                    <input
+                      type="text"
+                      id="idFooterUserInput"
+                      ng-select-on-focus
+                      [ng-value]="userInputData"
+                      ng-model="userInputData"
+                      ng-enter="sendUserInputClick(userInputData, 'idFooterUserInput')"
+                      class="ideOutputText ideOutputBorder"
+                      autocomplete="off"
+                    />
                   </div>
                   <div ng-show="programmIsRunning" class="console-spinner">
                     <div class="text-center">
@@ -208,15 +441,34 @@
           <!-- end of right-part of the middle part, that is the editor and tabs -->
 
           <!-- right bar content pane -->
-          <div id="ideRighterPartOfMiddlePart" ng-if="isNavBarRightActive()" class="ideSplitterFullHeight" style="overflow: hidden">
-            <div class="ide-tabs" ng-repeat="tab in rightBarTabs" ng-include="tab.contentURL" ng-show="isTabActive(tab.slug)"></div>
+          <div
+            id="ideRighterPartOfMiddlePart"
+            ng-if="isNavBarRightActive()"
+            class="ideSplitterFullHeight"
+            style="overflow: hidden"
+          >
+            <div
+              class="ide-tabs"
+              ng-repeat="tab in rightBarTabs"
+              ng-include="tab.contentURL"
+              ng-show="isTabActive(tab.slug)"
+            ></div>
           </div>
           <!-- end of right bar content pane -->
 
           <!-- right bar tabs pane -->
           <div id="ideRightestPartOfMiddlePart" ng-if="isNavBarRightActive()" class="ideSplitterFullHeight">
             <div class="ideAdditionalTabs">
-              <a tab-click ng-repeat="tab in rightBarTabs" ng-hide="tab.disabled" ng-click="rightBarTabClick(tab.slug)" class="tab tab-{{tab.slug}}" id="rightBarTabs{{tab.slug}}"> <span class="glyphicon {{tab.icon}}"></span>{{tab.title}} </a>
+              <a
+                tab-click
+                ng-repeat="tab in rightBarTabs"
+                ng-hide="tab.disabled"
+                ng-click="rightBarTabClick(tab.slug)"
+                class="tab tab-{{tab.slug}}"
+                id="rightBarTabs{{tab.slug}}"
+              >
+                <span class="glyphicon {{tab.icon}}"></span>{{tab.title}}
+              </a>
             </div>
           </div>
           <!-- end of right bar tabs pane -->
@@ -333,22 +585,31 @@
 
                 <p>{{textAfterResult}}</p>
 
+                <div class="codeReview" ng-if="!isActionHidden('codeReview')" ng-show="showReviewComponent">
+                  <hr>
+                  <h4>Code Review</h4>
+                  <p ng-show="reviewIsLoading">
+                    <span class="progress-loading-icon glyphicon glyphicon-repeat gly-spin" aria-hidden="true"></span>
+                  </p>
+                  <pre class="mt-4 w-100 code-review-content" style="white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word;" ng-show="!reviewIsLoading && codeReview">{{codeReview}}</pre>
+                  <hr>
+                </div>
+
                 <div>
                   <div class="text-right">
-                    <button class="btn btn-info" ng-show="!isActionHidden('sampleSolution') && hasSampleSolution() && passed" ng-click="openSampleSolution()">Musterlösung</button>
-                    <button class="btn btn-success" ng-show="!isActionHidden('codeReview') && passed" ng-click="openCodeReview()">Code-Review</button>
+                    <button class="btn btn-info" ng-if="!isActionHidden('sampleSolution')" ng-show="hasSampleSolution() && passed" ng-click="openSampleSolution()">Musterlösung</button>
                     <button class="btn btn-info" ng-if="!isActionHidden('info')" ng-show="!passed && !submissionIsLoading" ng-click="requestHelp()">Hilfe</button>
                   </div>
-                  
+
                   <p></p>
-                  
+
                   <div style="text-align: left; display: inline-block;">
                     <button class="btn btn-default" ng-show="passed" ng-click="goToCourse()">Zur Kursübersicht</button>
-                  </div>                
+                  </div>
                   <div style="float: right; display: inline-block;">
                     <button class="btn btn-default" ng-click="close()" ng-show="!submissionIsLoading">Zurück zur Aufgabe</button>
                   </div>
-                </div>                
+                </div>
               </div>
             </div>
           </div>

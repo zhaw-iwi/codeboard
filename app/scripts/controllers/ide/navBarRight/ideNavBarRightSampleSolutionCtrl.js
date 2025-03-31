@@ -5,44 +5,36 @@
 
 'use strict';
 
-angular.module('codeboardApp')
+angular
+  .module('codeboardApp')
 
-    /**
-     * Controller for the Sample Solution tab
-     */
-    .controller('ideNavBarRightSampleSolutionCtrl', ['$scope', '$rootScope', '$sce', '$timeout', 'IdeMsgService', 'ProjectFactory',
-    function ($scope, $rootScope, $sce, $timeout, IdeMsgService, ProjectFactory) {
-
-      const slug = 'sampleSolution';
-
+  /**
+   * Controller for the Sample Solution tab
+   */
+  .controller('ideNavBarRightSampleSolutionCtrl', [
+    '$scope',
+    '$rootScope',
+    'IdeMsgService',
+    'ProjectFactory',
+    function ($scope, $rootScope, IdeMsgService, ProjectFactory) {
       // scope defaults
-      $scope.sampleSolution = "";
+      $scope.sampleSolution = null;
 
-      $scope.init = function() {
-        
-        /**
-         * check if the a sample solution is available and that the user has a correct submission / or is has not the role of a user (e.g. owner),
-         * otherwise disable the tab
-         */
-        if (ProjectFactory.hasSampleSolution() && (ProjectFactory.getProject().projectCompleted || ProjectFactory.getProject().userRole !== 'user')) {                   
-          $scope.sampleSolution = ProjectFactory.getSampleSolution();          
-        } else {     
-          let req = IdeMsgService.msgNavBarRightDisableTab(slug);
-          $rootScope.$broadcast(req.msg, req.data);
-        }
+      $scope.init = function () {
+        $scope.sampleSolution = ProjectFactory.getSampleSolution();
       };
 
-      // init this tab
+      // init this tab (gets called when the tab is not hidden from ide.js)
       $scope.init();
 
       /**
        * if a submission was successful initialize the tab
-       * this operation is only executed if the tab have to be enabled during runtime
+       * this operation is only executed if the tab have to be enabled during runtime (e.g. when disabled before successful submission)
        */
       $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
-        let req = IdeMsgService.msgNavBarRightEnableTab("sampleSolution");
+        let req = IdeMsgService.msgNavBarRightEnableTab('sampleSolution');
         $rootScope.$broadcast(req.msg, req.data);
         $scope.init();
       });
-
-    }]);
+    },
+  ]);
