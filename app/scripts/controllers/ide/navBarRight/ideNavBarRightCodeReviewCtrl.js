@@ -122,7 +122,9 @@ angular
           }
 
           // display the chatboxes after they were added to the list
-          displayChatBoxes();
+          $timeout(() => {
+            displayChatBoxes();
+          });
         } catch (err) {
           handleError(err);
         }
