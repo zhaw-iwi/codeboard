@@ -5,24 +5,16 @@
  * @author Samuel Truniger
  * @date 20.03.2023
  */
-"use strict";
-angular.module("codeboardApp").controller("ideNavBarRightCodingAssistantCtrl", [
-  "$scope",
-  "$timeout",
-  "AceEditorSrv",
-  "$routeParams",
-  "AISrv",
-  "ProjectFactory",
-  "UITexts",
-  function (
-    $scope,
-    $timeout,
-    AceEditorSrv,
-    $routeParams,
-    AISrv,
-    ProjectFactory,
-    UITexts
-  ) {
+'use strict';
+angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
+  '$scope',
+  '$timeout',
+  'AceEditorSrv',
+  '$routeParams',
+  'AISrv',
+  'ProjectFactory',
+  'UITexts',
+  function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, ProjectFactory, UITexts) {
     var aceEditor = $scope.ace.editor;
     var chatBoxes = [];
     var data = {};
@@ -31,7 +23,7 @@ angular.module("codeboardApp").controller("ideNavBarRightCodingAssistantCtrl", [
     $scope.showInfoMsg = true;
     $scope.expIsLoading = false;
     $scope.userRole = ProjectFactory.getProject().userRole;
-    $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;    
+    $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
 
     // function to get the explantion of the selected code
     $scope.getCodeExplanation = function () {
@@ -40,10 +32,9 @@ angular.module("codeboardApp").controller("ideNavBarRightCodingAssistantCtrl", [
       data.code = inputCode;
 
       if (selectedCode.length === 0) {
-        $scope.errTxt =
-          "Bitte markiere den Code, den du dir erklären lassen möchtest.";
+        $scope.errTxt = 'Bitte markiere den Code, den du dir erklären lassen möchtest.';
         $timeout(() => {
-          $scope.errTxt = "";
+          $scope.errTxt = '';
         }, 2000);
       } else {
         $scope.expIsLoading = true;
@@ -57,42 +48,51 @@ angular.module("codeboardApp").controller("ideNavBarRightCodingAssistantCtrl", [
           .then((res) => {
             const codeExplanation = res.answer;
             const userReqLimitExceeded = res.limitExceeded;
-            
+
             if (codeExplanation) {
               $scope.showInfoMsg = false;
               $scope.expIsLoading = false;
-              
+
               let chatBox = {
-                type: "explanation",
-                cardTitle: "Hallo! Nachfolgend findest du die Erklärung für den ausgewählten Code:",
+                type: 'explanation',
+                cardTitle: 'Hallo! Nachfolgend findest du die Erklärung für den ausgewählten Code:',
                 cardBody: codeExplanation,
                 selectedCode: selectedCode,
-                author: "Roby",
-                avatar: "idea"
-              }
+                author: 'Roby',
+                avatar: 'idea',
+              };
 
               chatBoxes.unshift(chatBox);
             } else if (userReqLimitExceeded) {
               $scope.showInfoMsg = false;
               $scope.expIsLoading = false;
-              
+
               let chatBox = {
-                message: "Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.",
-                author: "Roby",
-                avatar: "worried"
-              }            
-              chatBoxes.unshift(chatBox);  
+                message:
+                  'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
+                author: 'Roby',
+                avatar: 'worried',
+              };
+              chatBoxes.unshift(chatBox);
             }
             $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
             $scope.chatLines = chatBoxes;
+
+            // manually updated the view
+            $timeout(function () {});
           })
           .catch((err) => {            
+            // manually updated the view
             $scope.expIsLoading = false;
-            $scope.errTxt = err ? err.message : "Fehler beim Laden der Erklärung.";
-            $timeout(() => {
-              $scope.errTxt = "";
-            }, 2000);
+            $scope.errTxt = 'Fehler beim Laden der Erklärung.';
             $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+
+            // ensure the digest cycle runs
+            $timeout(function () {});
+
+            $timeout(() => {
+              $scope.errTxt = '';
+            }, 2000);
           });
       }
     };

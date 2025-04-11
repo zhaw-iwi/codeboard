@@ -6,20 +6,19 @@
 
 'use strict';
 
+angular
+  .module('codeboardApp')
 
-angular.module('codeboardApp')
+  .factory('ChatRes', [
+    '$resource',
+    function ($resource) {
+      return $resource('/api/chat/:username/:projectId', { username: '@username', projectId: '@id' });
+    },
+  ])
 
-    .factory('ChatRes', ['$resource', function($resource) {
-    return $resource(
-      '/api/chat/:username/:projectId',
-      {username: '@username', projectId: '@id'}
-    );
-    }])
-
-    .factory('ChatLineRes', ['$resource', function($resource) {
-        return $resource(
-            '/api/chat/chatLines/:chatLineId',
-            { chatLineId: '@chatLineId' },
-            { update: {method: 'PUT'} }
-        );
-    }]);
+  .factory('ChatLineRes', [
+    '$resource',
+    function ($resource) {
+      return $resource('/api/chat/chatLines/:chatLineId', { chatLineId: '@chatLineId' }, { update: { method: 'PUT' } });
+    },
+  ]);
