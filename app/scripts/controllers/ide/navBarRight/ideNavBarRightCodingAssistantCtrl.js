@@ -15,10 +15,11 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
   'ProjectFactory',
   'UITexts',
   function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, ProjectFactory, UITexts) {
-    var aceEditor = $scope.ace.editor;
+    const aceEditor = $scope.ace.editor;
     var chatBoxes = [];
     var data = {};
 
+    // holds all the code explanation chatboxes
     $scope.chatLines = [];
     $scope.showInfoMsg = true;
     $scope.expIsLoading = false;
@@ -26,17 +27,20 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
     $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
 
     // function to get the explantion of the selected code
-    $scope.getCodeExplanation = function () {
-      var selectedCode = AceEditorSrv.getSelectedCode(aceEditor);
-      var inputCode = AceEditorSrv.getInputCode(aceEditor);
-      data.code = inputCode;
+    $scope.getCodeExplanation = async function () {
+      try {
+        // the selected code in the editor
+        const selectedCode = AceEditorSrv.getSelectedCode(aceEditor).trim();
 
-      if (selectedCode.length === 0) {
-        $scope.errTxt = 'Bitte markiere den Code, den du dir erklären lassen möchtest.';
-        $timeout(() => {
-          $scope.errTxt = '';
-        }, 2000);
-      } else {
+        // if no code is selected, show an error message
+        if (selectedCode.length === 0) {
+          $scope.errTxt = 'Bitte markiere den Code, den du dir erklären lassen möchtest.';
+          $timeout(() => {
+            $scope.errTxt = '';
+          }, 2000);
+          return;
+        }
+
         $scope.expIsLoading = true;
         $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_LOADING;
         data.code = AceEditorSrv.getInputCode(aceEditor);
@@ -44,56 +48,55 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
 
         // request explanation from the backend (ai)
         // gpt should return -1 if no explanation is found or insufficient data (code) is provided
-        return AISrv.askForCodeExplanation($routeParams.courseId, $routeParams.projectId, data)
-          .then((res) => {
-            const codeExplanation = res.answer;
-            const userReqLimitExceeded = res.limitExceeded;
+        const res = await AISrv.askForCodeExplanation($routeParams.courseId, $routeParams.projectId, data);
+        const codeExplanation = res.answer;
+        const userReqLimitExceeded = res.limitExceeded;
 
-            if (codeExplanation) {
-              $scope.showInfoMsg = false;
-              $scope.expIsLoading = false;
+        if (codeExplanation) {
+          $scope.showInfoMsg = false;
+          $scope.expIsLoading = false;
 
-              let chatBox = {
-                type: 'explanation',
-                cardTitle: 'Hallo! Nachfolgend findest du die Erklärung für den ausgewählten Code:',
-                cardBody: codeExplanation,
-                selectedCode: selectedCode,
-                author: 'Roby',
-                avatar: 'idea',
-              };
+          const chatBox = {
+            type: 'explanation',
+            cardTitle: 'Hallo! Nachfolgend findest du die Erklärung für den ausgewählten Code:',
+            cardBody: codeExplanation,
+            selectedCode: selectedCode,
+            author: 'Roby',
+            avatar: 'idea',
+          };
 
-              chatBoxes.unshift(chatBox);
-            } else if (userReqLimitExceeded) {
-              $scope.showInfoMsg = false;
-              $scope.expIsLoading = false;
+          chatBoxes.unshift(chatBox);
+        } else if (userReqLimitExceeded) {
+          $scope.showInfoMsg = false;
+          $scope.expIsLoading = false;
 
-              let chatBox = {
-                message:
-                  'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
-                author: 'Roby',
-                avatar: 'worried',
-              };
-              chatBoxes.unshift(chatBox);
-            }
-            $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
-            $scope.chatLines = chatBoxes;
+          const chatBox = {
+            message:
+              'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
+            author: 'Roby',
+            avatar: 'worried',
+          };
 
-            // manually updated the view
-            $timeout(function () {});
-          })
-          .catch((err) => {            
-            // manually updated the view
-            $scope.expIsLoading = false;
-            $scope.errTxt = 'Fehler beim Laden der Erklärung.';
-            $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+          chatBoxes.unshift(chatBox);
+        }
+        
+        $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+        $scope.chatLines = chatBoxes;
 
-            // ensure the digest cycle runs
-            $timeout(function () {});
+        // manually updated the view
+        $timeout(function () {});
+      } catch (err) {
+        // manually updated the view
+        $scope.expIsLoading = false;
+        $scope.errTxt = 'Fehler beim Laden der Erklärung.';
+        $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
 
-            $timeout(() => {
-              $scope.errTxt = '';
-            }, 2000);
-          });
+        // ensure the digest cycle runs
+        $timeout(function () {});
+
+        $timeout(() => {
+          $scope.errTxt = '';
+        }, 2000);
       }
     };
   },
