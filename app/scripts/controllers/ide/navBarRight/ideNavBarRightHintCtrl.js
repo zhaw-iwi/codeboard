@@ -41,7 +41,8 @@ angular
       $scope.hintIsLoading = false;
       $scope.chatLines = [];
       $scope.defaultHints = [];
-      $scope.aiHintLimit = 0;
+      $scope.remainingHints = 0;
+      $scope.hintLimit = 0;
       $scope.disableHintBtn = true;
       $scope.hintInfoChatBoxTxt = UITexts.HINT_INFO;
       $scope.newestHintChatLines = [];
@@ -60,9 +61,10 @@ angular
        */
       const checkRemainingHints = function () {
         const numHintsSent = allChatBoxes.length;
-        console.log('numHintsSent', numHintsSent, 'aiHintLimit', $scope.aiHintLimit);
+        // display the number of hints that are still available
+        $scope.remainingHints = $scope.hintLimit - numHintsSent;
 
-        if (numHintsSent >= $scope.aiHintLimit) {
+        if (numHintsSent >= $scope.hintLimit) {
           $scope.disableHintBtn = true;
           $scope.hintInfoChatBoxTxt = UITexts.HINT_LIMIT_REACHED;
         } else {
@@ -156,8 +158,6 @@ angular
       // this functions adds a chatline with a relevant hint in the tip tab.
       const prepareHint = async function (hint, type = 'default') {
         try {
-          console.log('prepareHint', hint);
-
           // reset buttons
           $scope.hintBtnTxt = 'Tipp anfordern';
           $scope.hintIsLoading = false;
@@ -271,7 +271,7 @@ angular
           if (config && 'Help' in config && 'tips' in config.Help) {
             // get all hints from codeboard.json and add property `sent` to each hint that it not get sent multiple times during runtime
             $scope.defaultHints = config.Help.tips.map((tip) => ({ ...tip, sent: false }));
-            $scope.aiHintLimit = config.Help.tipLimit || 3;
+            $scope.hintLimit = config.Help.tipLimit || 5;
 
             // check if there are remaining hints / to do: also for ai hints
             checkRemainingHints();

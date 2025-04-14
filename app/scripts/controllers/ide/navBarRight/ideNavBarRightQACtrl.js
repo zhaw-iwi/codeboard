@@ -206,7 +206,6 @@ angular
           }
 
           // trigger a save of the currently displayed content (code)
-          // $rootScope.$broadcast(IdeMsgService.msgSaveCurrentlyDisplayedContent().msg);
           // save the all files in project to db
           if ($scope.ace.currentNodeId !== -1) {
             // if the value is !== -1, then some tab is open
