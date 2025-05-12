@@ -88,47 +88,50 @@ angular
 
       /**
        * function to start the code review
+       * this function is no longer used because the code review is
+       * initiated in ide.js after a successful submission
+       * to do: delete function
        */
-      $scope.startCodeReview = async function () {
-        try {
-          $scope.reviewIsLoading = true;
+      // $scope.startCodeReview = async function () {
+      //   try {
+      //     $scope.reviewIsLoading = true;
 
-          const res = await AISrv.askForCodeReview($routeParams.courseId, $routeParams.projectId);
-          const codeReview = res.answer;
-          const userReqLimitExceeded = res.limitExceeded;
+      //     const res = await AISrv.askForCodeReview($routeParams.courseId, $routeParams.projectId);
+      //     const codeReview = res.answer;
+      //     const userReqLimitExceeded = res.limitExceeded;
 
-          // if we get a code review from the AI service, add it to the chat
-          if (codeReview) {
-            $scope.reviewIsLoading = false;
+      //     // if we get a code review from the AI service, add it to the chat
+      //     if (codeReview) {
+      //       $scope.reviewIsLoading = false;
 
-            // store the chatbox in the db
-            const chatBox = await ChatSrv.addChatLine(codeReview, null, avatarName, 'codeReview');
-            addChatBoxToList(chatBox);
+      //       // store the chatbox in the db
+      //       const chatBox = await ChatSrv.addChatLine(codeReview, null, avatarName, 'codeReview');
+      //       addChatBoxToList(chatBox);
 
-            // disable the review button after a successful review
-            $scope.disableReviewBtn = true;
-            $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
-          } else if (userReqLimitExceeded) {
-            // if the user has reached the limit for code reviews, display a message in the chat
-            $scope.reviewIsLoading = false;
+      //       // disable the review button after a successful review
+      //       $scope.disableReviewBtn = true;
+      //       $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
+      //     } else if (userReqLimitExceeded) {
+      //       // if the user has reached the limit for code reviews, display a message in the chat
+      //       $scope.reviewIsLoading = false;
 
-            const chatBox = {
-              message:
-                'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
-              author: 'Roby',
-              avatar: 'worried',
-            };
-            addChatBoxToList(chatBox);
-          }
+      //       const chatBox = {
+      //         message:
+      //           'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
+      //         author: 'Roby',
+      //         avatar: 'worried',
+      //       };
+      //       addChatBoxToList(chatBox);
+      //     }
 
-          // display the chatboxes after they were added to the list
-          $timeout(() => {
-            displayChatBoxes();
-          });
-        } catch (err) {
-          handleError(err);
-        }
-      };
+      //     // display the chatboxes after they were added to the list
+      //     $timeout(() => {
+      //       displayChatBoxes();
+      //     });
+      //   } catch (err) {
+      //     handleError(err);
+      //   }
+      // };
 
       $scope.init = async function () {
         // we have to empty the allChatBoxes array to avoid duplicates
@@ -170,7 +173,8 @@ angular
 
       /**
        * if a submission was successful initialize the tab
-       * this operation is only executed if the tab has to be enabled during runtime (e.g. when disabled before successful submission)
+       * this operation is only executed if the tab has
+       * to be enabled during runtime (e.g. when disabled before successful submission)
        */
       $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
         // if the user makes a new submission we have to enable the review button

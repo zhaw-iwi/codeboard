@@ -21,7 +21,6 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
 
     // holds all the code explanation chatboxes
     $scope.chatLines = [];
-    $scope.showInfoMsg = true;
     $scope.expIsLoading = false;
     $scope.userRole = ProjectFactory.getProject().userRole;
     $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
@@ -50,10 +49,8 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
         // gpt should return -1 if no explanation is found or insufficient data (code) is provided
         const res = await AISrv.askForCodeExplanation($routeParams.courseId, $routeParams.projectId, data);
         const codeExplanation = res.answer;
-        const userReqLimitExceeded = res.limitExceeded;
 
         if (codeExplanation) {
-          $scope.showInfoMsg = false;
           $scope.expIsLoading = false;
 
           const chatBox = {
@@ -66,37 +63,38 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
           };
 
           chatBoxes.unshift(chatBox);
-        } else if (userReqLimitExceeded) {
-          $scope.showInfoMsg = false;
-          $scope.expIsLoading = false;
-
-          const chatBox = {
-            message:
-              'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
-            author: 'Roby',
-            avatar: 'worried',
-          };
-
-          chatBoxes.unshift(chatBox);
         }
-        
+
         $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
         $scope.chatLines = chatBoxes;
 
         // manually updated the view
         $timeout(function () {});
       } catch (err) {
-        // manually updated the view
         $scope.expIsLoading = false;
-        $scope.errTxt = 'Fehler beim Laden der Erklärung.';
         $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+
+        // handle error if request limit is reached
+        if (err.status === 429 && err.data.limitExceeded) {
+          const chatBox = {
+            message: UITexts.CODING_ASSISTANT_LIMIT_EXCEEDED,
+            author: 'Roby',
+            avatar: 'worried',
+          };
+
+          chatBoxes.unshift(chatBox);
+          $scope.chatLines = chatBoxes;
+        } else {
+          // all other errors
+          $scope.errTxt = 'Fehler beim Laden der Erklärung.';
+
+          $timeout(() => {
+            $scope.errTxt = '';
+          }, 2000);
+        }
 
         // ensure the digest cycle runs
         $timeout(function () {});
-
-        $timeout(() => {
-          $scope.errTxt = '';
-        }, 2000);
       }
     };
   },
