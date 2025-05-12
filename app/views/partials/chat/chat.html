@@ -39,6 +39,42 @@
           </chat-line>
         </div>
 
+        <div ng-switch-when="helpChatbot">
+          <chat-line
+            alignment="{{chatLine.alignment}}"
+            author="{{chatLine.author}}"
+            created-at="{{chatLine.createdAt}}"
+            avatar="chatLine.avatar"
+          >
+            <chat-line-simple>{{chatLine.message.cardBody}}</chat-line-simple>
+          </chat-line>
+        </div>
+
+        <div ng-switch-when="helpRequestAnswer">
+          <chat-line
+            alignment="{{chatLine.alignment}}"
+            author="{{chatLine.author}}"
+            created-at="{{chatLine.createdAt}}"
+            avatar="chatLine.avatar"
+            help-request-id="{{chatLine.subjectId}}"
+          >
+            <chat-line-simple>
+              <div ng-bind-html="chatLine.message"></div>
+            </chat-line-simple>
+          </chat-line>
+        </div>
+
+        <div ng-switch-when="helpChatbotAnswer">
+          <chat-line
+            alignment="{{chatLine.alignment}}"
+            author="{{chatLine.author}}"
+            created-at="{{chatLine.createdAt}}"
+            avatar="chatLine.avatar"
+          >
+            <chat-line-simple>{{chatLine.message.cardBody}}</chat-line-simple>
+          </chat-line>
+        </div>
+
         <div ng-switch-when="compiler">
           <chat-line alignment="{{chatLine.alignment}}" author="{{chatLine.author}}" avatar="chatLine.avatar">
             <chat-line-card
@@ -93,20 +129,6 @@
           </chat-line>
         </div>
 
-        <div ng-switch-when="helpRequestAnswer">
-          <chat-line
-            alignment="{{chatLine.alignment}}"
-            author="{{chatLine.author}}"
-            created-at="{{chatLine.createdAt}}"
-            avatar="chatLine.avatar"
-            help-request-id="{{chatLine.subjectId}}"
-          >
-            <chat-line-simple>
-              <div ng-bind-html="chatLine.message"></div>
-            </chat-line-simple>
-          </chat-line>
-        </div>
-
         <div ng-switch-when="error">
           <chat-line
             alignment="{{chatLine.alignment}}"
@@ -127,7 +149,7 @@
           >
             <chat-line-simple>
               <div ng-bind-html="chatLine.cardTitle"></div>
-              <pre class="mt-2 mb-2 w-75" rows="3" disabled>{{chatLine.selectedCode}}</pre>
+              <pre class="mt-2 mb-2 w-100" rows="3" disabled>{{chatLine.selectedCode}}</pre>
               <div ng-bind-html="chatLine.cardBody"></div>
             </chat-line-simple>
           </chat-line>

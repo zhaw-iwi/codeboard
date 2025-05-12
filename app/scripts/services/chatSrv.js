@@ -87,6 +87,7 @@ angular.module('codeboardApp').service('ChatSrv', [
         card.tipIndex = aTipIndex;
 
         // if aStatus is not null it means that it is a default hint
+        // status is then 'sent' to mark the default hint as sent
         const type = aStatus ? 'hint' : 'hintChatbot';
 
         // add chatline for tips
@@ -94,6 +95,9 @@ angular.module('codeboardApp').service('ChatSrv', [
       } else if (aType === 'help') {
         // add chatline for helprequests
         return addChatLine(JSON.stringify(card), helpRequestId, user, 'helpRequest');
+      } else if (aType === 'helpChatbot' || aType === 'helpChatbotAnswer') {
+        // add chatline for helprequests
+        return addChatLine(JSON.stringify(card), helpRequestId, user, aType);
       }
     };
 

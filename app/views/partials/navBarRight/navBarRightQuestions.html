@@ -32,17 +32,36 @@
               ></textarea>
             </div>
             <div class="row">
-              <div class="col-md-12 col-lg-6 text-center" style="margin-bottom: 10px">
-                <!-- ask lecturer button -->
-                <button type="button" class="btn btn-info" ng-click="askLecturer()">
-                  <span class="glyphicon glyphicon-user"></span> Frage an Dozent senden
-                </button>
+              <!-- Ask lecturer button column -->
+              <div
+                ng-class="{
+                  'col-md-12 col-lg-6': !isActionDisabled('ai-qa'),
+                  'col-md-12 col-lg-12': isActionDisabled('ai-qa')
+                }"
+                style="margin-bottom: 10px"
+                ng-show="!isActionDisabled('lecturer-qa')"
+              >
+                <div class="text-center">
+                  <button type="button" class="btn btn-info" ng-click="askLecturer()">
+                    <span class="glyphicon glyphicon-user"></span> Frage an Dozent senden
+                  </button>
+                </div>
               </div>
-              <div class="col-md-12 col-lg-6 text-center" style="margin-bottom: 10px">
-                <!-- ask chatbot button -->
-                <button type="button" class="btn btn-info" ng-click="askChatbot()">
-                  <span class="glyphicon glyphicon-comment"></span> KI-Assistenten fragen
-                </button>
+
+              <!-- Ask chatbot button column -->
+              <div
+                ng-class="{
+                  'col-md-12 col-lg-6': !isActionDisabled('lecturer-qa'),
+                  'col-md-12 col-lg-12': isActionDisabled('lecturer-qa')
+                }"
+                style="margin-bottom: 10px"
+                ng-show="!isActionDisabled('ai-qa')"
+              >
+                <div class="text-center">
+                  <button type="button" class="btn btn-info" ng-click="askChatbot()">
+                    <span class="glyphicon glyphicon-comment"></span> KI-Assistenten fragen
+                  </button>
+                </div>
               </div>
             </div>
             <p class="text-danger mt-3">{{sendHelpFormErrors}}</p>
@@ -74,12 +93,13 @@
       </before-chat>
     </chat>
   </div>
+
   <!-- older chatboxes only displayed if needed -->
-  <div ng-if="oldChatBoxes">
+  <div ng-if="showShowMoreContent" class="older-chat">
     <hr class="chat-horizontal-line" />
     <h2 class="modal-title">Ältere Fragen und Antworten</h2>
     <div class="text-center">
-      <button ng-show="!hideShowMore" class="btn btn-info" ng-click="showMore()">Q&A laden</button>
+      <button ng-if="!hideShowMoreBtn" class="btn btn-info" ng-click="showMore()">Q&A laden</button>
     </div>
     <div ng-show="displayOldChatBoxes" class="conversation">
       <chat chat-lines="oldQAChatLines" class="px-4" cursor-position="cursorPosition"></chat>

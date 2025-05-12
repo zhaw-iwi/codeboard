@@ -20,6 +20,7 @@ angular
     '$timeout',
     'IdeMsgService',
     'ProjectFactory',
+    'CodeboardSrv',
     'ChatSrv',
     'UserSrv',
     'AISrv',
@@ -31,6 +32,7 @@ angular
       $timeout,
       IdeMsgService,
       ProjectFactory,
+      CodeboardSrv,
       ChatSrv,
       UserSrv,
       AISrv,
@@ -43,8 +45,9 @@ angular
       $scope.sendRequestFormVisible = false;
       $scope.qaInfoChatBoxTxt = UITexts.QA_INFO;
       $scope.oldChatBoxes = false;
-      $scope.hideShowMore = false;
+      $scope.hideShowMoreBtn = true;
       $scope.displayOldChatBoxes = false;
+      $scope.showShowMoreContent = false;
       $scope.formData = {
         noteStudent: '',
         noteTeacher: '',
@@ -64,18 +67,58 @@ angular
       };
 
       /**
-       * get the subjectId (reference to answer) of the newest help request
+       * function which displays all the chatlines except for the newest ones
        */
-      const getNewestSubjectId = function () {
-        return Math.max(...allChatBoxes.map((chatBox) => chatBox.subjectId));
+      $scope.showMore = function () {
+        $scope.hideShowMoreBtn = true;
+        $scope.displayOldChatBoxes = true;
+
+        // scroll to the bottom of the chat history
+        chatScrollToBottom();
+
+        // create a set of the IDs of the newest chat lines
+        const newestIds = new Set($scope.newestQAChatLines.map((chatLine) => chatLine.id));
+
+        // filter out chatlines that are in the newestQAChatLines
+        $scope.oldQAChatLines = allChatBoxes.filter((chatLine) => !newestIds.has(chatLine.id));
       };
 
       /**
-       * get the newest chatboxes (question+answer) by date
+       * show send request form on click
        */
-      const getNewestChatBoxes = function () {
-        // filter all chatboxes that are not the newest ones by date (createdAt)
-        return allChatBoxes.filter((chatBox) => chatBox.subjectId === getNewestSubjectId());
+      $scope.showSendRequestForm = function () {
+        $scope.sendRequestFormVisible = true;
+      };
+
+      /**
+       * display the newest chatboxes (question+answer) by date
+       */
+      const displayNewestChatLines = function () {
+        // get the newest chatbox by date
+        const newestChatBox = allChatBoxes.reduce((prev, current) => {
+          return prev.createdAt > current.createdAt ? prev : current;
+        });
+
+        // get the subjectId of the newest chatbox
+        // for non chatbot help requests the subjectId is the id of the help request
+        // in the help request table
+        // for chatbot help requests the subjectId is generated below and is stored in the
+        // message object of the chatbox
+        const newestSubjectId = newestChatBox.subjectId || newestChatBox.message.cardReference;
+
+        $scope.newestQAChatLines = allChatBoxes.filter((chatBox) => {
+          return chatBox.subjectId === newestSubjectId || chatBox.message.cardReference === newestSubjectId;
+        });
+
+        // hide the old chatboxes each time a new chatbox is added
+        $scope.displayOldChatBoxes = false;
+
+        // display the show more content and show more button if all chatboxes
+        // have more entries than the newest chatboxes
+        if (allChatBoxes.length - $scope.newestQAChatLines.length > 0) {
+          $scope.showShowMoreContent = true;
+          $scope.hideShowMoreBtn = false;
+        }
       };
 
       /**
@@ -87,9 +130,8 @@ angular
       const getChatLineAvatar = function (chatLine) {
         if (chatLine.author.username === avatarName) {
           return 'neutral';
-        } else {
-          return chatLine.author.username === chatLine.user.username ? 'student' : 'teacher';
         }
+        return chatLine.author.username === chatLine.user.username ? 'student' : 'teacher';
       };
 
       /**
@@ -100,9 +142,14 @@ angular
        * @param chatLine
        */
       const addChatBoxToList = function (chatLine) {
-        // if chatLine type `helpRequest`, parse the message
-        if (chatLine.type === 'helpRequest' || chatLine.type === 'card') {
+        // parse the message for all chatlines except for the help request answers
+        // because those chatlines are not a chatline card
+        if (chatLine.type !== 'helpRequestAnswer') {
           chatLine.message = JSON.parse(chatLine.message);
+        }
+
+        // update the reference of the chatline if it is a non chatbot help request
+        if (chatLine.type === 'helpRequest' || chatLine.type === 'card') {
           chatLine.message.cardReference =
             ProjectFactory.getProject().userRole === 'user' ? null : chatLine.message.cardReference;
         }
@@ -111,32 +158,40 @@ angular
         chatLine.author = chatLine.author.name || chatLine.author.username;
         chatLine.alignment = chatLine.authorId !== chatLine.userId ? 'left' : 'right';
 
-        // add card to the list
+        // add card to the list of chatboxes
         allChatBoxes.push(chatLine);
 
-        // re-empty note field
+        // empty note field
         $scope.formData.noteStudent = '';
         $scope.formData.noteTeacher = '';
       };
 
-      // function to display the chatboxes
-      const displayChatBoxes = function () {
-        // show the newest chatboxes (question+answer) in the view
-        $scope.newestQAChatLines = getNewestChatBoxes();
+      /**
+       * Common method to handle the setup and saving of a question
+       */
+      const prepareAndSaveQuestion = async function () {
+        const noteStudent = $scope.formData.noteStudent;
 
-        // check if there are multiple different subjectIds in allChatBoxes
-        const uniqueSubjectIds = [...new Set(allChatBoxes.map((chatBox) => chatBox.subjectId))];
-
-        // if there are multiple different subjectIds show the "display more" button
-        $scope.oldChatBoxes = uniqueSubjectIds.length > 1;
-        if ($scope.oldChatBoxes) {
-          $scope.hideShowMore = false;
-        } else {
-          $scope.hideShowMore = true;
+        // check if the input is empty
+        if (!noteStudent || noteStudent === '' || typeof noteStudent === 'undefined') {
+          $scope.sendHelpFormErrors = UITexts.QA_NO_INPUT_QUESTION;
+          return false;
         }
 
-        // hide the old chatboxes each time a new chatbox is added
-        $scope.displayOldChatBoxes = false;
+        // hide the send request form
+        $scope.sendRequestFormVisible = false;
+        
+        // trigger a save of the currently displayed content (code)
+        // save the all files in project to db
+        if ($scope.ace.currentNodeId !== -1) {
+          // if the value is !== -1, then some tab is open
+          // update the content of the current node with the current
+          // content of the ace editor
+          ProjectFactory.getNode($scope.ace.currentNodeId).content = $scope.ace.editor.getSession().getValue();
+        }
+        await ProjectFactory.saveProjectToServer();
+
+        return noteStudent;
       };
 
       /**
@@ -147,24 +202,14 @@ angular
        */
       $scope.askLecturer = async function () {
         try {
-          const noteStudent = $scope.formData.noteStudent;
-
-          // check if the input is empty
-          if (!noteStudent || noteStudent === '' || typeof noteStudent === 'undefined') {
-            $scope.sendHelpFormErrors = UITexts.QA_NO_INPUT_QUESTION;
-            return false;
+          const noteStudent = await prepareAndSaveQuestion();
+          if (!noteStudent) {
+            return;
           }
-
-          // trigger a save of the currently displayed content (code)
-          // save the all files in project to db
-          if ($scope.ace.currentNodeId !== -1) {
-            // if the value is !== -1, then some tab is open
-            ProjectFactory.getNode($scope.ace.currentNodeId).content = $scope.ace.editor.getSession().getValue();
-          }
-          await ProjectFactory.saveProjectToServer();
 
           // call ProjectFactory to store the request (in the help request table)
           const helpRequest = await ProjectFactory.createHelpRequest();
+          // helprequest.id is the id of the helprequest in the helpRequest table
           const reference = '/projects/' + helpRequest.projectId + '/helprequests/' + helpRequest.id;
 
           // store the chatbox in the db
@@ -180,54 +225,63 @@ angular
 
           // manually update the scope (UI)
           $timeout(() => {
-            displayChatBoxes();
+            displayNewestChatLines();
           });
-
-          $scope.sendRequestFormVisible = false;
         } catch (err) {
           $scope.sendHelpFormErrors = UITexts.QA_ERROR_QUESTION;
         }
       };
 
       /**
+       * Helper function to create a unique ID for the chatbot conversation.
+       * We do this because no subjectId is generated for the chatbot conversation.
+       * @returns {string} unique ID for the chatbot conversation
+       */
+      const createChatbotConversationId = function () {
+        return 'chatbot-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+      };
+
+      /**
        * This method is called by a student requires help for a project and wants to ask the chatbot.
-       * Instead of creating a new helpRequest as in askLecturer(), we create a new chatLine with type 'helpRequestChatbot'
+       * Instead of creating a new helpRequest as in askLecturer(), we create a new chatLine with type 'helpChatbot'
        * to the helpRequest.
        * @returns {*}
        */
       $scope.askChatbot = async function () {
         try {
-          const noteStudent = $scope.formData.noteStudent;
-
-          // check if the input is empty
-          if (!noteStudent || noteStudent === '' || typeof noteStudent === 'undefined') {
-            $scope.sendHelpFormErrors = UITexts.QA_NO_INPUT_QUESTION;
+          const noteStudent = await prepareAndSaveQuestion();
+          if (!noteStudent) {
             return;
           }
 
-          // trigger a save of the currently displayed content (code)
-          // save the all files in project to db
-          if ($scope.ace.currentNodeId !== -1) {
-            // if the value is !== -1, then some tab is open
-            ProjectFactory.getNode($scope.ace.currentNodeId).content = $scope.ace.editor.getSession().getValue();
-          }
-          await ProjectFactory.saveProjectToServer();
+          // generate a unique ID for the chatbot conversation
+          const subjectId = createChatbotConversationId();
 
           // the user query chatbox
           // store the chatbox in the db (to do: add avatar)
-          const chatLineStud = await ChatSrv.addChatLine(noteStudent, null, null, 'helpRequestChatbot');
+          const chatLineStud = await ChatSrv.addChatLineCard(
+            noteStudent,
+            'Hilfe angefragt (chatbot)',
+            'helpChatbot',
+            subjectId
+          );
           addChatBoxToList(chatLineStud);
 
-          // the chatbot answer chatbox
+          // the placeholder chatbot answer chatbox
           // store the chatbox in the db
           const noteChatbot = 'Deine Frage wird geprüft. Ich melde mich gleich...';
-          const chatLineBot = await ChatSrv.addChatLine(noteChatbot, null, 'Roby', 'helpRequestChatbotAnswer');
+          const chatLineBot = await ChatSrv.addChatLineCard(
+            noteChatbot,
+            null,
+            'helpChatbotAnswer',
+            subjectId,
+            null,
+            'Roby'
+          );
           addChatBoxToList(chatLineBot);
 
-          // workaround because we have no subjectId (just for demo)
-          $scope.newestQAChatLines = [chatLineStud, chatLineBot];
-
-          $scope.sendRequestFormVisible = false;
+          // display the new question and llm answer placeholder
+          displayNewestChatLines();
 
           // load the chatbot answer and update chatbox in backend
           const data = {
@@ -237,18 +291,30 @@ angular
 
           const updatedChatLine = await AISrv.askForHelp($routeParams.courseId, $routeParams.projectId, data);
 
-          // to do: check for request limit exceeded
-
           // update the content of the chatbot answer chatbox
-          $scope.newestQAChatLines[1].message = updatedChatLine.answer;
-
-          // displayChatBoxes();
+          $scope.newestQAChatLines[1].message.cardBody = updatedChatLine.answer;
 
           // manually update the scope (UI)
           $timeout(function () {});
         } catch (err) {
+          // handle error if request limit is reached
+          if (err.status === 429 && err.data.limitExceeded) {
+            $scope.newestQAChatLines[1].message.cardBody = UITexts.QA_CHATBOT_LIMIT_EXCEEDED;
+            // to do: update the chatbox in the backend
+
+            $timeout(function () {});
+          }
           $scope.sendHelpFormErrors = UITexts.QA_ERROR_QUESTION;
         }
+      };
+
+      /**
+       * get the subjectId of the newest help request
+       * subjectId is only generated for help requests not for chatbots
+       * each help request then has a subjectId which is the same for the question and the answer
+       */
+      const getNewestSubjectId = function () {
+        return Math.max(...allChatBoxes.map((chatBox) => chatBox.subjectId));
       };
 
       /**
@@ -279,7 +345,7 @@ angular
           }
 
           // if there is no unanswered help request, get the id of the newest help request
-          let id = lastHelpRequest ? lastHelpRequest.id : getNewestSubjectId();
+          const id = lastHelpRequest ? lastHelpRequest.id : getNewestSubjectId();
 
           // store the chatbox in the db
           const chatLine = await ChatSrv.addChatLine(noteTeacher, id, UserSrv.getUsername(), 'helpRequestAnswer');
@@ -288,31 +354,27 @@ angular
 
           // manually update the scope (UI)
           $timeout(() => {
-            displayChatBoxes();
+            displayNewestChatLines();
           });
         } catch (err) {
           $scope.sendHelpFormErrors = UITexts.QA_ERROR_ANSWER;
         }
       };
 
-      // function which loads all the chatboxes that are not displayed
-      $scope.showMore = function () {
-        $scope.hideShowMore = true;
-        $scope.displayOldChatBoxes = true;
-
-        // scroll to the bottom of the chat history
-        chatScrollToBottom();
-
-        $scope.newestQAChatLines = getNewestChatBoxes();
-        // display all chatboxes that are not the newest ones
-        $scope.oldQAChatLines = allChatBoxes.filter((chatBox) => chatBox.subjectId !== getNewestSubjectId());
-      };
-
       /**
-       * Show send request form on click
+       * checks wheter 'lecturer-qa' or 'ai-qa' is disabled
+       * enabled checks if there is an entry in codeboard.json
+       * disabled checks if there is an entry in course settings
        */
-      $scope.showSendRequestForm = function () {
-        $scope.sendRequestFormVisible = true;
+      $scope.isActionDisabled = function (action) {
+        let actionDisabled = CodeboardSrv.checkDisabledActions(action);
+        let actionEnabled = CodeboardSrv.checkEnabledActions(action);
+
+        if (actionDisabled && !actionEnabled) {
+          return true;
+        } else {
+          return false;
+        }
       };
 
       /**
@@ -326,31 +388,33 @@ angular
           // when user role help, make q&a-tab default tab > case when owner wants to answer questions
           if (ProjectFactory.getProject().userRole === 'help') {
             $timeout(() => {
-              let req = IdeMsgService.msgNavBarRightOpenTab('questions');
+              const req = IdeMsgService.msgNavBarRightOpenTab('questions');
               $rootScope.$broadcast(req.msg, req.data);
             }, 500);
           }
 
           // load chat history and display the chatboxes
           const history = await ChatSrv.getChatHistory();
-          // filter all the chatLines that are relevant for the Q&A tab (we need all those checks because chatLines types where different in earlier versions)
+          // filter all the chatLines that are relevant for the Q&A tab
+          // (we need all those checks because chatLines types where different in earlier versions)
           const data = history.data.filter(
             (chatLine) =>
               chatLine.type === 'helpRequest' ||
               chatLine.type === 'helpRequestAnswer' ||
-              chatLine.type === 'helpRequestChatbot' ||
-              chatLine.type === 'helpRequestChatbotAnswer' ||
-              chatLine.type === 'html' || // old type for help request
-              (chatLine.type === 'card' && chatLine.message.cardType === 'help') // old type for help request
+              chatLine.type === 'helpChatbot' ||
+              chatLine.type === 'helpChatbotAnswer' ||
+              chatLine.type === 'html' || // old type for help requests
+              (chatLine.type === 'card' && chatLine.message.cardType === 'help') // old type for help requests
           );
 
+          // add all chatlines to the chatbox list
           data.forEach((chatLine) => {
             addChatBoxToList(chatLine);
           });
 
-          // after the chatboxes are preapred, display them
+          // after the chatboxes are preapred, display the newest chatboxes
           $timeout(() => {
-            displayChatBoxes();
+            displayNewestChatLines();
           });
         } catch (err) {
           console.log('Fehler beim Laden des Chatverlaufs!');
