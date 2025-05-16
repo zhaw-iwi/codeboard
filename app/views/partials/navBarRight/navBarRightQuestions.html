@@ -21,7 +21,7 @@
         <!-- the message Form -->
         <div ng-show="sendRequestFormVisible">
           <!-- the question form for users -->
-          <form ng-show="currentRoleIsUser()" id="sendHelpRequest" class="text-center">
+          <form id="sendHelpRequest" class="text-center">
             <div class="form-floating mb-4">
               <textarea
                 class="topic border-box p-4"
@@ -32,7 +32,7 @@
               ></textarea>
             </div>
             <div class="row">
-              <!-- Ask lecturer button column -->
+              <!-- ask lecturer button column -->
               <div
                 ng-class="{
                   'col-md-12 col-lg-6': !isActionDisabled('ai-qa'),
@@ -42,13 +42,18 @@
                 ng-show="!isActionDisabled('lecturer-qa')"
               >
                 <div class="text-center">
-                  <button type="button" class="btn btn-info" ng-click="askLecturer()">
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    ng-click="askLecturer()"
+                    ng-disabled="!currentRoleIsUser()"
+                  >
                     <span class="glyphicon glyphicon-user"></span> Frage an Dozent senden
                   </button>
                 </div>
               </div>
 
-              <!-- Ask chatbot button column -->
+              <!-- ask chatbot button column -->
               <div
                 ng-class="{
                   'col-md-12 col-lg-6': !isActionDisabled('lecturer-qa'),
@@ -58,7 +63,12 @@
                 ng-show="!isActionDisabled('ai-qa')"
               >
                 <div class="text-center">
-                  <button type="button" class="btn btn-info" ng-click="askChatbot()">
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    ng-click="askChatbot()"
+                    ng-disabled="disableAIQABtn || !currentRoleIsUser()"
+                  >
                     <span class="glyphicon glyphicon-comment"></span> KI-Assistenten fragen
                   </button>
                 </div>

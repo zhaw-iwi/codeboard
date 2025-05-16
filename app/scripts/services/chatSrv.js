@@ -8,11 +8,12 @@
 angular.module('codeboardApp').service('ChatSrv', [
   '$routeParams',
   '$q',
+  '$http',
   'ChatRes',
   'ChatLineRes',
   'UserSrv',
   'ProjectFactory',
-  function ChatService($routeParams, $q, ChatRes, ChatLineRes, UserSrv, ProjectFactory) {
+  function ChatService($routeParams, $q, $http, ChatRes, ChatLineRes, UserSrv, ProjectFactory) {
     /**
      * This function stores a chatbox in the db
      * It is directly called when a chatbox without a header, type or reference is created
@@ -130,6 +131,21 @@ angular.module('codeboardApp').service('ChatSrv', [
     };
 
     /**
+     * Delete chatboxes
+     * currently this is only used for qa chatboxes which must be deleted
+     * when the user request limit is reached to not show them in the chat history
+     * @param chatIds
+     * @param projectId
+     */
+    const deleteChatboxes = async function (chatIds, projectId) {
+      const payload = {
+        chatIds: chatIds,
+      };
+      const res = await $http.post(`/api/projects/${projectId}/chats/delete`, payload);
+      return res.data;
+    };
+
+    /**
      * Rate a compilation error message
      * todo This method should be replaced when the chat is rebuilt
      * @param chatMessageId
@@ -154,6 +170,7 @@ angular.module('codeboardApp').service('ChatSrv', [
       getChatHistory: getChatHistory,
       addChatLine: addChatLine,
       addChatLineCard: addChatLineCard,
+      deleteChatboxes: deleteChatboxes,
       rateCompilationErrorMessage: rateCompilationErrorMessage,
     };
   },

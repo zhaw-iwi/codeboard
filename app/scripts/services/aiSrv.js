@@ -47,5 +47,13 @@ angular.module('codeboardApp').service('AISrv', [
       });
       return res.data;
     };
+
+    // function to get the remaining requests for the user
+    // this function is called on every page load from ide.js
+    // to enable/disable the corresponding ai service request buttons
+    service.getRemainingRequests = async function (username) {
+      const res = await $http.get(`/api/users/${username}/requestLimit`);
+      return res.data;
+    };
   },
 ]);

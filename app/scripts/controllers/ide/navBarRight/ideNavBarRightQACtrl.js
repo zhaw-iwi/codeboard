@@ -52,6 +52,7 @@ angular
         noteStudent: '',
         noteTeacher: '',
       };
+      $scope.disableAIQABtn = false;
 
       // other variables
       const avatarName = 'Roby';
@@ -180,7 +181,7 @@ angular
 
         // hide the send request form
         $scope.sendRequestFormVisible = false;
-        
+
         // trigger a save of the currently displayed content (code)
         // save the all files in project to db
         if ($scope.ace.currentNodeId !== -1) {
@@ -248,6 +249,9 @@ angular
        * @returns {*}
        */
       $scope.askChatbot = async function () {
+        // this ids are only needed if in the catch block the 429 error is thrown
+        // so that we can delete the chatLines from the db
+        let chatIds = [];
         try {
           const noteStudent = await prepareAndSaveQuestion();
           if (!noteStudent) {
@@ -265,6 +269,7 @@ angular
             'helpChatbot',
             subjectId
           );
+          chatIds.push(chatLineStud.id);
           addChatBoxToList(chatLineStud);
 
           // the placeholder chatbot answer chatbox
@@ -278,6 +283,7 @@ angular
             null,
             'Roby'
           );
+          chatIds.push(chatLineBot.id);
           addChatBoxToList(chatLineBot);
 
           // display the new question and llm answer placeholder
@@ -289,20 +295,34 @@ angular
             chatLineId: chatLineBot.id,
           };
 
-          const updatedChatLine = await AISrv.askForHelp($routeParams.courseId, $routeParams.projectId, data);
+          const res = await AISrv.askForHelp($routeParams.courseId, $routeParams.projectId, data);
+          const remainingRequests = res.remainingRequests;
+
+          if (remainingRequests <= 0) {
+            // disable the ai qa button
+            $scope.disableAIQABtn = true;
+            // indicate in ide.js that the request limit is reached
+            $scope.setRequestLimitReached();
+          }
 
           // update the content of the chatbot answer chatbox
-          $scope.newestQAChatLines[1].message.cardBody = updatedChatLine.answer;
+          $scope.newestQAChatLines[1].message.cardBody = res.answer;
 
           // manually update the scope (UI)
-          $timeout(function () {});
+          $timeout(function () {}, 0);
         } catch (err) {
-          // handle error if request limit is reached
+          // handle request limit error:
+          // this can happen if the user makes a request in one browser window,
+          // which consumes their last available request,
+          // and then, in a different window (without refreshing the page),
+          // they attempt to make another request to the AI service.
           if (err.status === 429 && err.data.limitExceeded) {
             $scope.newestQAChatLines[1].message.cardBody = UITexts.QA_CHATBOT_LIMIT_EXCEEDED;
-            // to do: update the chatbox in the backend
+            // remove the question + answer chatbox in the UI and backend
+            // because the chatbot answer is not available
+            await ChatSrv.deleteChatboxes(chatIds, $routeParams.projectId);
 
-            $timeout(function () {});
+            $timeout(function () {}, 0);
           }
           $scope.sendHelpFormErrors = UITexts.QA_ERROR_QUESTION;
         }
@@ -367,15 +387,21 @@ angular
        * disabled checks if there is an entry in course settings
        */
       $scope.isActionDisabled = function (action) {
-        let actionDisabled = CodeboardSrv.checkDisabledActions(action);
-        let actionEnabled = CodeboardSrv.checkEnabledActions(action);
+        const actionDisabled = CodeboardSrv.checkDisabledActions(action);
+        const actionEnabled = CodeboardSrv.checkEnabledActions(action);
 
         if (actionDisabled && !actionEnabled) {
           return true;
-        } else {
-          return false;
         }
+        return false;
       };
+
+      // this event is triggered in the following case:
+      // user is in a different tab and uses an ai service which results in no remaining requests
+      // when the user then switches to this tab, we emit an event to show that the limit is reached
+      $scope.$on(IdeMsgService.msgRequestLimitReached().msg, function () {
+        $scope.disableAIQABtn = true;
+      });
 
       /**
        * init this tab by loading chat history and read tips
@@ -383,6 +409,7 @@ angular
       $scope.init = async function () {
         try {
           // only show "Frage stellen" button if user a student
+          // the function currentRoleIsUser() is in ide.js
           $scope.sendRequestFormVisible = !$scope.currentRoleIsUser();
 
           // when user role help, make q&a-tab default tab > case when owner wants to answer questions
@@ -395,29 +422,40 @@ angular
 
           // load chat history and display the chatboxes
           const history = await ChatSrv.getChatHistory();
-          // filter all the chatLines that are relevant for the Q&A tab
-          // (we need all those checks because chatLines types where different in earlier versions)
-          const data = history.data.filter(
-            (chatLine) =>
-              chatLine.type === 'helpRequest' ||
-              chatLine.type === 'helpRequestAnswer' ||
-              chatLine.type === 'helpChatbot' ||
-              chatLine.type === 'helpChatbotAnswer' ||
-              chatLine.type === 'html' || // old type for help requests
-              (chatLine.type === 'card' && chatLine.message.cardType === 'help') // old type for help requests
-          );
 
-          // add all chatlines to the chatbox list
-          data.forEach((chatLine) => {
-            addChatBoxToList(chatLine);
-          });
+          if (history.data.length > 0) {
+            // filter all the chatLines that are relevant for the Q&A tab
+            // (we need all those checks because chatLines types where different in earlier versions)
+            const data = history.data.filter(
+              (chatLine) =>
+                chatLine.type === 'helpRequest' ||
+                chatLine.type === 'helpRequestAnswer' ||
+                chatLine.type === 'helpChatbot' ||
+                chatLine.type === 'helpChatbotAnswer' ||
+                chatLine.type === 'html' || // old type for help requests
+                (chatLine.type === 'card' && chatLine.message.cardType === 'help') // old type for help requests
+            );
 
-          // after the chatboxes are preapred, display the newest chatboxes
-          $timeout(() => {
-            displayNewestChatLines();
-          });
+            // add all chatlines to the chatbox list
+            data.forEach((chatLine) => {
+              addChatBoxToList(chatLine);
+            });
+
+            // after the chatboxes are preapred, display the newest chatboxes
+            $timeout(() => {
+              displayNewestChatLines();
+            });
+          }
+
+          // check if the req limit is reached to disable the ai qa button
+          // we can do this in either case (button enabled/disabled in config)
+          // because if the button is disabled, the button is hidden anyway
+          const reqLimitReached = $scope.isRequestLimitReached();
+          if (reqLimitReached) {
+            $scope.disableAIQABtn = true;
+          }
         } catch (err) {
-          console.log('Fehler beim Laden des Chatverlaufs!');
+          console.log('Fehler beim Laden des Chatverlaufs: ' + err);
         }
       };
 

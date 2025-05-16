@@ -12,9 +12,11 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
   'AceEditorSrv',
   '$routeParams',
   'AISrv',
+  'UserSrv',
+  'IdeMsgService',
   'ProjectFactory',
   'UITexts',
-  function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, ProjectFactory, UITexts) {
+  function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, UserSrv, IdeMsgService, ProjectFactory, UITexts) {
     const aceEditor = $scope.ace.editor;
     var chatBoxes = [];
     var data = {};
@@ -24,6 +26,15 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
     $scope.expIsLoading = false;
     $scope.userRole = ProjectFactory.getProject().userRole;
     $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+    $scope.disableCABtn = false;
+    $scope.avatarStyle = 'neutral';
+
+    const handleLimitExceeded = function () {
+      // disable the button and show a message
+      $scope.avatarStyle = 'worried';
+      $scope.disableCABtn = true;
+      $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_LIMIT_EXCEEDED;
+    };
 
     // function to get the explantion of the selected code
     $scope.getCodeExplanation = async function () {
@@ -49,6 +60,7 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
         // gpt should return -1 if no explanation is found or insufficient data (code) is provided
         const res = await AISrv.askForCodeExplanation($routeParams.courseId, $routeParams.projectId, data);
         const codeExplanation = res.answer;
+        const remainingRequests = res.remainingRequests;
 
         if (codeExplanation) {
           $scope.expIsLoading = false;
@@ -65,7 +77,14 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
           chatBoxes.unshift(chatBox);
         }
 
-        $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+        // check if the user has reached the request limit
+        if (remainingRequests <= 0) {
+          handleLimitExceeded();
+          // indicate in ide.js that the request limit is reached
+          $scope.setRequestLimitReached();
+        } else {
+          $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
+        }
         $scope.chatLines = chatBoxes;
 
         // manually updated the view
@@ -74,28 +93,45 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
         $scope.expIsLoading = false;
         $scope.assistantInfoChatBoxTxt = UITexts.CODING_ASSISTANT_INFO;
 
-        // handle error if request limit is reached
+        // handle request limit error:
+        // this can happen if the user makes a request in one browser window,
+        // which consumes their last available request,
+        // and then, in a different window (without refreshing the page),
+        // they attempt to make another request to the AI service.
         if (err.status === 429 && err.data.limitExceeded) {
-          const chatBox = {
-            message: UITexts.CODING_ASSISTANT_LIMIT_EXCEEDED,
-            author: 'Roby',
-            avatar: 'worried',
-          };
-
-          chatBoxes.unshift(chatBox);
-          $scope.chatLines = chatBoxes;
-        } else {
-          // all other errors
-          $scope.errTxt = 'Fehler beim Laden der Erklärung.';
-
-          $timeout(() => {
-            $scope.errTxt = '';
-          }, 2000);
+          handleLimitExceeded();
+          $timeout(function () {}, 0);
+          // indicate in ide.js that the request limit is reached
+          return $scope.setRequestLimitReached();
         }
+        // all other errors
+        $scope.errTxt = 'Fehler beim Laden der Erklärung.';
+
+        $timeout(() => {
+          $scope.errTxt = '';
+        }, 2000);
 
         // ensure the digest cycle runs
         $timeout(function () {});
       }
     };
+
+    // this event is triggered in the following case:
+    // user is in a different tab and uses an ai service which results in no remaining requests
+    // when the user then switches to this tab, we emit an event to show that the limit is reached
+    $scope.$on(IdeMsgService.msgRequestLimitReached().msg, function () {
+      handleLimitExceeded();
+    });
+
+    /**
+     * init this tab by checking if the user has reached the request limit
+     */
+    $scope.init = async function () {
+      const reqLimitReached = $scope.isRequestLimitReached();
+      if (reqLimitReached) {
+        handleLimitExceeded();
+      }
+    };
+    $scope.init();
   },
 ]);

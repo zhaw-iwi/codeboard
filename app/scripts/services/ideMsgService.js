@@ -513,4 +513,15 @@ angular.module('codeboardApp').service('IdeMsgService', function IdeMsgService()
       msg: 'ide.expTabClicked',
     };
   };
+
+  /**
+   * This broadcast is triggered when a user opens a tab and the request limit
+   * is reached
+   * @returns {{msg: string}}
+   */
+  this.msgRequestLimitReached = function () {
+    return {
+      msg: 'ide.requestLimitReached',
+    };
+  };
 });

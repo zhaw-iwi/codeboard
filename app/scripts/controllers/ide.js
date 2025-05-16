@@ -58,6 +58,36 @@ app.controller('IdeCtrl', [
     // state if loading gif should be displayed (compileAndRun project)
     $scope.compilationIsLoading = false;
 
+    $scope.reqLimitReached = false;
+
+    // this function is called from the tabs when the req limit is reached
+    $scope.setRequestLimitReached = function () {
+      return ($scope.reqLimitReached = true);
+    };
+
+    // this function is used to check if the request limit is reached
+    $scope.isRequestLimitReached = function () {
+      return $scope.reqLimitReached;
+    };
+
+    // check on page load if the user has reached the request limit
+    $scope.checkRemainingAIRequests = async function () {
+      if ($scope.currentRoleIsUser()) {
+        try {
+          const limit = await AISrv.getRemainingRequests(UserSrv.getUsername());
+          // check if the user has reached the request limit
+          if (limit && limit.remainingReq === 0) {
+            // indicate that the request limit is reached
+            $scope.reqLimitReached = true;
+          }
+        } catch (err) {
+          console.log('Error while checking request limit: ', err);
+          // for security reasons we also indicate that the request limit is reached
+          $scope.reqLimitReached = true;
+        }
+      }
+    };
+
     /**
      * Contains functions and events to save the project automatically
      * Triggers msgProcessViewQueryStringRequest to open the correct files according to the passed query
@@ -2013,6 +2043,9 @@ app.controller('IdeCtrl', [
 
     // invoke function to init the project
     initProject();
+    (async () => {
+      await $scope.checkRemainingAIRequests();
+    })();
 
     /////////////////////////////////////////////// syntax-checker and variable scope functionality (part of coding-assistant) ///////////////////////////////////////////////
     var disabledActions = CodeboardSrv.getDisabledActions();
@@ -2661,7 +2694,14 @@ app.controller('RightBarCtrl', [
      * Change content of tab splitter
      * @param slug
      */
-    $scope.rightBarTabClick = function (slug) {
+    $scope.rightBarTabClick = async function (slug) {
+      // indicate an event if the user has reached the request limit
+      // this is the case when the user has reached the request limit in a different tab
+      // and clicks on a new tab
+      if ($scope.isRequestLimitReached()) {
+        $rootScope.$broadcast(IdeMsgService.msgRequestLimitReached().msg);
+      }
+
       if (slug === 'explanation') {
         $rootScope.$broadcast(IdeMsgService.msgExpTabClicked().msg);
       }

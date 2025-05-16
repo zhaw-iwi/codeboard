@@ -50,11 +50,24 @@ angular
       $scope.oldChatBoxes = false;
       $scope.displayOldChatBoxes = false;
       $scope.hideShowMore = false;
+      $scope.avatarStyle = 'neutral';
 
       // other variables
       const avatarName = 'Roby';
       const chatBoxLimit = 1;
       const allChatBoxes = [];
+
+      /**
+       * function to handle the case when the user has reached the request limit
+       */
+      const handleLimitExceeded = function () {
+        $scope.hintBtnTxt = 'Tipp anfordern';
+        $scope.disableHintBtn = true;
+        $scope.hintInfoChatBoxTxt = UITexts.HINT_LIMIT_EXCEEDED;
+        $scope.remainingHints = 0;
+        $scope.avatarStyle = 'worried';
+        $timeout(function () {}, 0);
+      };
 
       /**
        * Checks if there are remaining hints and disables the hint button if not
@@ -63,13 +76,13 @@ angular
         const numHintsSent = allChatBoxes.length;
         // display the number of hints that are still available
         // only if ai-hints is enabled
-        if (CodeboardSrv.checkEnabledActions('ai-hints')) {
+        if (!CodeboardSrv.checkDisabledActions('ai-hints') || CodeboardSrv.checkEnabledActions('ai-hints')) {
           $scope.remainingHints = $scope.hintLimit - numHintsSent;
         }
 
         if (numHintsSent >= $scope.hintLimit) {
           $scope.disableHintBtn = true;
-          $scope.hintInfoChatBoxTxt = UITexts.HINT_LIMIT_EXCEEDED;
+          handleLimitExceeded();
         } else {
           $scope.disableHintBtn = false;
           $scope.hintInfoChatBoxTxt = UITexts.HINT_INFO;
@@ -198,18 +211,6 @@ angular
         }
       };
 
-      // function to indicate that no relevant hint was found
-      // or all default hints are already sent
-      const noHintFound = function () {
-        // indicate that all default hints are already sent
-        $scope.disableHintBtn = true;
-        $scope.hintBtnTxt = 'Tipp anfordern';
-        $scope.hintIsLoading = false;
-        $scope.hintInfoChatBoxTxt = UITexts.HINT_LIMIT_EXCEEDED;
-        $scope.remainingHints = 0;
-        $timeout(function () {}, 0);
-      };
-
       /**
        * this function gets called when a student triggers the "Tipp anfordern" button
        */
@@ -221,8 +222,9 @@ angular
           // check wheter to use ai to generate next hint or default process (order)
           if (isDisabled && !isEnabled) {
             const relevantHint = getHintDefault();
+            // if the hint is null, all default hints are already sent
             if (!relevantHint) {
-              noHintFound();
+              handleLimitExceeded();
               return;
             }
             return await prepareHint(relevantHint.data, 'default');
@@ -242,13 +244,14 @@ angular
 
           // hint can have the following data:
           // response from the LLM
-          // -1 if the llm did not find a relevant hint
-          // null if all default hints are already sent (this can be the case when the request limit is reached)
+          //  > "-1" if the llm did not find a relevant hint
+          //  > "null" if the request limit is reached and all default hints are already sent
           const hint = await getHintUsingAI();
 
-          // if the hint is null, all default hints are already sent
+          // if the hint is null, all default hints are already
+          // sent and the request limit is reached
           if (!hint) {
-            noHintFound();
+            handleLimitExceeded();
             return;
           }
 
@@ -259,7 +262,6 @@ angular
             $scope.$broadcast(IdeMsgService.msgShowNoRelevantHintModal().msg);
             $scope.hintBtnTxt = 'Tipp anfordern';
             $scope.hintIsLoading = false;
-            $timeout(function () {});
             return;
           }
 
@@ -268,6 +270,10 @@ angular
           console.error('Error while asking for hint:', err);
           // fallback to default
           const relevantHint = getHintDefault();
+          if (!relevantHint) {
+            handleLimitExceeded();
+            return;
+          }
           prepareHint(relevantHint.data, 'default');
         }
       };
@@ -278,59 +284,6 @@ angular
         $scope.displayOldChatBoxes = true;
         $scope.oldHintChatLines = allChatBoxes.slice(0, -chatBoxLimit);
       };
-
-      /**
-       * init this tab by loading chat history and read tips
-       */
-      $scope.init = async function () {
-        try {
-          // load chat history
-          const history = await ChatSrv.getChatHistory();
-          // filter all the chatLines that are relevant for the hint tab
-          const data = history.data.filter((chatLine) => chatLine.type === 'hint' || chatLine.type === 'hintChatbot');
-
-          // add chatboxes to the list of chatboxes
-          data.forEach((chatLine) => {
-            addChatBoxToList(chatLine);
-          });
-
-          // display the newest hint in the view
-          displayNewestHint();
-
-          // get the config (codeboard.json) and read the hints
-          const config = ProjectFactory.getConfig();
-          if (config && 'Help' in config && 'tips' in config.Help) {
-            // get all hints from codeboard.json and add property `sent` to each hint that it not get sent multiple times during runtime
-            $scope.defaultHints = config.Help.tips.map((tip) => ({ ...tip, sent: false }));
-            $scope.hintLimit = config.Help.tipLimit || 5; // get the limit from codeboard.json
-
-            // check if there are remaining hints / to do: also for ai hints
-            checkRemainingHints();
-
-            // update tips sent for default hints property based on chat history
-            allChatBoxes.forEach((chatLine) => {
-              // get index of already sent tip
-              if (chatLine.type === 'hintChatbot') {
-                // if the hint is from the chatbot, we don't need to check for the index
-                return;
-              }
-
-              // the index of the hint
-              // hints are stored in an array in codeboard.json
-              const index = chatLine.message.tipIndex;
-              // if the tip was already sent mark it as true
-              if (index !== -1) {
-                $scope.defaultHints[index].sent = true;
-              }
-            });
-          }
-        } catch (err) {
-          console.log('Fehler beim Laden des Chatverlaufs:', err);
-        }
-      };
-
-      // init the tab (gets called from ide.js when tab is not hidden)
-      $scope.init();
 
       // this controller handels the modal which is shown when no relevant hint was found
       $scope.$on(IdeMsgService.msgShowNoRelevantHintModal().msg, function () {
@@ -349,5 +302,87 @@ angular
           controller: noRelevantTipModalInstanceCtrl,
         });
       });
+
+      /**
+       * init this tab by loading chat history and read tips
+       */
+      $scope.init = async function () {
+        let remainingDefaultHints = 0;
+        try {
+          // load chat history
+          const history = await ChatSrv.getChatHistory();
+          // filter all the chatLines that are relevant for the hint tab
+          const data = history.data.filter((chatLine) => chatLine.type === 'hint' || chatLine.type === 'hintChatbot');
+
+          if (data.length > 0) {
+            // add chatboxes to the list of chatboxes if there are any
+            data.forEach((chatLine) => {
+              addChatBoxToList(chatLine);
+            });
+
+            // display the newest hint in the view
+            displayNewestHint();
+          }
+
+          // get the config (codeboard.json) and read the default hints
+          // from the config
+          const config = ProjectFactory.getConfig();
+          if (config && 'Help' in config && 'tips' in config.Help) {
+            // get all hints from codeboard.json and add property `sent` to each hint that it not get sent multiple times during runtime
+            $scope.defaultHints = config.Help.tips.map((tip) => ({ ...tip, sent: false }));
+            $scope.hintLimit = config.Help.tipLimit || 5; // get the limit from codeboard.json
+
+            // check if there are remaining hints
+            checkRemainingHints();
+
+            // update tips sent for default hints property based on chat history
+            // only if there are any chatLines in the history
+            if (data.length > 0) {
+              allChatBoxes.forEach((chatLine) => {
+                // get index of already sent tip
+                if (chatLine.type === 'hintChatbot') {
+                  // if the hint is from the chatbot, we don't need to check for the index
+                  return;
+                }
+
+                // the index is set in the chatLIne when the hint was sent in a previous/current session
+                // we store the index to not send the same hint multiple times
+                // hints are stored in an array in codeboard.json
+                const index = chatLine.message.tipIndex;
+                // if the tip was already sent mark it as true
+                if (index !== -1) {
+                  $scope.defaultHints[index].sent = true;
+                }
+              });
+            }
+            // count the number of hints that are still available
+            remainingDefaultHints = $scope.defaultHints.filter((hint) => !hint.sent).length;
+          }
+
+          // check the remaining ai requests the user has if ai-hints is enabled
+          const isDisabled = CodeboardSrv.checkDisabledActions('ai-hints');
+          const isEnabled = CodeboardSrv.checkEnabledActions('ai-hints');
+          if (isDisabled && !isEnabled) {
+            // if the ai services are disabled we only check if there are remaining
+            // default hints
+            if (remainingDefaultHints === 0) {
+              handleLimitExceeded();
+              return;
+            }
+          }
+          // if the ai-hints are enabled, we check if the user has reached the request limit
+          // and if all default hints are already sent
+          const reqLimitReached = $scope.isRequestLimitReached();
+          if (reqLimitReached && remainingDefaultHints === 0) {
+            // disable the button and show a message
+            handleLimitExceeded();
+          }
+        } catch (err) {
+          console.log('Fehler beim Laden des Chatverlaufs:', err);
+        }
+      };
+
+      // init the tab (gets called from ide.js when tab is not hidden)
+      $scope.init();
     },
   ]);
