@@ -1,6 +1,5 @@
 /**
- * This is the main controller for the navBarTab "explanation" - the controller will generate the explanation/error chatboxes (functionality for variable Scope and syntax-checker is in ide.js)
- *
+ * This is the main controller for the navBarTab "explanation" - the controller will generate the explanation/error chatboxes
  *
  * @author Samuel Truniger
  * @date 20.03.2023
@@ -12,11 +11,10 @@ angular.module('codeboardApp').controller('ideNavBarRightCodingAssistantCtrl', [
   'AceEditorSrv',
   '$routeParams',
   'AISrv',
-  'UserSrv',
   'IdeMsgService',
   'ProjectFactory',
   'UITexts',
-  function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, UserSrv, IdeMsgService, ProjectFactory, UITexts) {
+  function ($scope, $timeout, AceEditorSrv, $routeParams, AISrv, IdeMsgService, ProjectFactory, UITexts) {
     const aceEditor = $scope.ace.editor;
     var chatBoxes = [];
     var data = {};

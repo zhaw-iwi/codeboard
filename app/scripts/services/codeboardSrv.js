@@ -9,8 +9,6 @@ angular.module('codeboardApp').service('CodeboardSrv', [
   function (ProjectFactory) {
     var service = this;
     var enabledActions = [];
-    var variableMap = {};
-    var currentFile;
 
     // this function gets all current disabledActions
     // those actions can be set in the following places:
@@ -65,26 +63,6 @@ angular.module('codeboardApp').service('CodeboardSrv', [
       return false;
     };
 
-    // function which returns the variableMap needed for the IdeCtrl
-    service.getVariableMap = function () {
-      return variableMap;
-    };
-
-    // function which sets the variableMap based on the result of the ideNavBarRightCodingAssistantCtrl
-    service.setVariableMap = function (newVariableMap) {
-      variableMap = newVariableMap;
-    };
-
-    // function which returns the current opened file
-    service.getFile = function () {
-      return currentFile;
-    };
-
-    // function which sets the current opened file
-    service.setFile = function (file) {
-      currentFile = file;
-    };
-
     // available disabled actions (can be set in "new course" / "course settings")
     service.actions = [
       { name: 'ai-compiler', desc: 'If enabled compiler error message gets explained using chatgpt' },
@@ -105,15 +83,10 @@ angular.module('codeboardApp').service('CodeboardSrv', [
       { name: 'run', desc: 'If enabled the run-button is available in the IDE' },
       { name: 'sampleSolution', desc: 'If enabled the sample-solution tab is available in the IDE' },
       { name: 'save', desc: 'If enabled the save project button is available in the IDE' },
-      {
-        name: 'syntax-checker',
-        desc: 'If enabled the syntax-checker which highlights errors on the left side of the editor is available in the IDE',
-      },
       { name: 'test', desc: 'If enabled the test tab is available in the IDE' },
       { name: 'tips', desc: 'If enabled the tips tab is available in the IDE' },
       { name: 'tree-view', desc: 'If enabled the tree-view on the left side is available in the IDE' },
       { name: 'unredo', desc: 'If enabled the unredo button is available in the IDE' },
-      { name: 'varScope', desc: 'If enabled the variable scope button is available in the IDE' },
     ];
   },
 ]);

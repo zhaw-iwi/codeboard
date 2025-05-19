@@ -264,19 +264,6 @@
                           <span class="glyphicon glyphicon-flash"></span><span class="hidden-xs">Beautify</span>
                         </button>
                       </li>
-
-                      <li class="nav-item pull-right">
-                        <button
-                          id="varScopeButton"
-                          class="btn btn-info btn-sm"
-                          ng-if="!isActionHidden('varScope')"
-                          ng-disabled="disabledActions.varScope"
-                          ng-click="navBarClick('show_var_scope')"
-                          title="Show variable scope"
-                        >
-                          <span class="glyphicon glyphicon-resize-vertical"></span>
-                        </button>
-                      </li>
                     </ul>
                   </div>
                 </div>
@@ -288,7 +275,7 @@
       </div>
 
       <div id="ideMiddlePartId" class="ideSplitterOverflowVisible">
-        <!-- the inner split part; left is the tree view, in the middle is the variable scope and right is the editor -->
+        <!-- the inner split part; left is the tree view, and right is the editor -->
         <div
           kendo-splitter="splitter"
           k-orientation="'horizontal'"
@@ -308,8 +295,8 @@
               <!-- the project name -->
               <div id="ideTreeViewProjectName">{{projectName}}</div>
 
-              <!-- the tree view -->
-              <div ng-controller="TreeCtrl" ng-init="init()" class="ideTree">
+              <!-- the tree view (the project files) -->
+              <div ng-controller="ProjectTreeCtrl" ng-init="init()" class="ideTree">
                 <div
                   data-angular-treeview="true"
                   data-tree-id="mytree"
@@ -350,65 +337,46 @@
               </ul>
             </div>
 
+            <!-- the console -->
             <div
               id="ideEditorAndConsole"
               kendo-splitter="splitter"
               k-orientation="'vertical'"
               k-panes="[{ collapsible: false }, { collapsible: false, size: '120px' }]"
             >
-              <div
-                kendo-splitter="innerSplitter"
-                k-orientation="'horizontal'"
-                k-panes="[{ collapsible: true, resizable: false, collapsed: true , size: '10%' }, { collapsible: true }]"
-                sync-scroll
-              >
-                <!-- variable Scope pane -->
-                <div id="ideVarScopePartOfMiddlePart">
-                  <div class="varScopeBlocks" id="varScope_editor">
-                    <div
-                      ng-repeat="(key, value) in variableMap"
-                      id="{{key}}"
-                      class="varScope"
-                      ng-style="{'height': value.height, 'marginTop': value.margin, 'backgroundColor': value.color}"
-                    ></div>
+              <div class="ideEditorArea">
+                <div class="ideEditorImage" ng-show="ace.isImage">
+                  <img alt="{{ace.image}}" ng-src="{{ace.image}}" /><br />
+                  <input class="image-src-field" type="text" value="{{ace.image}}" />
+                </div>
+
+                <div ng-hide="ace.isVisible" id="ideAceNotVisible">
+                  <div id="ideMsgNoFilesOpen">No files are open.<br />Click on a file from the project tree.</div>
+                  <div
+                    id="ideMsgNotSignedIn"
+                    class="alert alert-warning"
+                    ng-hide="signinSettings.userIsAuthenticated()"
+                  >
+                    <strong>You're not signed in.</strong><br /><a ng-href="{{signinSettings.signinPathWithRedirect()}}"
+                      >Sign in now
+                    </a>
+                    to save your progress or load your previously saved version.
                   </div>
                 </div>
-                <!-- end of variable Scope pane -->
-                <div class="ideEditorArea">
-                  <div class="ideEditorImage" ng-show="ace.isImage">
-                    <img alt="{{ace.image}}" ng-src="{{ace.image}}" /><br />
-                    <input class="image-src-field" type="text" value="{{ace.image}}" />
-                  </div>
 
-                  <div ng-hide="ace.isVisible" id="ideAceNotVisible">
-                    <div id="ideMsgNoFilesOpen">No files are open.<br />Click on a file from the project tree.</div>
-                    <div
-                      id="ideMsgNotSignedIn"
-                      class="alert alert-warning"
-                      ng-hide="signinSettings.userIsAuthenticated()"
-                    >
-                      <strong>You're not signed in.</strong><br /><a
-                        ng-href="{{signinSettings.signinPathWithRedirect()}}"
-                        >Sign in now
-                      </a>
-                      to save your progress or load your previously saved version.
-                    </div>
-                  </div>
-
-                  <!-- the ace editor -->
-                  <!-- note: don't use ng-model as it updates too slowly. Access the session value directly instead. -->
-                  <div
-                    class="ideEditor"
-                    ng-show="ace.isVisible"
-                    ng-hide="ace.isImage"
-                    id="ace_editor"
-                    ui-ace="{
+                <!-- the ace editor -->
+                <!-- note: don't use ng-model as it updates too slowly. Access the session value directly instead. -->
+                <div
+                  class="ideEditor"
+                  ng-show="ace.isVisible"
+                  ng-hide="ace.isImage"
+                  id="ace_editor"
+                  ui-ace="{
                           showGutter: true,
                           useWrapMode: false,
                           theme: 'eclipse',
                           onLoad: aceLoaded}"
-                  ></div>
-                </div>
+                ></div>
               </div>
               <!-- end of everything related to the editor -->
 

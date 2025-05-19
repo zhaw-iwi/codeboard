@@ -55,7 +55,7 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
       {
         type: 'info',
         message:
-          "Im Tab <span class='glyphicon glyphicon-pencil'></span> <b>Fragen</b> kannst du Fragen an Dozierende stellen, falls du mit der Aufgabe gar nicht mehr weiterkommst.",
+          "Im Tab <span class='glyphicon glyphicon-pencil'></span> <b>Fragen</b> steht dir zunächst ein KI-Assistent zur Verfügung, der dir bei allgemeinen Fragen oder beim Verständnis helfen kann. Falls du mit der Aufgabe dennoch gar nicht mehr weiterkommst, kannst du auch Fragen an Dozierende stellen.",
         author: 'Helper-System - Fragen',
         avatar: 'idea',
         tab: 'questions',
@@ -63,7 +63,7 @@ angular.module('codeboardApp').controller('ideNavBarRightInfoCtrl', [
       {
         type: 'info',
         message:
-          "Im Tab <span class='glyphicon glyphicon-eye-open'></span> <b>Code-Review</b> kannst du deinen Code reviewen lassen, nachdem du deine Lösung submitted hast.",
+          "Im Tab <span class='glyphicon glyphicon-eye-open'></span> <b>Code-Review</b> findest du deine Code-Reviews. Das Review wird automatisch gestartet, nachdem du deine Lösung submitted hast.",
         author: 'Helper-System - Code-Review',
         avatar: 'idea',
         tab: 'codeReview',

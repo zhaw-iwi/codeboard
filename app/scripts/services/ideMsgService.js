@@ -471,39 +471,6 @@ angular.module('codeboardApp').service('IdeMsgService', function IdeMsgService()
   };
 
   /**
-   * This broadcast is triggered when the code in the editor changes
-   * (close the variable marker window)
-   * @returns {{msg: string}}
-   */
-  this.msgCodeChanged = function () {
-    return {
-      msg: 'ide.codeChanged',
-    };
-  };
-
-  /**
-   * This broadcast is triggered when a java file is opened to explain
-   * the code in the editor (coding-assistant)
-   * @returns {{msg: string}}
-   */
-  this.msgJavaFileOpened = function () {
-    return {
-      msg: 'ide.javaFileOpened',
-    };
-  };
-
-  /**
-   * This broadcast is triggered when a java tab (above the editor) is opened
-   * to explain the code in the editor (coding-assistant)
-   * @returns {{msg: string}}
-   */
-  this.msgJavaTabOpened = function () {
-    return {
-      msg: 'ide.javaTabOpened',
-    };
-  };
-
-  /**
    * This broadcast is triggered when a the explanation tab (coding-assistant)
    * is opened
    * @returns {{msg: string}}
