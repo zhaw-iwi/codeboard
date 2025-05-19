@@ -58,7 +58,6 @@ angular
       const allChatBoxes = [];
       var hintLimit = 0;
       var remainingDefaultHints = 0;
-      var aiHintsEnabled = false;
       var defaultHints = [];
 
       /*
@@ -66,10 +65,9 @@ angular
        */
       const areAIHintsEnabled = () => {
         if (!CodeboardSrv.checkDisabledActions('ai-hints') || CodeboardSrv.checkEnabledActions('ai-hints')) {
-          aiHintsEnabled = true;
+          return true;
         }
-        aiHintsEnabled = false;
-        return aiHintsEnabled;
+        return false;
       };
 
       /**
