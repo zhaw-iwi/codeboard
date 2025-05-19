@@ -41,7 +41,6 @@ angular
       // scope variables
       $scope.newestQAChatLines = [];
       $scope.oldQAChatLines = [];
-      $scope.chatLines = [];
       $scope.sendRequestFormVisible = false;
       $scope.qaInfoChatBoxTxt = UITexts.QA_INFO;
       $scope.oldChatBoxes = false;

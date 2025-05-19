@@ -13,11 +13,10 @@
 angular.module('codeboardApp').controller('CourseNewCtrl', [
   '$scope',
   '$http',
-  '$routeParams',
   '$location',
   'CodeboardSrv',
   'UserSrv',
-  function ($scope, $http, $routeParams, $location, CodeboardSrv, UserSrv) {
+  function ($scope, $http, $location, CodeboardSrv, UserSrv) {
     // Object that holds the properties of a course and binds to the form
     $scope.data = {
       language: 'Java',
