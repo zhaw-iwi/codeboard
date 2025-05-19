@@ -13,7 +13,9 @@ angular.module('codeboardApp').service('CodeboardSrv', [
     var currentFile;
 
     // this function gets all current disabledActions
-    // todo: this function gets called multiple times (performance?)
+    // those actions can be set in the following places:
+    // - course settings
+    // - codeboard.json
     service.getDisabledActions = () => {
       let disabledActions = [];
       // check for disabled action in the context of a course
@@ -43,6 +45,9 @@ angular.module('codeboardApp').service('CodeboardSrv', [
     };
 
     // this function gets all current enabled actions of a project
+    // those actions are set in the codeboard.json
+    // Example: if a action is disabled in the course settings, but enabled in the codeboard.json
+    // the action is enabled in the project
     service.getEnabledActions = () => {
       if (ProjectFactory.hasConfig('userEnabledActions')) {
         enabledActions = ProjectFactory.getConfig().userEnabledActions;
