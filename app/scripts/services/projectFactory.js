@@ -703,6 +703,8 @@ services.factory('ProjectFactory', [
       var deferred = $q.defer();
 
       // check if current user is owner or user. Otherwise reject promise
+      // because we don't want e.g. as role helpRequest to save the project
+      // of the student
       if (getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
         // get all files based on user-role
         var files = getNodeArray(getProject().files);

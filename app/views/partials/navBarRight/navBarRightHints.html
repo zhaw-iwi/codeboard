@@ -7,10 +7,12 @@
         <li class="clear chat-line my-4 clearfix text">
           <chat-line author="Roby" avatar-size="" alignment="left" avatar="avatarStyle">
             <chat-line-simple>
-              <p ng-class="{'mb-0': remainingHints === 0}">{{hintInfoChatBoxTxt}}</p>
-              <p class="mb-0" ng-if="remainingHints > 0">
-                Du hast aktuell noch <strong> {{remainingHints}} Tipps </strong>zur Verfügung.
-              </p>
+              <div ng-class="{'mb-0': remainingHints === 0}">{{hintInfoChatBoxTxt}}</div>
+              <div ng-show="currentRoleIsUser()">
+                <p class="mb-0" ng-if="remainingHints > 0">
+                  Du hast aktuell noch <strong> {{remainingHints}} Tipps </strong>zur Verfügung.
+                </p>
+              </div>
             </chat-line-simple>
           </chat-line>
         </li>

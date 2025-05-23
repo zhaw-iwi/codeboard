@@ -203,7 +203,7 @@
                       id="ideTestButton"
                       class="btn btn-success btn-sm"
                       ng-if="!isActionHidden('test')"
-                      ng-disabled="disabledActions.test"
+                      ng-disabled="disabledActions.test || !currentRoleIsUser()"
                       ng-click="navBarClick('test')"
                       ng-show="isTestSupported()"
                       title="Run the tests of this project"
@@ -225,7 +225,7 @@
                       ng-show="uiSettings.showSubmissionBtn"
                       class="btn btn-primary btn-sm"
                       ng-if="!isActionHidden('submit')"
-                      ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn"
+                      ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn || !currentRoleIsUser()"
                       ng-click="navBarClick('submit')"
                       title="{{!isProjectCompleted() ? 'Deine Lösung submitten': 'Es zählt immer das beste Ergebnis'}}"
                     >

@@ -19,7 +19,7 @@
         </li>
         <div class="text-center">
           <button
-            ng-disabled="expIsLoading || userRole === 'owner' || disableCABtn"
+            ng-disabled="expIsLoading || disableCABtn || !currentRoleIsUser()"
             class="btn btn-info"
             ng-click="getCodeExplanation()"
           >

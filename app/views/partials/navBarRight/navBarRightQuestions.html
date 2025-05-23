@@ -5,14 +5,19 @@
     <chat chat-lines="newestQAChatLines" class="px-4">
       <before-chat>
         <li class="clear chat-line my-4 clearfix text">
-          <chat-line author="Roby" avatar-size="" alignment="left">
+          <chat-line author="Roby" avatar-size="" alignment="left" avatar="avatarStyle">
             <chat-line-simple>
               <p class="mb-0">{{qaInfoChatBoxTxt}}</p>
             </chat-line-simple>
           </chat-line>
         </li>
         <div class="text-center">
-          <button ng-show="!sendRequestFormVisible" class="btn btn-info" ng-click="showSendRequestForm()">
+          <button
+            ng-show="!sendRequestFormVisible"
+            class="btn btn-info"
+            ng-click="showSendRequestForm()"
+            ng-disabled="disableOpenFormBtn"
+          >
             <span class="glyphicon glyphicon-question-sign"></span>
             Frage stellen
           </button>
@@ -21,7 +26,7 @@
         <!-- the message Form -->
         <div ng-show="sendRequestFormVisible">
           <!-- the question form for users -->
-          <form id="sendHelpRequest" class="text-center">
+          <form id="sendHelpRequest" class="text-center" ng-show="currentRoleIsUser()">
             <div class="form-floating mb-4">
               <textarea
                 class="topic border-box p-4"
@@ -48,7 +53,7 @@
                     ng-click="askLecturer()"
                     ng-disabled="!currentRoleIsUser()"
                   >
-                    <span class="glyphicon glyphicon-user"></span> Frage an Dozent senden
+                    <span class="glyphicon glyphicon-user"></span> Dozent fragen
                   </button>
                 </div>
               </div>
@@ -69,33 +74,32 @@
                     ng-click="askChatbot()"
                     ng-disabled="disableAIQABtn || !currentRoleIsUser()"
                   >
-                    <span class="glyphicon glyphicon-comment"></span> KI-Assistenten fragen
+                    <span class="glyphicon glyphicon-comment"></span> AI-Assistent fragen
                   </button>
                 </div>
               </div>
             </div>
             <p class="text-danger mt-3">{{sendHelpFormErrors}}</p>
           </form>
+        </div>
 
-          <!-- the answer form for owners -->
-          <form
-            ng-show="currentRoleIsHelp()"
-            id="answerHelpRequest"
-            class="form-inline text-center"
-            ng-submit="answerHelpRequest()"
-          >
-            <div class="form-group mb-2">
+        <!-- the answer form for owners -->
+        <div ng-show="currentRoleIsHelp()">
+          <hr />
+          <h2 style="margin-bottom: 2rem">Verfasse hier deine Antwort</h2>
+          <form id="answerHelpRequest" class="form-inline text-center" ng-submit="answerHelpRequest()">
+            <div class="form-floating mb-2">
               <textarea
                 class="topic border-box p-4"
-                style="width: 550px; height: 100px"
+                style="width: 80%; height: 100px"
                 ng-model="formData.noteTeacher"
                 name="noteTeacher"
                 placeholder="Antwort an den Studenten"
               ></textarea>
             </div>
             <div class="form-group w-100">
-              <button class="btn btn-info">Nachricht senden</button>
-              <p class="text-danger mt-3">{{sendHelpFormErrors}}</p>
+              <button class="btn btn-info">Antwort senden</button>
+              <p class="text-danger">{{sendHelpFormErrors}}</p>
             </div>
           </form>
         </div>

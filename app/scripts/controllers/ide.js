@@ -241,7 +241,7 @@ app.controller('IdeCtrl', [
           function (result) {
             console.log('Project saved');
           },
-          function (reason) {
+          function (err) {
             console.log('Save project failed');
           }
         );
@@ -468,6 +468,13 @@ app.controller('IdeCtrl', [
             outputArray.push(aNewlyReceivedData);
           };
           let onConnectionClosed = function (compilationError) {
+            // skip compilation error processing for non-student users
+            // if e.g. a owner compiles a project, we don't want to show
+            // the error explanation
+            if (!$scope.currentRoleIsUser()) {
+              $timeout(function () {});
+              return;
+            }
             if (compilationError && outputArray.length > 0) {
               // only broadcast an event that compiler tab should be opened when the functionality is enabled
               if (!disabledActions.includes('compiler') || enabledActions.includes('compiler')) {

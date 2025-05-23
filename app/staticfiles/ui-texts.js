@@ -25,6 +25,8 @@ angular.module('codeboardApp').constant('UITexts', {
   HINT_LIMIT_EXCEEDED: 'Du hast alle verfügbaren Tipps für diese Aufgabe abgefragt.',
   QA_INFO:
     'Nutze die Chat-Funktion, falls dir die anderen Helper-Systeme nicht weiterhelfen. Du erhältst ein E-Mail, sobald deine Frage beantwortet wurde.',
+  QA_INFO_LIMIT_EXCEEDED:
+    'Du hast dein Limit für Anfragen an den AI-Assistenten erreicht. Du kannst diesen Service ab nächster Woche wieder nutzen.',
   QA_ERROR_QUESTION:
     'Fehler beim Senden deiner Nachricht. Versuche es später noch einmal oder wende dich an den Systemadministrator.',
   QA_ERROR_ANSWER: 'Beim Senden der Antwort ist ein Fehler aufgetreten. Bitte noch einmal versuchen',

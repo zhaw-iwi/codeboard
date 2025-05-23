@@ -1,118 +1,146 @@
 <div id="ide-tab-test" class="tab-body" ng-controller="ideNavBarRightTestCtrl">
+  <h1 class="ide-tab-title ide-tab-title-test pb-3">Überprüfe deine Lösung</h1>
 
-    <h1 class="ide-tab-title ide-tab-title-test pb-3">Überprüfe deine Lösung</h1>
+  <!-- Avatar with successMessage -->
+  <div ng-hide="state === states.compilationError || state === states.ioError" class="mb-4">
+    <ul class="list-unstyled">
+      <li class="clear chat-line my-4" ng-class="{'fadeOut': avatarFade, 'fadeIn': avatarFade}">
+        <chat-line alignment="left" author="Roby" avatar="avatar">
+          <chat-line-simple>
+            <div class="message pb-1 mb-0 text-gray-700" ng-bind-html="texts.avatar"></div>
+          </chat-line-simple>
+        </chat-line>
+      </li>
+    </ul>
+  </div>
 
-    <!-- Avatar with successMessage -->
-    <div ng-hide="state === states.compilationError || state === states.ioError" class="mb-4">
-        <ul class="list-unstyled">
-            <li class="clear chat-line my-4" ng-class="{'fadeOut': avatarFade, 'fadeIn': avatarFade}">
-                <chat-line alignment="left" author="Roby" avatar="avatar">
-                    <chat-line-simple>
-                        <div class="message pb-1 mb-0 text-gray-700" ng-bind-html="texts.avatar"></div>
-                    </chat-line-simple>
-                </chat-line>
-            </li>
-        </ul>
+  <h3 style="margin-top: 30px">Deine Lösung muss folgende Tests bestehen</h3>
+
+  <!-- Accordion with ioTests -->
+  <div class="panel-group modalAccordion mt-4" id="ioTestsAccordion" ng-hide="testingDisabled">
+    <!-- region: compilation -->
+
+    <div class="panel panel-default compileTest" ng-show="compilation.compilationError || state === states.inProgress">
+      <div class="panel-heading {{compilation.status}}">
+        <a data-parent="#ioTestsAccordion">
+          <div ng-show="state === states.inProgress">
+            <span class="title">Überprüfung Kompilierung</span>
+            <span
+              ng-class="{'gly-spin': (compilation.status === 'pending')}"
+              class="pull-right flag glyphicon {{compilation.status}}"
+              aria-hidden="true"
+            ></span>
+          </div>
+          <span class="title" ng-show="compilation.status === 'fail'"
+            >Deine Aufgabe hat einen Fehler, du findest diesen im 'Compiler-Tab'</span
+          >
+        </a>
+      </div>
     </div>
 
-    <h3 style="margin-top: 30px">Deine Lösung muss folgende Tests bestehen</h3>
+    <!-- region: io testing -->
 
-    <!-- Accordion with ioTests -->
-    <div class="panel-group modalAccordion mt-4" id="ioTestsAccordion" ng-hide="testingDisabled">
+    <div ng-repeat="test in ioTestSet" class="panel panel-default {{test.method}}">
+      <div class="panel-heading {{test.status}}">
+        <a
+          data-target="#ioTest{{$index}}"
+          data-toggle="collapse"
+          data-parent="#ioTestsAccordion"
+          ng-class="{'collapsed': (test.open)}"
+        >
+          <span class="title" title="{{test.name}}">{{test.name}}</span>
+          <span
+            ng-class="{'gly-spin': (test.status === 'processing')}"
+            class="pull-right flag glyphicon {{test.status}}"
+            aria-hidden="true"
+          ></span>
+        </a>
+      </div>
 
-        <!-- region: compilation -->
-
-        <div class="panel panel-default compileTest" ng-show="compilation.compilationError || state === states.inProgress">
-            <div class="panel-heading {{compilation.status}}">
-                <a data-parent="#ioTestsAccordion">
-                    <div ng-show="state === states.inProgress">
-                        <span class="title">Überprüfung Kompilierung</span>
-                        <span ng-class="{'gly-spin': (compilation.status === 'pending')}" class="pull-right flag glyphicon {{compilation.status}}" aria-hidden="true"></span>
-                    </div>
-                    <span class="title" ng-show="compilation.status === 'fail'">Deine Aufgabe hat einen Fehler, du findest diesen im 'Compiler-Tab'</span>
-                </a>
-            </div>
-        </div>
-
-
-        <!-- region: io testing -->
-
-        <div ng-repeat="test in ioTestSet" class="panel panel-default {{test.method}}">
-            <div class="panel-heading {{test.status}}">
-                <a data-target="#ioTest{{$index}}" data-toggle="collapse" data-parent="#ioTestsAccordion" ng-class="{'collapsed': (test.open)}">
-                    <span class="title" title="{{test.name}}">{{test.name}}</span>
-                    <span ng-class="{'gly-spin': (test.status === 'processing')}" class="pull-right flag glyphicon {{test.status}}" aria-hidden="true"></span>
-                </a>
-            </div>
-
-            <div id="ioTest{{$index}}" class="panel-collapse collapse" ng-class="{'in': (test.open)}">
-                <div ng-include="getTestMethodOutput(test.method)"></div>
-            </div>
-        </div>
+      <div id="ioTest{{$index}}" class="panel-collapse collapse" ng-class="{'in': (test.open)}">
+        <div ng-include="getTestMethodOutput(test.method)"></div>
+      </div>
     </div>
+  </div>
 
-    <div ng-show="disableTesting">
-        <p class="text-errror">
-            Es ist ein Fehler aufgetreten. Bitte wende dich an den Kursleiter
-        </p>
-    </div>
-    <div class="text-center">
-        <button ng-hide="state === states.inProgress" class="btn btn-success" ng-click="doTheIoTesting()" ng-disabled="disableTesting">
-            <span class="glyphicon glyphicon-check"></span>
-            <span ng-bind="texts.testButton"></span>
-        </button>
-    
-        <button ng-if="!isActionHidden('info')" ng-hide="state === states.correctSolution || state === states.inProgress" class="btn btn-info" ng-disabled="disabledActions.help" ng-click="navBarClick('help')" title="Hilfe anfordern">
-            <span class="glyphicon glyphicon-question-sign"></span> Ich brauche Hilfe
-        </button>
-    
-        <button ng-if="!isActionHidden('submit')" ng-show="(state === states.correctSolution && uiSettings.showSubmissionBtn)" ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn" class="btn btn-primary" ng-click="navBarClick('submit')" title="Lösung abgeben">
-            <span  class="glyphicon glyphicon-send"></span> <span class="hidden-xs" ng-hide="uiSettings.disableSubmissionBtn">Submit</span> <span class="hidden-xs" ng-show="uiSettings.disableSubmissionBtn">Aufgabe bereits erfolgreich gelöst</span>
-        </button>
-    </div>
+  <div ng-show="disableTesting">
+    <p class="text-errror">Es ist ein Fehler aufgetreten. Bitte wende dich an den Kursleiter</p>
+  </div>
+  <div class="text-center">
+    <button
+      ng-hide="state === states.inProgress"
+      class="btn btn-success"
+      ng-click="doTheIoTesting()"
+      ng-disabled="disableTesting || !currentRoleIsUser()"
+    >
+      <span class="glyphicon glyphicon-check"></span>
+      <span ng-bind="texts.testButton"></span>
+    </button>
+
+    <button
+      ng-if="!isActionHidden('info')"
+      ng-hide="state === states.correctSolution || state === states.inProgress"
+      class="btn btn-info"
+      ng-disabled="disabledActions.help"
+      ng-click="navBarClick('help')"
+      title="Hilfe anfordern"
+    >
+      <span class="glyphicon glyphicon-question-sign"></span> Ich brauche Hilfe
+    </button>
+
+    <button
+      ng-if="!isActionHidden('submit')"
+      ng-show="(state === states.correctSolution && uiSettings.showSubmissionBtn)"
+      ng-disabled="disabledActions.submit || uiSettings.disableSubmissionBtn"
+      class="btn btn-primary"
+      ng-click="navBarClick('submit')"
+      title="Lösung abgeben"
+    >
+      <span class="glyphicon glyphicon-send"></span>
+      <span class="hidden-xs" ng-hide="uiSettings.disableSubmissionBtn">Submit</span>
+      <span class="hidden-xs" ng-show="uiSettings.disableSubmissionBtn">Aufgabe bereits erfolgreich gelöst</span>
+    </button>
+  </div>
 </div>
-
-
-
 
 <!---- Each TestMethod has its on template: ---->
 
 <!-- ioTest -->
 <div>
-    <script type="text/ng-template" id="ideIoTestResult.html">
-        <div class="panel-body">
+  <script type="text/ng-template" id="ideIoTestResult.html">
+    <div class="panel-body">
 
-            <ul class="list-unstyled">
-                <li class="clear chat-line my-4" ng-class="{'fadeOut': avatarFade, 'fadeIn': avatarFade}">
-                    <chat-line alignment="left" author="Roby" avatar="(test.status === 'success') ? 'thumbUp' : 'worried'">
-                        <chat-line-simple ng-class="{ 'chat-line-fail': (test.status === 'fail')  }">
-                            <div class="message pb-1 mb-0 text-gray-700 chat-line-fail" ng-bind-html="test.result.note"></div>
-                        </chat-line-simple>
-                    </chat-line>
-                </li>
-            </ul>
+        <ul class="list-unstyled">
+            <li class="clear chat-line my-4" ng-class="{'fadeOut': avatarFade, 'fadeIn': avatarFade}">
+                <chat-line alignment="left" author="Roby" avatar="(test.status === 'success') ? 'thumbUp' : 'worried'">
+                    <chat-line-simple ng-class="{ 'chat-line-fail': (test.status === 'fail')  }">
+                        <div class="message pb-1 mb-0 text-gray-700 chat-line-fail" ng-bind-html="test.result.note"></div>
+                    </chat-line-simple>
+                </chat-line>
+            </li>
+        </ul>
 
-            <div class="form-group" ng-hide="(!test.input || 0 === test.input.trim.length)">
-                <label class="areaLabel">Input:</label>
-                <textarea class="inputOutputArea teachersInput" disabled>{{test.input}}</textarea>
-            </div>
+        <div class="form-group" ng-hide="(!test.input || 0 === test.input.trim.length)">
+            <label class="areaLabel">Input:</label>
+            <textarea class="inputOutputArea teachersInput" disabled>{{test.input}}</textarea>
+        </div>
 
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label class="areaLabel">Erwartetes Verhalten:</label>
-                        <textarea class="inputOutputArea expectedOutput" disabled>{{test.expectedOutput}}</textarea>
-                    </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label class="areaLabel">Erwartetes Verhalten:</label>
+                    <textarea class="inputOutputArea expectedOutput" disabled>{{test.expectedOutput}}</textarea>
                 </div>
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group">
-                        <label class="areaLabel">Effektives Verhalten:</label>
-                        <textarea class="inputOutputArea actualOutput" disabled>{{test.output}}</textarea>
-                    </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label class="areaLabel">Effektives Verhalten:</label>
+                    <textarea class="inputOutputArea actualOutput" disabled>{{test.output}}</textarea>
                 </div>
             </div>
         </div>
-    </script>
+    </div>
+  </script>
 </div>
 
 <!---- End of TestMethod templates ---->

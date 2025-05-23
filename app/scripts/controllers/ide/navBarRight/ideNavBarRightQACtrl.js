@@ -51,7 +51,9 @@ angular
         noteStudent: '',
         noteTeacher: '',
       };
-      $scope.disableAIQABtn = false;
+      $scope.disableAIQABtn = false; // controls the state of the "KI-Assistent fragen" button
+      $scope.disableOpenFormBtn = false; // controls the state of the "Fragen stellen" button
+      $scope.avatarStyle = 'neutral';
 
       // other variables
       const avatarName = 'Roby';
@@ -302,6 +304,13 @@ angular
             $scope.disableAIQABtn = true;
             // indicate in ide.js that the request limit is reached
             $scope.setRequestLimitReached();
+
+            if ($scope.isActionDisabled('lecturer-qa')) {
+              // if the action is disabled, we need to show the info message
+              $scope.qaInfoChatBoxTxt = UITexts.QA_INFO_LIMIT_EXCEEDED;
+              $scope.avatarStyle = 'worried';
+              $scope.disableOpenFormBtn = true;
+            }
           }
 
           // update the content of the chatbot answer chatbox
@@ -407,9 +416,8 @@ angular
        */
       $scope.init = async function () {
         try {
-          // only show "Frage stellen" button if user a student
-          // the function currentRoleIsUser() is in ide.js
-          $scope.sendRequestFormVisible = !$scope.currentRoleIsUser();
+          // disable the "Fragen stellen" button if the user is an owner
+          $scope.disableOpenFormBtn = !$scope.currentRoleIsUser();
 
           // when user role help, make q&a-tab default tab > case when owner wants to answer questions
           if (ProjectFactory.getProject().userRole === 'help') {
@@ -452,6 +460,15 @@ angular
           const reqLimitReached = $scope.isRequestLimitReached();
           if (reqLimitReached) {
             $scope.disableAIQABtn = true;
+            // we only show the info message about the limit exceeded
+            // if the lecturer qa is disabled too because otherwise
+            // the user can still ask the lecturer
+            if ($scope.isActionDisabled('lecturer-qa')) {
+              // if the action is disabled, we need to show the info message
+              $scope.qaInfoChatBoxTxt = UITexts.QA_INFO_LIMIT_EXCEEDED;
+              $scope.avatarStyle = 'worried';
+              $scope.disableOpenFormBtn = true;
+            }
           }
         } catch (err) {
           console.log('Fehler beim Laden des Chatverlaufs: ' + err);

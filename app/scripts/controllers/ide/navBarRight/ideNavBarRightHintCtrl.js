@@ -275,7 +275,7 @@ angular
         try {
           // --- DEFAULT HINTS ---
           // check wheter to use ai to generate next hint or default process (order)
-          if (areAIHintsEnabled() || ($scope.isRequestLimitReached() && remainingDefaultHints > 0)) {
+          if (!areAIHintsEnabled() || ($scope.isRequestLimitReached() && remainingDefaultHints > 0)) {
             const relevantHint = getHintDefault();
             // if the hint is null, all default hints are already sent
             if (!relevantHint) {
