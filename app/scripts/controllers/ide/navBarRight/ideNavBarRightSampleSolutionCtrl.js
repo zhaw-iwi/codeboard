@@ -29,12 +29,18 @@ angular
 
       /**
        * if a submission was successful initialize the tab
-       * this operation is only executed if the tab have to be enabled during runtime (e.g. when disabled before successful submission)
+       * this operation is only executed if the tab have to be enabled 
+       * during runtime (e.g. when disabled before successful submission)
+       * but the tab is not hidden
        */
       $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
-        let req = IdeMsgService.msgNavBarRightEnableTab('sampleSolution');
-        $rootScope.$broadcast(req.msg, req.data);
-        $scope.init();
+        // since this event is triggered also when no sample solution is available, 
+        // we have to check if the tab should be enabled
+        if (ProjectFactory.hasSampleSolution()) {
+          let req = IdeMsgService.msgNavBarRightEnableTab('sampleSolution');
+          $rootScope.$broadcast(req.msg, req.data);
+          $scope.init();
+        }
       });
     },
   ]);

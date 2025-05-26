@@ -444,9 +444,11 @@ angular
             );
 
             // add all chatlines to the chatbox list
-            data.forEach((chatLine) => {
-              addChatBoxToList(chatLine);
-            });
+            if (data.length > 0) {
+              data.forEach((chatLine) => {
+                addChatBoxToList(chatLine);
+              });
+            }
 
             // after the chatboxes are preapred, display the newest chatboxes
             $timeout(() => {
