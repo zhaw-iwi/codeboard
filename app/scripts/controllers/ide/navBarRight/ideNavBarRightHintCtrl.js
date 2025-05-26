@@ -421,8 +421,18 @@ angular
                 // hints are stored in an array in codeboard.json
                 const tipIndex = chatLine.message.tipIndex;
                 // if the tip was already sent mark it as true
-                if (tipIndex !== -1) {
+                if (
+                  tipIndex >= 0 &&
+                  tipIndex < defaultHints.length &&
+                  defaultHints[tipIndex] !== undefined &&
+                  defaultHints[tipIndex].name === chatLine.message.cardHeader
+                ) {
                   defaultHints[tipIndex].sent = true;
+                } else {
+                  console.log(
+                    `Skipping invalid or outdated tipIndex (${tipIndex}) from chatLine`,
+                    chatLine.message
+                  );
                 }
               });
             }
