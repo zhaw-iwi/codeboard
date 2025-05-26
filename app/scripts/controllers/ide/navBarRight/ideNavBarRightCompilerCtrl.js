@@ -5,22 +5,21 @@
  * @date 11.09.2024
  */
 
-"use strict";
+'use strict';
 
 angular
-  .module("codeboardApp")
+  .module('codeboardApp')
 
   /**
    * Controller for the compiler tab
    */
-  .controller("ideNavBarRightCompilerCtrl", [
-    "$scope",
-    "$timeout",
-    "IdeMsgService",
-    "ChatSrv",
-    "AceEditorSrv",
-    "UITexts",
-    function ($scope, $timeout, IdeMsgService, ChatSrv, AceEditorSrv, UITexts) {
+  .controller('ideNavBarRightCompilerCtrl', [
+    '$scope',
+    '$timeout',
+    'IdeMsgService',
+    'AceEditorSrv',
+    'UITexts',
+    function ($scope, $timeout, IdeMsgService, AceEditorSrv, UITexts) {
       // scope variables
       $scope.compilerChatLines = [];
       $scope.compInfoChatBoxTxt = UITexts.COMPILER_INFO;
@@ -31,7 +30,7 @@ angular
 
       // function gets called when there is a change in the aceEditor
       AceEditorSrv.aceChangeListener($scope.ace.editor, function () {
-        $scope.compInfoChatBoxTxt = UITexts.COMPILER_CODE_CHANGED; 
+        $scope.compInfoChatBoxTxt = UITexts.COMPILER_CODE_CHANGED;
         $scope.showCompilerInfoMessage = true;
         $scope.showNoCompilationErrorMessage = false;
         $scope.showCompilationErrorMessage = false;
@@ -57,7 +56,7 @@ angular
         $scope.compilerChatLines.push(chatline);
 
         // find the new last compilation error chatbox index
-        $scope.compilerChatLines.forEach((chatLine, index) => {          
+        $scope.compilerChatLines.forEach((chatLine, index) => {
           $scope.showNoCompilationErrorMessage = false;
           lastCompilerChatboxIndex = index;
         });
@@ -66,16 +65,16 @@ angular
       // gets called when a new compilation is started or finished with no errors to remove the last displayed chatbox
       $scope.$on(IdeMsgService.msgRemoveChatLine().msg, function (event, data) {
         // remove last compilation error chatbox
-        if (data.type === "error") {
+        if (data.type === 'error') {
           if (lastCompilerChatboxIndex !== -1) {
             $scope.compilerChatLines.splice(lastCompilerChatboxIndex, 1);
           }
-        } else if (data.type === "noError") {
+        } else if (data.type === 'noError') {
           $scope.showCompilerInfoMessage = false;
           $scope.showNoCompilationErrorMessage = true;
           $scope.showCompilationErrorMessage = false;
           $scope.compInfoChatBoxTxt = UITexts.COMPILER_SUCCESS;
-          
+
           // use $timeout to ensure that code to runs after the current digest cycle finishes (without that view does not get updated correctly)
           $timeout(() => {
             if (lastCompilerChatboxIndex !== -1) {
@@ -94,7 +93,7 @@ angular
        * @param rating
        */
       $scope.onMessageRating = function (messageId, rating) {
-        console.log("Message rated");
+        console.log('Message rated');
         // ChatSrv.rateCompilationErrorMessage(messageId, rating).then(function () {
         // });
       };

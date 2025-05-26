@@ -255,33 +255,6 @@ body {
   white-space: nowrap;
 }
 
-/* Variable Scope */
-#ideVarScopePartOfMiddlePart {
-  background-color: #fff;
-}
-
-/* Make sure the kendo-splitter is not visible between variable scope div and the editor */
-#ideVarScopePartOfMiddlePart + .k-splitbar {
-  display: none;
-}
-
-.varScope {
-  width: 15px;
-  border: 1px solid black;
-  float: right;
-}
-
-.varScopeBlocks {
-  overflow: hidden;
-  background-color: #fff;
-  direction: rtl;
-  display: flex;
-  padding-right: 0;
-  padding-left: 0;
-  margin-right: 0;
-  margin-left: 0;
-}
-
 /** - - - IDE Tabs - - - */
 .ideTabs {
   margin-bottom: 0;
@@ -474,8 +447,8 @@ body {
 
 .ideAdditionalTabs {
   writing-mode: vertical-rl;
-  white-space: nowrap; 
-  overflow-y: auto; 
+  white-space: nowrap;
+  overflow-y: auto;
 }
 
 .tab {
@@ -662,8 +635,8 @@ body {
 /* Compile :: Success */
 .modalAccordion .compileTest .panel-heading.success,
 .modalAccordion .compileTest .panel-heading.success a {
-  background: #E7F3E8;
-  color: #7EBE86 !important;
+  background: #e7f3e8;
+  color: #7ebe86 !important;
 }
 
 /* disable click events */

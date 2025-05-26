@@ -2,9 +2,15 @@
 
 var services = angular.module('codeboardApp');
 
-services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'ProjectRes', 'ProjectSubmissionRes', 'ProjectRequestHelpRes',
+services.factory('ProjectFactory', [
+  '$http',
+  '$routeParams',
+  '$q',
+  '$log',
+  'ProjectRes',
+  'ProjectSubmissionRes',
+  'ProjectRequestHelpRes',
   function ($http, $routeParams, $q, $log, ProjectRes, ProjectSubmissionRes, ProjectRequestHelpRes) {
-
     // an object that represents a project
     let project = {};
 
@@ -17,28 +23,28 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     };
 
     // after a project has been completed we set the projectCompleted property to true
-    let setCompletionStatus = function(aStatus) {
+    let setCompletionStatus = function (aStatus) {
       project.projectCompleted = aStatus;
-    }
+    };
 
     // after a project has been submitted again we set the review status to false
-    let setReviewStatus = function(aStatus) {
+    let setReviewStatus = function (aStatus) {
       project.lastSubmissionHasReview = aStatus;
-    }
+    };
 
     // an object that represents the configuration for this project
     let configuration = {};
 
-    let getConfig = function() {
+    let getConfig = function () {
       return configuration;
     };
-    let setConfig = function(aConfiguration) {
+    let setConfig = function (aConfiguration) {
       configuration = aConfiguration;
     };
-    let hasConfig= function (...keys) {
+    let hasConfig = function (...keys) {
       let res = configuration;
       for (let i = 0; i < keys.length; i++) {
-        if(typeof res[keys[i]] === "undefined") {
+        if (typeof res[keys[i]] === 'undefined') {
           return false;
         }
         res = configuration[keys[i]];
@@ -47,33 +53,32 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
     };
 
     // an object that represents the projectDescription for this project
-    let projectDescription = "";
+    let projectDescription = '';
 
-    let getProjectDescription = function() {
+    let getProjectDescription = function () {
       return projectDescription;
     };
-    let setProjectDescription = function(aProjectDescription) {
+    let setProjectDescription = function (aProjectDescription) {
       projectDescription = aProjectDescription;
     };
-    let hasProjectDescription = function() {
-      return (projectDescription !== "");
+    let hasProjectDescription = function () {
+      return projectDescription !== '';
     };
 
     // an object that represents the sampleSolution for this project
-    let sampleSolution = "";
+    let sampleSolution = '';
 
-    let getSampleSolution = function() {
+    let getSampleSolution = function () {
       return sampleSolution;
     };
 
-    let setSampleSolution = function(aSampleSolution) {
+    let setSampleSolution = function (aSampleSolution) {
       sampleSolution = aSampleSolution;
     };
 
-    let hasSampleSolution = function() {
-      return (sampleSolution !== "");
+    let hasSampleSolution = function () {
+      return sampleSolution !== '';
     };
-
 
     /**
      * Variable where we store the id of the last compilation response.
@@ -90,8 +95,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * Returns a SHA-256 hash of the current project object.
      * @return {*} a string that is the hash
      */
-    var getHashOfProject = function() {
-
+    var getHashOfProject = function () {
       var nodeArray = getNodeArray(getProject().files);
 
       // Note: we only use certain elements of a project and files
@@ -99,26 +103,25 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       // e.g. because a file has properties like 'selected' that should not
       // be par of the hash calculation
       var hashMe = [];
-      for(var i = 0; i < nodeArray.length; i++) {
-
+      for (var i = 0; i < nodeArray.length; i++) {
         var node = {
           filename: nodeArray[i].filename,
           path: nodeArray[i].path,
           uniqueUId: nodeArray[i].uniqueUId,
           parentUId: nodeArray[i].parentUId,
           isFolder: nodeArray[i].isFolder,
-          content: nodeArray[i].content
-        }
+          content: nodeArray[i].content,
+        };
 
         hashMe.push(node);
       }
 
-      var shaObj = new jsSHA(angular.toJson(hashMe), "TEXT");
-      return shaObj.getHash("SHA-256", "HEX");
+      var shaObj = new jsSHA(angular.toJson(hashMe), 'TEXT');
+      return shaObj.getHash('SHA-256', 'HEX');
     };
 
     /** Stores a hash of the current project */
-    var setHashOfProject = function() {
+    var setHashOfProject = function () {
       hashOfProject = getHashOfProject();
     };
 
@@ -126,11 +129,10 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * Check if the project has been modified based on comparing hashes.
      * @return {boolean} true if the current project hash is different from the hash last stored using 'setHashOfProject'
      */
-    var isProjectModified = function() {
+    var isProjectModified = function () {
       var newHash = getHashOfProject();
       return newHash !== hashOfProject;
-    }
-
+    };
 
     /**
      * @description Generates and returns a new node.
@@ -144,13 +146,12 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {Object} the newly created node object.
      */
     var getNewNode = function (filename, path, uniqueId, parentUId, options) {
-
       var n = {};
 
-      n.id = options.id || -1;  // the id used in the database
+      n.id = options.id || -1; // the id used in the database
       n.filename = filename; // note: the ide displays filename_annotated, defined further down
       n.path = path;
-      n.uniqueId = uniqueId;  // the id unique within the scope of the project
+      n.uniqueId = uniqueId; // the id unique within the scope of the project
       n.parentUId = parentUId; // the uniqueId of the parent node
       n.isFolder = options.isFolder || false;
       n.content = options.content || '';
@@ -175,7 +176,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       return n;
     };
 
-
     /**
      * @description Returns a node based on the given nodeId.
      *
@@ -183,9 +183,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @return an object that represents a node of the project (null if id is invalid)
      */
     var getNode = function (aUniqueNodeId) {
-
-      if(typeof aUniqueNodeId === 'string') {
-        if(aUniqueNodeId.charAt(0) === 's') {
+      if (typeof aUniqueNodeId === 'string') {
+        if (aUniqueNodeId.charAt(0) === 's') {
           // it's a request for a static library file
 
           // find out the url
@@ -193,33 +192,28 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           var url = getProject().staticFiles[index].url;
 
           // if we don't have content for the file yet we put a dummy message as content
-          if(!getProject().staticFiles[index].content) {
+          if (!getProject().staticFiles[index].content) {
             getProject().staticFiles[index].content = '-- Fetching file content. Please wait...';
             getProject().staticFiles[index].isContentSet = false;
           }
 
-
           return getProject().staticFiles[index];
         }
-      }
-      else {
+      } else {
         // we need to return null if a node for the given UID does not exist
         var resultNode = getProject().idToNodeMap[aUniqueNodeId];
-        if(resultNode) {
+        if (resultNode) {
           return resultNode;
-        }
-        else {
+        } else {
           return null;
         }
       }
     };
 
-
     var hasNode = function (aNodeId) {
       if (getProject().idToNodeMap[aNodeId]) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     };
@@ -230,11 +224,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {string} the string represents the annotation that should be added the filename
      */
     let getNodeAnnotation = function (aNode) {
-
       var result = '';
 
       if (aNode.isHidden || aNode.isStatic /* or some other node property is true */) {
-
         // the opening bracket
         result += ' (';
 
@@ -277,8 +269,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       aNode.filename_annotated = aNode.filename + getNodeAnnotation(aNode);
     };
 
-
-
     /**
      * @private
      * Sorting by name: function using to sort arrays (with filenames) by name.
@@ -288,14 +278,11 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {number} number -1, 0, or 1, according to what array sorting expects
      */
     var compareByName = function (a, b) {
-      if (a > b)
-        return 1;
-      if (a < b)
-        return -1;
+      if (a > b) return 1;
+      if (a < b) return -1;
       // a must be equal to b
       return 0;
     };
-
 
     /**
      * @private
@@ -308,19 +295,13 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @constructor
      */
     var compareByFileFolder = function (a, b) {
-
-      if (a.isFolder && !b.isFolder)
-        return -1;
-      if (!a.isFolder && b.isFolder)
-        return 1;
-      if (a.isFolder && b.isFolder)
-        return compareByName(a.filename, b.filename);
-      if (!a.isFolder && !b.isFolder)
-        return compareByName(a.filename, b.filename);
+      if (a.isFolder && !b.isFolder) return -1;
+      if (!a.isFolder && b.isFolder) return 1;
+      if (a.isFolder && b.isFolder) return compareByName(a.filename, b.filename);
+      if (!a.isFolder && !b.isFolder) return compareByName(a.filename, b.filename);
 
       return 0;
     };
-
 
     /**
      * @private
@@ -333,25 +314,76 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {object|null} returns the object that was created for a folder or file, or null is nothing was created
      */
     var addNodeFromDB = function (aParentNodeId, aNode) {
+      // get the object that belongs to the given parent id
+      var lParentNode = getProject().idToNodeMap[aParentNodeId];
+
+      if (lParentNode.isFolder) {
+        var lNewNode = getNewNode(aNode.filename, aNode.path, aNode.uniqueId, aNode.parentUId, {
+          isFolder: aNode.isFolder,
+          id: aNode.id, // the database id
+          content: aNode.content,
+          isHidden: aNode.isHidden,
+          isStatic: aNode.isStatic,
+        });
+
+        // store a reference of the unique-id to the created node object
+        getProject().idToNodeMap[lNewNode.uniqueId] = lNewNode;
+
+        // add the new node to it's parent
+        lParentNode.children.push(lNewNode);
+
+        // sort the elements of children array based on their names
+        lParentNode.children.sort(compareByFileFolder);
+
+        // return the new object
+        return lNewNode;
+      } else {
+        return null;
+      }
+    };
+
+    /**
+     * @private
+     * @description Adds a new node to the tree data structure.
+     * The node is added as a child to the node provided in the argument.
+     *
+     * @param aParentNodeId {integer} id of the node to which a new node should be added.
+     * Must be a folder, otherwise the function does not add a new node.
+     * @param {string} aName the name of the node to add
+     * @param {boolean} aNewNodeIsFolder set to true if the node to add shall be a folder
+     * @returns {object|null} returns the object that was created for a folder or file, or null is nothing was created
+     */
+    var addNode = function (aParentNodeId, aName, options) {
+      // the parentNodeId (we use a variable because it might be changed)
+      var lParentNodeId = aParentNodeId;
 
       // get the object that belongs to the given parent id
       var lParentNode = getProject().idToNodeMap[aParentNodeId];
 
+      // in case the user has not selected a folder, we set the parent to be the parent-folder of the currently selected file
+      if (!lParentNode.isFolder) {
+        // the currently selected node is not a folder, thus we auto-select the parent of the currently selected file
+        lParentNode = getProject().idToNodeMap[lParentNode.parentUId];
 
+        // we're setting the parent node so we also have to set the parentNodeId
+        lParentNodeId = lParentNode.uniqueId;
+      }
+
+      // we can only add files or folders to a folder
       if (lParentNode.isFolder) {
+        // increase the unique id counter; the new id will be given to the new node
+        getProject().lastUId += 1;
+
+        // calculate the path of the to-be-created node
+        // note: the root node has path '', we add a separator '/' unless we have the root node
+        var lPathPrefix = lParentNode.path === '' ? '' : lParentNode.path + '/';
 
         var lNewNode = getNewNode(
-          aNode.filename,
-          aNode.path,
-          aNode.uniqueId,
-          aNode.parentUId,
-          {
-            isFolder: aNode.isFolder,
-            id: aNode.id, // the database id
-            content: aNode.content,
-            isHidden: aNode.isHidden,
-            isStatic: aNode.isStatic,
-          }
+          aName,
+          lPathPrefix + getNode(lParentNodeId).filename,
+          getProject().lastUId,
+          lParentNodeId,
+          options
         );
 
         // store a reference of the unique-id to the created node object
@@ -370,64 +402,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       }
     };
 
-
-    /**
-     * @private
-     * @description Adds a new node to the tree data structure.
-     * The node is added as a child to the node provided in the argument.
-     *
-     * @param aParentNodeId {integer} id of the node to which a new node should be added.
-     * Must be a folder, otherwise the function does not add a new node.
-     * @param {string} aName the name of the node to add
-     * @param {boolean} aNewNodeIsFolder set to true if the node to add shall be a folder
-     * @returns {object|null} returns the object that was created for a folder or file, or null is nothing was created
-     */
-    var addNode = function (aParentNodeId, aName, options) {
-
-      // the parentNodeId (we use a variable because it might be changed)
-      var lParentNodeId = aParentNodeId;
-
-      // get the object that belongs to the given parent id
-      var lParentNode = getProject().idToNodeMap[aParentNodeId];
-
-
-      // in case the user has not selected a folder, we set the parent to be the parent-folder of the currently selected file
-      if(!lParentNode.isFolder) {
-        // the currently selected node is not a folder, thus we auto-select the parent of the currently selected file
-        lParentNode = getProject().idToNodeMap[lParentNode.parentUId];
-
-        // we're setting the parent node so we also have to set the parentNodeId
-        lParentNodeId = lParentNode.uniqueId;
-      }
-
-      // we can only add files or folders to a folder
-      if (lParentNode.isFolder) {
-        // increase the unique id counter; the new id will be given to the new node
-        getProject().lastUId += 1;
-
-        // calculate the path of the to-be-created node
-        // note: the root node has path '', we add a separator '/' unless we have the root node
-        var lPathPrefix = lParentNode.path === '' ? '' : lParentNode.path + '/';
-
-        var lNewNode = getNewNode( aName,lPathPrefix + getNode(lParentNodeId).filename, getProject().lastUId, lParentNodeId, options );
-
-        // store a reference of the unique-id to the created node object
-        getProject().idToNodeMap[lNewNode.uniqueId] = lNewNode;
-
-        // add the new node to it's parent
-        lParentNode.children.push(lNewNode);
-
-        // sort the elements of children array based on their names
-        lParentNode.children.sort(compareByFileFolder);
-
-
-        // return the new object
-        return lNewNode;
-      } else {
-        return null;
-      }
-    };
-
     /**
      * @description Adds a new file to an existing folder.
      *
@@ -437,7 +411,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {object|null} the object that was created for the file; null if nothing was created.
      */
     var addFile = function (aParentNodeId, aName, options = {}) {
-      return addNode(aParentNodeId, aName, Object.assign(options, {isFolder: false}));
+      return addNode(aParentNodeId, aName, Object.assign(options, { isFolder: false }));
     };
 
     /**
@@ -449,9 +423,8 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {object|null} the object that was created for the folder; null if nothing was created.
      */
     var addFolder = function (aParentNodeId, aName) {
-      return addNode(aParentNodeId, aName, {isFolder: true});
+      return addNode(aParentNodeId, aName, { isFolder: true });
     };
-
 
     /**
      * Renames an existing node with with the given new name.
@@ -460,20 +433,17 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @param aNewNodeName {string} the new name of the node
      */
     var renameNode = function (aNodeId, aNewNodeName) {
-
       // Helper function to recursively rename all the 'path' properties of children nodes.
       // aNode is the node which path needs an update, aNewPath the new path name for aNode
-      var updatePath = function(aNode, aNewPath) {
+      var updatePath = function (aNode, aNewPath) {
         aNode.path = aNewPath;
 
-        if(aNode.children) {
-
+        if (aNode.children) {
           for (var i = 0; i < aNode.children.length; i++) {
             updatePath(aNode.children[i], aNode.path + '/' + aNode.filename);
           }
         }
-      }
-
+      };
 
       // get the node
       var n = getProject().idToNodeMap[aNodeId];
@@ -485,7 +455,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
         n.filename_annotated = aNewNodeName + getNodeAnnotation(n);
 
         // if the node is a folder we need to rename the path of all sub-nodes
-        if(n.isFolder) {
+        if (n.isFolder) {
           updatePath(n, n.path); // Note: we're providing n.path because path is not changing for 'n' itself (only it's sub nodes)
         }
 
@@ -494,8 +464,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
         // To get a fresh compilation, we the the compilationId to an empty string.
         lastCompilationId = '';
       }
-    }
-
+    };
 
     /**
      * @description Removes a node (file or folder) from the project. Note: will not allow the root node to be deleted.
@@ -504,29 +473,26 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @param aDeleteRecursive {boolean} if true, a folder will be deleted even if not empty. Otherwise, no deletion happens.
      */
     var removeNode = function (aNodeId, aDeleteRecursive) {
+      if (
+        getProject().idToNodeMap[aNodeId] !== undefined &&
+        getProject().idToNodeMap[aNodeId].uniqueId !== 0 && // the node to delete is not the root node
+        (!getProject().idToNodeMap[aNodeId].isFolder || // the node is a file
+          getProject().idToNodeMap[aNodeId].children.length === 0 || // the node is folder but has no children
+          aDeleteRecursive === true) // all children should be deleted as well
+      ) {
+        var lNodeToDelete = getProject().idToNodeMap[aNodeId],
+          lParentNode = getProject().idToNodeMap[lNodeToDelete.parentUId],
+          lIndex = lParentNode.children.indexOf(lNodeToDelete);
 
-      if (getProject().idToNodeMap[aNodeId] !== undefined &&
-          getProject().idToNodeMap[aNodeId].uniqueId !== 0 && // the node to delete is not the root node
-          (
-            !getProject().idToNodeMap[aNodeId].isFolder ||  // the node is a file
-            getProject().idToNodeMap[aNodeId].children.length === 0 || // the node is folder but has no children
-            aDeleteRecursive === true
-          ) // all children should be deleted as well
-        ) {
-            var
-              lNodeToDelete = getProject().idToNodeMap[aNodeId],
-              lParentNode = getProject().idToNodeMap[lNodeToDelete.parentUId],
-              lIndex = lParentNode.children.indexOf(lNodeToDelete);
+        // remove the node from the array
+        lParentNode.children.splice(lIndex, 1);
+        // remove the node from the id to node-object map
+        delete getProject().idToNodeMap[aNodeId];
 
-            // remove the node from the array
-            lParentNode.children.splice(lIndex, 1);
-            // remove the node from the id to node-object map
-            delete getProject().idToNodeMap[aNodeId];
-
-            // When deleting a node we want to start a fresh compilation
-            // because Mantra might still hold a copy of the deleted file.
-            // To get a fresh compilation, we the the compilationId to an empty string.
-            lastCompilationId = '';
+        // When deleting a node we want to start a fresh compilation
+        // because Mantra might still hold a copy of the deleted file.
+        // To get a fresh compilation, we the the compilationId to an empty string.
+        lastCompilationId = '';
       }
     };
 
@@ -536,37 +502,34 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @param aLtiData object containing ltiData
      */
     var setLtiData = function (aLtiData) {
-      if(aLtiData.ltiSessionId && aLtiData.ltiUserId && aLtiData.ltiNonce) {
+      if (aLtiData.ltiSessionId && aLtiData.ltiUserId && aLtiData.ltiNonce) {
         getProject().ltiData = aLtiData;
         getProject().hasLtiData = true;
-      }
-      else {
+      } else {
         getProject().hasLtiData = false;
       }
     };
-
 
     /**
      * Set the course data if existing
      * @param aCourseData
      */
-    let setCourse = function(aCourseData) {
+    let setCourse = function (aCourseData) {
       getProject().courseData = {};
-      if(aCourseData) {
+      if (aCourseData) {
         getProject().courseData = {
           id: aCourseData.id,
           coursename: aCourseData.coursename,
           contextId: aCourseData.contextId || null,
-          courseOptions: aCourseData.courseOptions || []
+          courseOptions: aCourseData.courseOptions || [],
         };
         getProject().isCourseSet = true;
-      }
-      else {
+      } else {
         getProject().isCourseSet = false;
       }
     };
 
-    let getCourse = function() {
+    let getCourse = function () {
       return getProject().courseData;
     };
 
@@ -581,7 +544,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @param staticFiles {Array} (optional) an array that
      */
     var setProjectFromJSONdata = function (projectDataFromServer, ltiData) {
-
       // set the lastCompilationId to be empty
       // Otherwise we might switch to a different project
       // but still use the lastCompilationId from the previous project
@@ -619,7 +581,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
         projectCompleted: projectDataFromServer.projectCompleted ? projectDataFromServer.projectCompleted : false,
 
         // check if the last submission is already reviewed
-        lastSubmissionHasReview: projectDataFromServer.lastSubmissionHasReview ? projectDataFromServer.lastSubmissionHasReview : false,
+        lastSubmissionHasReview: projectDataFromServer.lastSubmissionHasReview
+          ? projectDataFromServer.lastSubmissionHasReview
+          : false,
       };
 
       setProject(lProject);
@@ -637,29 +601,24 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make sure the files are sorted by parentUId
       files.sort(function compare(a, b) {
-        if (a.parentUId < b.parentUId) //a is less than b by some ordering criterion
+        if (a.parentUId < b.parentUId)
+          //a is less than b by some ordering criterion
           return -1;
-        if (a.parentUId > b.parentUId)//a is greater than b by the ordering criterion)
+        if (a.parentUId > b.parentUId)
+          //a is greater than b by the ordering criterion)
           return 1;
         // a must be equal to b
         return 0;
       });
 
       // add the first node (i.e. the root folder)
-      var rootNode = getNewNode(
-        files[0].filename,
-        files[0].path,
-        files[0].uniqueId,
-        files[0].parentUId,
-        {
-          content: files[0].content,
-          isFolder: files[0].isFolder,
-          id: files[0].id,
-          isHidden: files[0].isHidden,
-          isStatic: files[0].isStatic
-        }
-      );
-
+      var rootNode = getNewNode(files[0].filename, files[0].path, files[0].uniqueId, files[0].parentUId, {
+        content: files[0].content,
+        isFolder: files[0].isFolder,
+        id: files[0].id,
+        isHidden: files[0].isHidden,
+        isStatic: files[0].isStatic,
+      });
 
       getProject().files.push(rootNode);
       getProject().idToNodeMap[getProject().files[0].uniqueId] = getProject().files[0];
@@ -670,7 +629,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       }
 
       // set configuration
-      if(projectDataFromServer.configFile) {
+      if (projectDataFromServer.configFile) {
         // by doing the parsing inside a try-catch block we check json-validity
         try {
           setConfig(JSON.parse(projectDataFromServer.configFile.content));
@@ -680,7 +639,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       }
 
       // set projectDescription
-      if(projectDataFromServer.projectDescription) {
+      if (projectDataFromServer.projectDescription) {
         // by doing the parsing inside a try-catch block we check json-validity
         try {
           setProjectDescription(projectDataFromServer.projectDescription.content);
@@ -690,7 +649,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       }
 
       // set sampleSolution
-      if(projectDataFromServer.sampleSolution) {
+      if (projectDataFromServer.sampleSolution) {
         // by doing the parsing inside a try-catch block we check json-validity
         try {
           setSampleSolution(projectDataFromServer.sampleSolution.content);
@@ -711,11 +670,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns {Array} the array
      */
     var getNodeArray = function (array) {
-
       var result = [];
 
       for (var i in array) {
-
         var f = [
           {
             filename: array[i].filename,
@@ -726,42 +683,38 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
             isFolder: array[i].isFolder,
             id: array[i].id,
             isHidden: array[i].isHidden,
-            isStatic: array[i].isStatic
-          }
+            isStatic: array[i].isStatic,
+          },
         ];
 
-        if (array[i].children)
-          result = result.concat(getNodeArray(array[i].children), f);
-        else
-          result = result.concat(f);
-
+        if (array[i].children) result = result.concat(getNodeArray(array[i].children), f);
+        else result = result.concat(f);
       }
 
       return result;
-    }
-
+    };
 
     /**
      * Stores the current project on the server.
      * @returns a Promise that resolves to true if the storing was successful, otherwise rejects with false.
      */
     var saveProjectToServer = function () {
-
       // create the promise that is returned
       var deferred = $q.defer();
 
       // check if current user is owner or user. Otherwise reject promise
+      // because we don't want e.g. as role helpRequest to save the project
+      // of the student
       if (getProject().userRole === 'user' || getProject().userRole === 'owner' || getProject().hasLtiData) {
-
         // get all files based on user-role
         var files = getNodeArray(getProject().files);
 
         var payload = {
           project: {
-            lastUId: getProject().lastUId
+            lastUId: getProject().lastUId,
           },
           files: files,
-          courseId: getCourseId()
+          courseId: getCourseId(),
         };
 
         // if the current user is an LTI user, we attach her LTI information
@@ -772,22 +725,20 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
         }
 
         ProjectRes.update(
-            {projectId: $routeParams.projectId},
-            payload,
-            function success(data, status, header, config) {
+          { projectId: $routeParams.projectId },
+          payload,
+          function success(data, status, header, config) {
+            // make sure we update the hash of the project
+            // (because from now on any change compares to the hash of the newly stored version)
+            setHashOfProject();
 
-              // make sure we update the hash of the project
-              // (because from now on any change compares to the hash of the newly stored version)
-              setHashOfProject();
-
-              // resolve the promise to true
-              deferred.resolve(data.msg);
-            },
-            function error(data, status, header, config) {
-
-              // resolve the promise to false
-              deferred.reject(data.msg);
-            }
+            // resolve the promise to true
+            deferred.resolve(data.msg);
+          },
+          function error(data, status, header, config) {
+            // resolve the promise to false
+            deferred.reject(data.msg);
+          }
         );
       } else {
         // resolve the promise to false when not user or owner
@@ -798,9 +749,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       return deferred.promise;
     };
 
-
     var getPayloadForCompilation = function (runCleanCompile) {
-
       // get all the files of the projects but an flat array (don't need nested arrays)
       var projectFiles = getNodeArray(getProject().files);
 
@@ -810,15 +759,13 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       var payloadFiles = [];
 
       for (var i in projectFiles) {
-
         // we don't need to send folders, only files with content
         if (!projectFiles[i].isFolder) {
-
           var f = projectFiles[i].path + '/' + projectFiles[i].filename;
           var payloadFile = {
             filename: f,
-            content: projectFiles[i].content
-          }
+            content: projectFiles[i].content,
+          };
 
           payloadFiles.push(payloadFile);
         }
@@ -828,7 +775,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       payload.files = payloadFiles;
       payload.language = getProject().language;
       payload.action = 'compile';
-      if (lastCompilationId !== '' && !(runCleanCompile)) {
+      if (lastCompilationId !== '' && !runCleanCompile) {
         // we already have previous compilation result, so we want to trigger incremental compilation
         payload.id = lastCompilationId;
       }
@@ -842,7 +789,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       return payload;
     };
 
-
     /**
      * Compiles the current project on the server.
      * @param runCleanCompile if true, a clean compile will be executed, otherwise a regular compilation
@@ -853,7 +799,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      */
     // todo var compileProject = function (_payload) { for more flexibility
     var compileProject = function (runCleanCompile, stream = true, compErrorHelp = true, useAI = false) {
-
       var payload = getPayloadForCompilation(runCleanCompile);
 
       // NOTE: we also store the files in default format to store compilation errors with the related code
@@ -869,7 +814,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(data, status, header, config) {
           // store the id of the compilation so we can use the next time we make a request
@@ -888,8 +833,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           if (response.status && response.data && response.data.msg) {
             _errorMsg += '\nStatus code: ' + response.status;
             _errorMsg += '\nError message: ' + response.data.msg;
-          }
-          else {
+          } else {
             // the Codeboard server should always return an error that has a status and data.msg
             // for the rare cases where, e.g. there's no internet connection, we give a full dump
             // of the error message
@@ -910,7 +854,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns a promise that resolves when a the compilation result is received
      */
     var compileAndRunProject = function (runCleanCompile) {
-
       var payload = getPayloadForCompilation(runCleanCompile);
 
       payload.language = getProject().language;
@@ -921,7 +864,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(data, status, header, config) {
           // store the id of the compilation so we can use the next time we make a request
@@ -940,8 +883,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           if (response.status && response.data && response.data.msg) {
             _errorMsg += '\nStatus code: ' + response.status;
             _errorMsg += '\nError message: ' + response.data.msg;
-          }
-          else {
+          } else {
             // the Codeboard server should always return an error that has a status and data.msg
             // for the rare cases where, e.g. there's no internet connection, we give a full dump
             // of the error message
@@ -956,14 +898,12 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       return deferred.promise;
     };
 
-
     /**
      * Compiles the current project on the server.
      * @param runCleanCompile if true, a clean compile will be executed, otherwise a regular compilation
      * @returns a promise that resolves when a the compilation result is received
      */
     var runProject = function () {
-
       // the payload we send to the server
       var payload = {};
 
@@ -981,14 +921,13 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(value, responseHeaders) {
           // resolve the promise
           deferred.resolve(value);
         },
         function error(response) {
-
           // there was an error while trying to run the project. We remove the stored compilationId to ensure
           // we can start fresh
           lastCompilationId = '';
@@ -998,8 +937,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           if (response.status && response.data && response.data.msg) {
             _errorMsg += '\nStatus code: ' + response.status;
             _errorMsg += '\nError message: ' + response.data.msg;
-          }
-          else {
+          } else {
             // the Codeboard server should always return an error that has a status and data.msg
             // for the rare cases where, e.g. there's no internet connection, we give a full dump
             // of the error message
@@ -1019,22 +957,20 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @author Janick Michot
      * @param filename
      */
-    let getFile = function(filename) {
+    let getFile = function (filename) {
       // get all the files of the projects but an flat array (don't need nested arrays)
       let aFileSet = getNodeArray(getProject().files);
 
       // return file from the fileSet
-      let file = aFileSet.find(file => file.filename === filename);
-      return (file === undefined) ? false : file;
+      let file = aFileSet.find((file) => file.filename === filename);
+      return file === undefined ? false : file;
     };
-
 
     /**
      * Retrieves all test for this project in an array
      * @author Janick Michot
      */
-    let getTests = function() {
-
+    let getTests = function () {
       let payload = getPayloadForCompilation(true);
       payload.action = 'getTests';
 
@@ -1042,21 +978,21 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       var deferred = $q.defer();
 
       // make call to the server
-      ProjectRes.save( { projectId: $routeParams.projectId }, payload,
-          function success(data) {
-            deferred.resolve(data);
-          },
-          function error(response) {
-            deferred.reject(response);
-          }
-        );
+      ProjectRes.save(
+        { projectId: $routeParams.projectId },
+        payload,
+        function success(data) {
+          deferred.resolve(data);
+        },
+        function error(response) {
+          deferred.reject(response);
+        }
+      );
 
       return deferred.promise;
     };
 
-
-    let testProject = function(testData) {
-
+    let testProject = function (testData) {
       var payload = getPayloadForCompilation(false);
       payload.action = 'test';
       payload.testData = testData; // add our test object to the payload
@@ -1069,7 +1005,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(data, status, header, config) {
           // store the id of the compilation so we can use the next time we make a request
@@ -1082,8 +1018,6 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           // can start fresh
           lastCompilationId = '';
 
-
-
           // TODO: upgrade this error according to the error message for compile and run
           // reject the promise and forward the reason the the compilation service returned
           var _errorMsg = '\n-- Error details --';
@@ -1095,7 +1029,10 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
           _errorMsg += response.status ? response.status : 'not available';
 
           _errorMsg += '\nError no: ';
-          _errorMsg += response.data && response.data.cause && response.data.cause.errno ? response.data.cause.errno : 'not available';
+          _errorMsg +=
+            response.data && response.data.cause && response.data.cause.errno
+              ? response.data.cause.errno
+              : 'not available';
 
           _errorMsg += '\nError output: ';
           _errorMsg += response.data && response.data.output ? response.data.output : 'not available';
@@ -1108,9 +1045,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       return deferred.promise;
     };
 
-
-    var toolAction = function() {
-
+    var toolAction = function () {
       var payload = getPayloadForCompilation(true);
       payload.action = 'tool';
 
@@ -1119,10 +1054,9 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(data, status, header, config) {
-
           // resolve the promise
 
           // TODO: what gets returned?
@@ -1148,15 +1082,13 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
       );
 
       return deferred.promise;
-    }
-
+    };
 
     /**
      * Submits the current project to the server.
      * @returns a promise that resolves when a the submission was completed
      */
     var submitProject = function () {
-
       var payload = getPayloadForCompilation(true);
 
       // the above payload contains the files in a form that's suited for Mantra compilation
@@ -1177,7 +1109,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // make call to the server
       ProjectSubmissionRes.save(
-        {projectId: $routeParams.projectId},
+        { projectId: $routeParams.projectId },
         payload,
         function success(data, status, header, config) {
           // resolve the promise
@@ -1198,35 +1130,36 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @author Janick Michot
      */
     let prevHelpRequest = null;
-    let createHelpRequest = function () {
-
+    const createHelpRequest = function () {
       // create payload
       let payload = {
         hasLtiData: getProject().hasLtiData,
         ltiData: getProject().ltiData,
         filesInDefaultFormat: getNodeArray(getProject().files),
         userRole: getProject().userRole,
-        courseId:  getCourseId()
+        courseId: getCourseId(),
       };
 
       // create the promise that is returned
       let deferred = $q.defer();
 
       // check if content has not changed (if a user makes multiple help requests in a session there will be no new entry in the db (helprequest table))
-      if (prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {        
+      if (prevHelpRequest && JSON.stringify(getNodeArray(getProject().files)) === prevHelpRequest.userFilesDump) {
         deferred.resolve(prevHelpRequest);
       }
 
       // else make call to the server
       else {
-        ProjectRequestHelpRes.save( { projectId: $routeParams.projectId }, payload,
-            function success(data, status, header, config) {
-              prevHelpRequest = data;
-              deferred.resolve(data); // resolve the promise
-            },
-            function error(response) {
-              deferred.reject(response); // reject the promise
-            }
+        ProjectRequestHelpRes.save(
+          { projectId: $routeParams.projectId },
+          payload,
+          function success(data, status, header, config) {
+            prevHelpRequest = data;
+            deferred.resolve(data); // resolve the promise
+          },
+          function error(response) {
+            deferred.reject(response); // reject the promise
+          }
         );
       }
 
@@ -1238,34 +1171,34 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
      * @returns a promise that resolves when a the request was completed
      * @author Janick Michot
      */
-    let updateHelpRequest = function (helpRequestId, status = "answered", projectId = null, courseId = null) {
-
+    let updateHelpRequest = function (helpRequestId, status = 'answered', projectId = null, courseId = null) {
       // create payload
       let payload = {
         status: status,
         helpRequestId: helpRequestId,
-        courseId:  (courseId) ? courseId : getCourseId()
+        courseId: courseId ? courseId : getCourseId(),
       };
 
-      projectId = (projectId) ? projectId : $routeParams.projectId;
+      projectId = projectId ? projectId : $routeParams.projectId;
 
       // create the promise that is returned
       let deferred = $q.defer();
 
       // make call to the server
-      ProjectRequestHelpRes.update( { projectId: projectId }, payload,
-          function success(data, status, header, config) {
-            deferred.resolve(data); // resolve the promise
-          },
-          function error(response) {
-            deferred.reject(response); // reject the promise
-          }
+      ProjectRequestHelpRes.update(
+        { projectId: projectId },
+        payload,
+        function success(data, status, header, config) {
+          deferred.resolve(data); // resolve the promise
+        },
+        function error(response) {
+          deferred.reject(response); // reject the promise
+        }
       );
 
       // return the promise
       return deferred.promise;
     };
-
 
     // Public API here
     return {
@@ -1305,6 +1238,7 @@ services.factory('ProjectFactory', ['$http', '$routeParams', '$q', '$log', 'Proj
 
       // the following are only exported for testing
       getNodeArray: getNodeArray,
-      getNewNode: getNewNode
+      getNewNode: getNewNode,
     };
-  }]);
+  },
+]);

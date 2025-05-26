@@ -2,18 +2,16 @@
 
 <div class="container" style="margin-top: 40px">
   <div class="row">
-
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">New course</h3>
         </div>
         <div class="panel-body">
-
           <form role="form" name="form" ng-submit="save(form)" style="margin-bottom: 30px">
             <div class="form-group">
               <label for="coursename">Course name</label>
-              <input type="text" class="form-control" id="coursename" ng-model="data.coursename" required>
+              <input type="text" class="form-control" id="coursename" ng-model="data.coursename" required />
             </div>
 
             <div class="form-group">
@@ -23,24 +21,26 @@
 
             <div class="form-group">
               <label for="contextId">Context ID (Moodle ID)</label>
-              <input type="text" class="form-control" id="contextId" ng-model="data.contextId" required>
+              <input type="text" class="form-control" id="contextId" ng-model="data.contextId" required />
             </div>
 
             <div class="form-group">
               <label>Course Options</label>
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label" style="font-weight: normal">User Disabled Actions</label>
+                <label class="col-sm-4 col-form-label" style="font-weight: normal">Set the disabled actions</label>
                 <div class="col-sm-8">
                   <div class="panel panel-default">
                     <div class="panel-body">
-                        <span ng-repeat="e in actions"
-                              class="label label-default"
-                              title="{{e.desc}}"
-                              ng-class="{'label-danger': actionsSelected.indexOf(e.name) > -1}"
-                              style="margin: 3px ; font-size: 12px; font-weight: 400; display: inline-block"
-                              ng-click="toggleSelection(e.name)">
-                          {{e.name}}
-                        </span>
+                      <span
+                        ng-repeat="e in actions"
+                        class="label label-default"
+                        title="{{e.desc}}"
+                        ng-class="{'label-danger': actionsSelected.indexOf(e.name) > -1}"
+                        style="margin: 3px; font-size: 12px; font-weight: 400; display: inline-block; cursor: pointer"
+                        ng-click="toggleSelection(e.name)"
+                      >
+                        {{e.name}}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -55,9 +55,9 @@
             <strong>Course created!</strong> Redirecting to it's summary page.
           </div>
           <div ng-show="server.saveFailure" class="alert alert-danger" role="alert">
-            <strong>Course not created!</strong> Problem while saving your changes. Check your data and try again. {{server.error}}
+            <strong>Course not created!</strong> Problem while saving your changes. Check your data and try again.
+            {{server.error}}
           </div>
-
         </div>
       </div>
     </div>

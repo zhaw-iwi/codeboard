@@ -19,20 +19,6 @@ angular.module('codeboardApp').service('AceEditorSrv', [
       });
     };
 
-    // listen to the 'mousedown' event to get line of the click / got code from stackoverflow - https://stackoverflow.com/questions/41647661/how-to-check-if-the-mouse-is-down-in-aceeditor
-    service.mouseDownListener = function (aceEditor, callback) {
-      aceEditor.on('mousedown', function (e) {
-        callback(e);
-      });
-    };
-
-    // listen to 'enter-keypress' event to reset cursorPosition / got part of code from stackoverflow - https://stackoverflow.com/questions/7060750/detect-the-enter-key-in-a-text-input-field
-    service.enterKeyListener = function (aceEditor, callback) {
-      aceEditor.container.addEventListener('keypress', function (e) {
-        callback(e);
-      });
-    };
-
     // get the current code in the ace editor
     service.getInputCode = function (aceEditor) {
       var inputCode = aceEditor
@@ -48,6 +34,6 @@ angular.module('codeboardApp').service('AceEditorSrv', [
     service.getSelectedCode = function (aceEditor) {
       var selectedCode = aceEditor.getSelectedText();
       return selectedCode;
-    }
+    };
   },
 ]);

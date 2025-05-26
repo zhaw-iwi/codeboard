@@ -1,42 +1,50 @@
 <div class="tab-body ide-tab-help ide-tab-chat" ng-controller="ideNavBarRightCodeReviewCtrl" id="chat-wrapper">
-    <h1 class="modal-title">Hier kannst du deinen Code reviewen lassen</h1>
+  <h1 class="modal-title">Hier kannst du deinen Code reviewen lassen</h1>
 
-    <!-- Introduction an newest code-review chatboxes -->
-    <div class="conversation">
-        <chat chat-lines="newestReviewChatLines" class="px-4" cursor-position="cursorPosition">
-            <before-chat>
-                <li class="clear chat-line my-4 clearfix text">
-                    <chat-line author="Roby" avatar-size="" alignment="left">
-                        <chat-line-simple>
-                            <p class="mb-0" ng-show="!reviewIsLoading">{{reviewInfoChatBoxTxt}}</p>
-                            <p class="mb-0" ng-show="reviewIsLoading">
-                                {{reviewLoadingChatBoxTxt}}
-                                <span class="progress-loading-icon glyphicon glyphicon-repeat gly-spin pull-right" aria-hidden="true"></span>
-                            </p>
-                        </chat-line-simple>
-                    </chat-line>
-                </li>
-                <div class="text-center">
-                    <button ng-disabled="disableReviewBtn || reviewIsLoading || userRole === 'owner'" class="btn btn-info" ng-click="startCodeReview()">
-                        <span class="glyphicon glyphicon-question-sign" ng-disable="userRole === 'owner'"></span>
-                        Code-Review starten
-                    </button>
-                </div>
-                <p class="text-danger text-center">{{errTxt}}</p>
-                <hr class="chat-horizontal-line" />
-            </before-chat>
-        </chat>
-    </div>
-    <!-- older chatboxes only displayed if needed -->
-    <div ng-show="oldChatBoxes">
-        <hr class="chat-horizontal-line" />
-        <h2 class="modal-title">Ältere Code-Reviews</h2>
-        <div class="text-center">
-            <button ng-show="!hideShowMore" class="btn btn-info" ng-click="showMore()">Reviews laden</button>
+  <!-- Introduction an newest code-review chatboxes -->
+  <div class="conversation">
+    <chat chat-lines="newestReviewChatLines" class="px-4" cursor-position="cursorPosition">
+      <before-chat>
+        <li class="clear chat-line my-4 clearfix text">
+          <chat-line author="Roby" avatar-size="" alignment="left">
+            <chat-line-simple>
+              <p class="mb-0" ng-show="!reviewIsLoading">{{reviewInfoChatBoxTxt}}</p>
+              <p class="mb-0" ng-show="reviewIsLoading">
+                {{reviewLoadingChatBoxTxt}}
+                <span
+                  class="progress-loading-icon glyphicon glyphicon-repeat gly-spin pull-right"
+                  aria-hidden="true"
+                ></span>
+              </p>
+            </chat-line-simple>
+          </chat-line>
+        </li>
+        <!-- disable button as codereview gets started automatically after successful submission -->
+        <!-- <div class="text-center">
+          <button
+            ng-disabled="disableReviewBtn || reviewIsLoading || userRole === 'owner'"
+            class="btn btn-info"
+            ng-click="startCodeReview()"
+          >
+            <span class="glyphicon glyphicon-question-sign" ng-disable="userRole === 'owner'"></span>
+            Code-Review starten
+          </button>
         </div>
-        <div ng-show="displayOldChatBoxes" class="conversation">
-            <chat chat-lines="oldReviewChatLines" class="px-4" cursor-position="cursorPosition"></chat>
-        </div>
-        <div id="scroll-target-review"></div>
+        <p class="text-danger text-center">{{errTxt}}</p>
+        <hr class="chat-horizontal-line" /> -->
+      </before-chat>
+    </chat>
+  </div>
+  <!-- older chatboxes only displayed if needed -->
+  <div ng-show="oldChatBoxes">
+    <hr class="chat-horizontal-line" />
+    <h2 class="modal-title">Ältere Code-Reviews</h2>
+    <div class="text-center">
+      <button ng-show="!hideShowMore" class="btn btn-info" ng-click="showMore()">Reviews laden</button>
     </div>
+    <div ng-show="displayOldChatBoxes" class="conversation">
+      <chat chat-lines="oldReviewChatLines" class="px-4" cursor-position="cursorPosition"></chat>
+    </div>
+    <div id="scroll-target-review"></div>
+  </div>
 </div>
