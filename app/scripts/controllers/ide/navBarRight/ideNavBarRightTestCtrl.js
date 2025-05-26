@@ -185,8 +185,13 @@ angular
         let enabledActions = CodeboardSrv.getEnabledActions();
         let useAI = false;
 
-        // if ai-compiler is enabled set useAI to true that compilation errors (which occur during testing) explanations are generated using GPT
-        if (!disabledActions.includes('ai-compiler') || enabledActions.includes('ai-compiler')) {
+        // if ai-compiler is enabled set useAI to true that compilation errors (which occur during testing)
+        // explanations are generated using GPT
+        // additionally, the requested user must have role 'user' as we do not want to use AI for other roles
+        if (
+          (!disabledActions.includes('ai-compiler') || enabledActions.includes('ai-compiler')) &&
+          $scope.currentRoleIsUser()
+        ) {
           useAI = true;
         }
 

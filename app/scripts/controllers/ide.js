@@ -468,13 +468,6 @@ app.controller('IdeCtrl', [
             outputArray.push(aNewlyReceivedData);
           };
           let onConnectionClosed = function (compilationError) {
-            // skip compilation error processing for non-student users
-            // if e.g. a owner compiles a project, we don't want to show
-            // the error explanation
-            if (!$scope.currentRoleIsUser()) {
-              $timeout(function () {});
-              return;
-            }
             if (compilationError && outputArray.length > 0) {
               // only broadcast an event that compiler tab should be opened when the functionality is enabled
               if (!disabledActions.includes('compiler') || enabledActions.includes('compiler')) {
@@ -498,7 +491,12 @@ app.controller('IdeCtrl', [
                 };
 
                 // DEFAULT COMPILER ERROR EXPLANATION GENERATION (REGEX)
-                if (disabledActions.includes('ai-compiler') && !enabledActions.includes('ai-compiler')) {
+                // for user with a role other than 'user' we also use the default generation
+                // as we don't use AI services for those users
+                if (
+                  (disabledActions.includes('ai-compiler') && !enabledActions.includes('ai-compiler')) ||
+                  !$scope.currentRoleIsUser()
+                ) {
                   fallBackExpGeneration(payload);
                 } else {
                   // COMPILER ERROR EXPLANATION GENERATION USING AI

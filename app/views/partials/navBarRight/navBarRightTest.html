@@ -71,7 +71,7 @@
       ng-hide="state === states.inProgress"
       class="btn btn-success"
       ng-click="doTheIoTesting()"
-      ng-disabled="disableTesting || !currentRoleIsUser()"
+      ng-disabled="disableTesting"
     >
       <span class="glyphicon glyphicon-check"></span>
       <span ng-bind="texts.testButton"></span>

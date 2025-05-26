@@ -114,6 +114,7 @@
                       ng-if="!isActionHidden('reset')"
                       class="btn btn-default btn-sm nav-link"
                       ng-click="navBarClick('reset')"
+                      ng-disabled="!currentRoleIsUser()"
                     >
                       <span class="glyphicon glyphicon-repeat icon-flipped" title="Original wiederherstellen"></span>
                     </button>
@@ -203,7 +204,7 @@
                       id="ideTestButton"
                       class="btn btn-success btn-sm"
                       ng-if="!isActionHidden('test')"
-                      ng-disabled="disabledActions.test || !currentRoleIsUser()"
+                      ng-disabled="disabledActions.test"
                       ng-click="navBarClick('test')"
                       ng-show="isTestSupported()"
                       title="Run the tests of this project"
