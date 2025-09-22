@@ -10,7 +10,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const httpProxy = require('http-proxy');
@@ -38,7 +38,6 @@ if (env === 'development') {
 
   app.use(express.static(path.join(config.root, '.tmp')));
   app.use(express.static(path.join(config.root, 'app')));
-
   app.set('views', path.normalize(config.root + '/app/views'));
 }
 
@@ -47,7 +46,7 @@ if (env === 'production') {
 
   app.use(compression());
   app.use(express.static(path.join(config.root, 'public')));
-  app.set('views', config.root + '/views');
+  app.set('views', config.root + '/views'); // where to find the templates (partials and index)
 }
 
 // proxy forward requests to mantra (must be enabled on the test server for local development)
@@ -79,27 +78,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
 // set configuration for settings
-if (env !== 'test') {
-  mongoose.connect(config.mongo.uri, config.mongo.options).then(() => {
-    console.log('Connected to Mongo DB');
-  });
-
-  // by default we persist sessions using the Mongo database
-  app.use(
-    session({
-      name: config.sessionSettings.name,
-      secret: config.sessionSettings.secret,
-      cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // session expires after 30 days (unit is ms)
-      resave: true,
-      saveUninitialized: true,
-      store: new MongoStore({
-        db: config.sessionSettings.mongoStoreDbName,
-        mongooseConnection: mongoose.connection,
-        clear_interval: 6 * 3600, // clear interval removes expired sessions every 6h (unit is sec)
-      }),
-    })
-  );
-} else {
+if (env === 'test') {
   // when testing we don't want to use the mongo store but in-memory store for sessions
   app.use(
     session({
@@ -107,6 +86,30 @@ if (env !== 'test') {
       secret: config.sessionSettings.secret,
       resave: true,
       saveUninitialized: true,
+    })
+  );
+} else {
+  // connect to mongo db for logging storage
+  mongoose.connect(config.mongo.uri, config.mongo.options).then(() => {
+    console.log('Connected to Mongo DB for logging');
+  });
+
+  // by default we persist sessions using the Mongo database
+  app.use(
+    session({
+      name: config.sessionSettings.cookieName,
+      secret: config.sessionSettings.secret,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+      },
+      store: MongoStore.create({
+        mongoUrl: config.sessionSettings.uri,
+        ttl: 14 * 24 * 60 * 60, // 14 days
+        autoRemove: 'native',
+        collectionName: 'sessions',
+      }),
     })
   );
 }
