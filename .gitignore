@@ -25,4 +25,3 @@ test/coverage
 
 # Development environment variables
 lib/config/env/development.js
-distRepo/lib/config/env/development.js
