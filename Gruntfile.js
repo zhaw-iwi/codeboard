@@ -8,7 +8,6 @@
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
-
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -17,146 +16,145 @@ module.exports = function (grunt) {
 
   // Define the configuration for all the tasks
   grunt.initConfig({
-
     // Project settings
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
-      dist: 'distRepo'
+      dist: 'distRepo',
     },
     express: {
       options: {
-        port: process.env.PORT || 9000
+        port: process.env.PORT || 9000,
       },
       dev: {
         options: {
           script: 'server.js',
           // debug: true,
-          node_env: 'development'
-        }
+          node_env: 'development',
+        },
       },
       prod: {
         options: {
           script: 'distRepo/server.js',
-          node_env: 'production'
-        }
-      }
+          node_env: 'production',
+        },
+      },
     },
     open: {
       server: {
-        url: 'http://localhost:<%= express.options.port %>'
-      }
+        url: 'http://localhost:<%= express.options.port %>',
+      },
     },
     watch: {
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
-          livereload: true
-        }
+          livereload: true,
+        },
       },
       mochaTest: {
         files: ['test/server/{,*/}*.js'],
-        tasks: ['mochaTest']
+        tasks: ['mochaTest'],
       },
       jsTest: {
         files: ['test/client/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        tasks: ['newer:jshint:test', 'karma'],
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
+        tasks: ['newer:copy:styles', 'postcss'],
       },
       gruntfile: {
-        files: ['Gruntfile.js']
+        files: ['Gruntfile.js'],
       },
       livereload: {
         files: [
           '<%= yeoman.app %>/views/{,*//*}*.{html,jade}',
           '{.tmp,<%= yeoman.app %>}/styles/{,*//*}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*//*}*.js',
-          '<%= yeoman.app %>/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}',
         ],
-      
+
         options: {
-          livereload: true
-        }
+          livereload: true,
+        },
       },
       express: {
-        files: [
-          'server.js',
-          'lib/**/*.{js,json}'
-        ],
+        files: ['server.js', 'lib/**/*.{js,json}'],
         tasks: ['newer:jshint:server', 'express:dev', 'wait'],
         options: {
           livereload: true,
-          nospawn: true //Without this option specified express won't be reloaded
-        }
-      }
+          nospawn: true, //Without this option specified express won't be reloaded
+        },
+      },
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
         jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
+        reporter: require('jshint-stylish'),
       },
       server: {
         options: {
-          jshintrc: 'lib/.jshintrc'
+          jshintrc: 'lib/.jshintrc',
         },
-        src: [ 'lib/{,*/}*.js']
+        src: ['lib/{,*/}*.js'],
       },
-      all: [
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
-      ],
+      all: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
       test: {
         options: {
-          jshintrc: 'test/client/.jshintrc'
+          jshintrc: 'test/client/.jshintrc',
         },
-        src: ['test/client/spec/{,*/}*.js']
-      }
+        src: ['test/client/spec/{,*/}*.js'],
+      },
     },
 
     // Empties folders to start fresh
     clean: {
       dist: {
-        files: [{
-          dot: true,
-          src: [
-            '.tmp',
-            '<%= yeoman.dist %>/*',
-            '!<%= yeoman.dist %>/.git*',
-            '!<%= yeoman.dist %>/README.md*',
-            '!<%= yeoman.dist %>/Procfile' // wird verwendet für Heroku
-          ]
-        }]
+        files: [
+          {
+            dot: true,
+            src: [
+              '.tmp',
+              '<%= yeoman.dist %>/*',
+              '!<%= yeoman.dist %>/.git*',
+              '!<%= yeoman.dist %>/README.md*',
+              '!<%= yeoman.dist %>/Procfile', // wird verwendet für Heroku
+            ],
+          },
+        ],
       },
-      server: '.tmp'
+      server: '.tmp',
     },
 
     // Add vendor prefixed styles
-    autoprefixer: {
+    postcss: {
       options: {
-        browsers: ['last 1 version']
+        map: false,
+        plugins: [require('autoprefixer')],
       },
       dist: {
-        files: [{
-          expand: true,
-          cwd: '.tmp/styles/',
-          src: '{,*/}*.css',
-          dest: '.tmp/styles/'
-        }]
-      }
+        files: [
+          {
+            expand: true,
+            cwd: '.tmp/styles/',
+            src: '{,*/}*.css',
+            dest: '.tmp/styles/',
+          },
+        ],
+      },
     },
 
     // Debugging with node inspector
     'node-inspector': {
       custom: {
         options: {
-          'web-host': 'localhost'
-        }
-      }
+          'web-host': 'localhost',
+        },
+      },
     },
 
     // Use nodemon to run server in debug mode with an initial breakpoint
@@ -166,7 +164,7 @@ module.exports = function (grunt) {
         options: {
           nodeArgs: ['--debug-brk'],
           env: {
-            PORT: process.env.PORT || 9000
+            PORT: process.env.PORT || 9000,
           },
           callback: function (nodemon) {
             nodemon.on('log', function (event) {
@@ -177,11 +175,11 @@ module.exports = function (grunt) {
             nodemon.on('config:update', function () {
               setTimeout(function () {
                 require('open')('http://localhost:8080/debug?port=5858');
-              }, 500);              
+              }, 500);
             });
-          }
-        }
-      }
+          },
+        },
+      },
     },
 
     // Renames files for browser caching purposes
@@ -192,54 +190,56 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/public/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/public/styles/{,*/}*.css',
             '<%= yeoman.dist %>/public/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/public/styles/fonts/*'
-          ]
-        }
-      }
+            '<%= yeoman.dist %>/public/styles/fonts/*',
+          ],
+        },
+      },
     },
 
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: ['<%= yeoman.app %>/views/index.html',
-             '<%= yeoman.app %>/views/index.jade'],
+      html: ['<%= yeoman.app %>/views/index.html', '<%= yeoman.app %>/views/index.jade'],
       options: {
-        dest: '<%= yeoman.dist %>/public'
-      }
+        dest: '<%= yeoman.dist %>/public',
+      },
     },
 
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
-      html: ['<%= yeoman.dist %>/views/{,*/}*.html',
-             '<%= yeoman.dist %>/views/{,*/}*.jade'],
+      html: ['<%= yeoman.dist %>/views/{,*/}*.html', '<%= yeoman.dist %>/views/{,*/}*.jade'],
       css: ['<%= yeoman.dist %>/public/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= yeoman.dist %>/public']
-      }
+        assetsDirs: ['<%= yeoman.dist %>/public'],
+      },
     },
 
     // The following *-min tasks produce minified files in the dist folder
     imagemin: {
       dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/images',
-          src: '{,*/,*/*/}*.{png,jpg,jpeg,gif}',
-          dest: '<%= yeoman.dist %>/public/images'
-        }]
-      }
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/,*/*/}*.{png,jpg,jpeg,gif}',
+            dest: '<%= yeoman.dist %>/public/images',
+          },
+        ],
+      },
     },
 
     svgmin: {
       dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/images',
-          src: '{,*/}*.svg',
-          dest: '<%= yeoman.dist %>/public/images'
-        }]
-      }
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.svg',
+            dest: '<%= yeoman.dist %>/public/images',
+          },
+        ],
+      },
     },
 
     htmlmin: {
@@ -248,13 +248,15 @@ module.exports = function (grunt) {
           // removeComments: true,
           // preserveLineBreaks: true
         },
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/views',
-          src: '**/*.html',
-          dest: '<%= yeoman.dist %>/views'
-        }]
-      }
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/views',
+            src: '**/*.html',
+            dest: '<%= yeoman.dist %>/views',
+          },
+        ],
+      },
     },
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
@@ -264,163 +266,148 @@ module.exports = function (grunt) {
         // Task-specific options go here.
       },
       dist: {
-        files: [{
-          expand: true,
-          cwd: '.tmp/concat/scripts',
-          src: '*.js',
-          dest: '.tmp/concat/scripts'
-        }]
-      }
+        files: [
+          {
+            expand: true,
+            cwd: '.tmp/concat/scripts',
+            src: '*.js',
+            dest: '.tmp/concat/scripts',
+          },
+        ],
+      },
     },
 
     // Replace Google CDN references
     cdnify: {
       dist: {
-        html: ['<%= yeoman.dist %>/views/*.html']
-      }
+        html: ['<%= yeoman.dist %>/views/*.html'],
+      },
     },
 
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
-        files: [{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>',
-          dest: '<%= yeoman.dist %>/public',
-          src: [
-            '*.{ico,png,txt}',
-            '.htaccess',
-            'components/**/*',
-            'bower_components/**/*',
-            'images/{,*/,*/*/}*.{webp}',
-            'staticfiles/{,*/}*.e',
-            'staticfiles/*.json',
-            'fonts/**/*'
-          ]
-        }, {
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>/views',
-          dest: '<%= yeoman.dist %>/views',
-          src: '**/*.jade'
-        }, {
-          expand: true,
-          cwd: '.tmp/images',
-          dest: '<%= yeoman.dist %>/public/images',
-          src: ['generated/*']
-        }, {
-          expand: true,
-          dest: '<%= yeoman.dist %>',
-          src: [
-            'package.json',
-            'server.js',
-            'lib/**/*'
-          ]
-        }, {
-          expand: true,
-          dest: '<%= yeoman.dist %>/lib/config',
-          src: [
-            'db_templates/**/*'
-          ]
-        }]
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.app %>',
+            dest: '<%= yeoman.dist %>/public',
+            src: [
+              '*.{ico,png,txt}',
+              '.htaccess',
+              'components/**/*',
+              'bower_components/**/*',
+              'images/{,*/,*/*/}*.{webp}',
+              'staticfiles/{,*/}*.e',
+              'staticfiles/*.json',
+              'fonts/**/*',
+            ],
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: '<%= yeoman.app %>/views',
+            dest: '<%= yeoman.dist %>/views',
+            src: '**/*.jade',
+          },
+          {
+            expand: true,
+            cwd: '.tmp/images',
+            dest: '<%= yeoman.dist %>/public/images',
+            src: ['generated/*'],
+          },
+          {
+            expand: true,
+            dest: '<%= yeoman.dist %>',
+            src: ['package.json', 'server.js', 'lib/**/*'],
+          },
+          {
+            expand: true,
+            dest: '<%= yeoman.dist %>/lib/config',
+            src: ['db_templates/**/*'],
+          },
+        ],
       },
       styles: {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
-        src: '{,*/}*.css'
-      }
+        src: '{,*/}*.css',
+      },
     },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
-      server: [
-        'copy:styles'
-      ],
-      test: [
-        'copy:styles'
-      ],
+      server: ['copy:styles'],
+      test: ['copy:styles'],
       debug: {
-        tasks: [
-          'nodemon',
-          'node-inspector'
-        ],
+        tasks: ['nodemon', 'node-inspector'],
         options: {
-          logConcurrentOutput: true
-        }
+          logConcurrentOutput: true,
+        },
       },
-      dist: [
-        'copy:styles',
-        'imagemin',
-        'svgmin',
-        'htmlmin'
-      ]
+      dist: ['copy:styles', 'imagemin', 'svgmin', 'htmlmin'],
     },
 
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
     cssmin: {
-       dist: {
-         files: {
-           '<%= yeoman.dist %>/styles/main.css': [
-             '.tmp/styles/{,*/}*.css',
-             '<%= yeoman.app %>/styles/{,*/}*.css'
-           ]
-         }
-       }
+      dist: {
+        files: {
+          '<%= yeoman.dist %>/styles/main.css': ['.tmp/styles/{,*/}*.css', '<%= yeoman.app %>/styles/{,*/}*.css'],
+        },
+      },
     },
 
     babel: {
       options: {
         presets: [
           [
-            "@babel/preset-env",
+            '@babel/preset-env',
             {
-              "targets": {
-                "browsers": [
-                  "last 2 versions"
-                ]
+              targets: {
+                browsers: ['last 2 versions'],
               },
-              "forceAllTransforms": true // this line turns "let" into "var", etc
-            }
-          ]
+              forceAllTransforms: true, // this line turns "let" into "var", etc
+            },
+          ],
         ],
         compact: true,
-        plugins: ['angularjs-annotate'] // replaces ng-annotate (Janick Michot, 07.01.2020)
+        plugins: ['angularjs-annotate'], // replaces ng-annotate (Janick Michot, 07.01.2020)
       },
       dist: {
         files: {
           '<%= yeoman.dist %>/public/scripts/babel-scripts.js': '.tmp/concat/scripts/scripts.js',
-          '<%= yeoman.dist %>/public/scripts/babel-vendor.js': '.tmp/concat/scripts/vendor.js'
-        }
-      }
+          '<%= yeoman.dist %>/public/scripts/babel-vendor.js': '.tmp/concat/scripts/vendor.js',
+        },
+      },
     },
 
     uglify: {
       dist: {
         files: {
           '<%= yeoman.dist %>/public/scripts/scripts.js': '<%= yeoman.dist %>/public/scripts/babel-scripts.js',
-          '<%= yeoman.dist %>/public/scripts/vendor.js': '<%= yeoman.dist %>/public/scripts/babel-vendor.js'
-        }
-      }
+          '<%= yeoman.dist %>/public/scripts/vendor.js': '<%= yeoman.dist %>/public/scripts/babel-vendor.js',
+        },
+      },
     },
     concat: {
-       dist: {}
+      dist: {},
     },
 
     // Test settings
     karma: {
       unit: {
         configFile: 'karma.conf.js',
-        singleRun: true
-      }
+        singleRun: true,
+      },
     },
 
     mochaTest: {
       options: {
-        reporter: 'spec'
+        reporter: 'spec',
       },
       src: [
         './test/server/init/0_initDB.js',
@@ -432,7 +419,7 @@ module.exports = function (grunt) {
         './test/server/06_testPartials.js',
         //'./test/server/07_testLTIandSubmissions.js' // it seems these are not generic tests; need to refactor
         './test/server/services/test_projectSrv.js',
-        './test/server/services/test_testingSrv.js'
+        './test/server/services/test_testingSrv.js',
 
         // we're leaving the compiler tests commented out for now (but they work)
         //'./test/server/94_testCompilerC.js',
@@ -440,14 +427,14 @@ module.exports = function (grunt) {
         //'./test/server/97_testCompilerHaskell.js',
         //'./test/server/98_testCompilerJava.js',
         //'./test/server/99_testCompilerPython.js'
-      ]
+      ],
     },
 
     env: {
       test: {
-        NODE_ENV: 'test'
-      }
-    }
+        NODE_ENV: 'test',
+      },
+    },
   });
 
   // grunt.loadNpmTasks('grunt-contrib-uglify-es');
@@ -464,7 +451,7 @@ module.exports = function (grunt) {
     }, 500);
   });
 
-  grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
+  grunt.registerTask('express-keepalive', 'Keep grunt running', function () {
     this.async();
   });
 
@@ -474,56 +461,29 @@ module.exports = function (grunt) {
     }
 
     if (target === 'debug') {
-      return grunt.task.run([
-        'clean:server',
-        'concurrent:server',
-        'autoprefixer',
-        'concurrent:debug'
-      ]);
+      return grunt.task.run(['clean:server', 'concurrent:server', 'postcss', 'concurrent:debug']);
     }
 
-    grunt.task.run([
-      'clean:server',
-      'concurrent:server',
-      'autoprefixer',
-      'express:dev',
-      'open',
-      'watch'
-    ]);
+    grunt.task.run(['clean:server', 'concurrent:server', 'postcss', 'express:dev', 'open', 'watch']);
   });
 
-  grunt.registerTask('test', function(target) {
+  grunt.registerTask('test', function (target) {
     if (target === 'server') {
-      return grunt.task.run([
-        'env:test',
-        'mochaTest'
-      ]);
+      return grunt.task.run(['env:test', 'mochaTest']);
     }
 
     if (target === 'client') {
-      return grunt.task.run([
-        'clean:server',
-        'concurrent:test',
-        'autoprefixer',
-        'karma'
-      ]);
+      return grunt.task.run(['clean:server', 'concurrent:test', 'postcss', 'karma']);
     }
 
-    grunt.task.run([
-      'env:test',
-      'mochaTest',
-      'clean:server',
-      'concurrent:test',
-      'autoprefixer',
-      'karma'
-    ]);
-  });  
+    grunt.task.run(['env:test', 'mochaTest', 'clean:server', 'concurrent:test', 'postcss', 'karma']);
+  });
 
   grunt.registerTask('build', [
     'clean:dist',
     'concurrent:dist',
     'useminPrepare',
-    'autoprefixer',
+    'postcss',
     'concat',
     // 'ngAnnotate',
     'copy:dist',
@@ -531,12 +491,8 @@ module.exports = function (grunt) {
     'babel',
     'uglify',
     //'rev',
-    'usemin'
+    'usemin',
   ]);
 
-  grunt.registerTask('default', [
-    'newer:jshint',
-    'test',
-    'build'
-  ]);
+  grunt.registerTask('default', ['newer:jshint', 'test', 'build']);
 };

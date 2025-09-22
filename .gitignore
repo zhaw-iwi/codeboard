@@ -23,4 +23,6 @@ test/coverage
 # Package.lock
 .package-lock.json
 
-development.js
+# Development environment variables
+lib/config/env/development.js
+distRepo/lib/config/env/development.js
