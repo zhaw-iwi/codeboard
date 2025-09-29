@@ -1,8 +1,8 @@
 angular.module('codeboardApp').constant('UITexts', {
   CODE_REVIEW_INFO:
-    'Gratulation zum erfolgreichen Abschluss dieser Aufgabe. Du kannst dein Code gerne erneut submitten, um ein neues Code-Review zu erhalten. Du findest untenstehend Code-Review deiner letzten Submission.',
-  CODE_REVIEW_DISABLED:
-    'Untenstehend findest du das Review deiner letzten Submission. Um eine neue Überprüfung zu starten, musst du zuerst eine neue Submission einreichen.',
+    'Gratulation zum erfolgreichen Abschluss dieser Aufgabe. Du kannst dein Code gerne erneut submitten, um ein neues Code-Review zu erhalten. Du findest untenstehend das Code-Review deiner letzten Submission.',
+  // CODE_REVIEW_DISABLED:
+  //   'Untenstehend findest du das Review deiner letzten Submission. Um eine neue Überprüfung zu starten, musst du zuerst eine neue Submission einreichen.',
   CODE_REVIEW_LOADING: 'Das Code-Review wird durchgeführt... ',
   CODE_REVIEW_LIMIT_EXCEEDED:
     'Es tut mir leid, aber ich kann dir momentan kein Code-Review geben, da du dein Anfragelimit erreicht hast. Du kannst diesen Service ab nächster Woche wieder nutzen.',

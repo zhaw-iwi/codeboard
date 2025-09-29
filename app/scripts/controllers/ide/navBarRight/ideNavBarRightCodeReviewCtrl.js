@@ -138,7 +138,7 @@ angular
         try {
           allChatBoxes = [];
 
-          $scope.disableReviewBtn = true;
+          // $scope.disableReviewBtn = true;
           const project = ProjectFactory.getProject();
 
           $scope.userRole = project.userRole;
@@ -149,20 +149,22 @@ angular
             .filter((chatBox) => chatBox.type === 'codeReview')
             .map((chatBox) => ({ ...chatBox, avatar: 'idea' }));
 
-          data.forEach((chatLine) => {
-            addChatBoxToList(chatLine);
-          });
+          if (data.length > 0) {
+            data.forEach((chatLine) => {
+              addChatBoxToList(chatLine);
+            });
+          }
 
           // display the chatboxes after they were added to the list
           displayChatBoxes();
 
           // check if the last submission has a code review to disable the button for a new review
-          if (project.lastSubmissionHasReview) {
-            $scope.disableReviewBtn = true;
-            $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
-          } else {
-            $scope.disableReviewBtn = false;
-          }
+          // if (project.lastSubmissionHasReview) {
+          //   $scope.disableReviewBtn = true;
+          //   $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_DISABLED;
+          // } else {
+          //   $scope.disableReviewBtn = false;
+          // }
         } catch (err) {
           handleError(err);
         }
@@ -175,10 +177,11 @@ angular
        * if a submission was successful initialize the tab
        * this operation is only executed if the tab has
        * to be enabled during runtime (e.g. when disabled before successful submission)
+       * but the tab is not hidden
        */
       $scope.$on(IdeMsgService.msgSuccessfulSubmission().msg, function () {
         // if the user makes a new submission we have to enable the review button
-        $scope.disableReviewBtn = false;
+        // $scope.disableReviewBtn = false;
         $scope.reviewInfoChatBoxTxt = UITexts.CODE_REVIEW_INFO;
 
         let req = IdeMsgService.msgNavBarRightEnableTab('codeReview');

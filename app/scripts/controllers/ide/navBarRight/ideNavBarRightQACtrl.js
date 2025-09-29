@@ -146,7 +146,12 @@ angular
       const addChatBoxToList = function (chatLine) {
         // parse the message for all chatlines except for the help request answers
         // because those chatlines are not a chatline card
-        if (chatLine.type !== 'helpRequestAnswer') {
+        if (
+          chatLine.type !== 'helpRequestAnswer' &&
+          typeof chatLine.message === 'string' &&
+          chatLine.message.startsWith('{')
+        ) {
+          // parse json string to object
           chatLine.message = JSON.parse(chatLine.message);
         }
 
@@ -444,9 +449,11 @@ angular
             );
 
             // add all chatlines to the chatbox list
-            data.forEach((chatLine) => {
-              addChatBoxToList(chatLine);
-            });
+            if (data.length > 0) {
+              data.forEach((chatLine) => {
+                addChatBoxToList(chatLine);
+              });
+            }
 
             // after the chatboxes are preapred, display the newest chatboxes
             $timeout(() => {

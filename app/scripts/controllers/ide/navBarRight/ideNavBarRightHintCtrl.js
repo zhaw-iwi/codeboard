@@ -150,7 +150,7 @@ angular
         $scope.newestHintChatLines = allChatBoxes.slice(-chatBoxLimit);
 
         // if there are multiple chatBoxes show the showMore Button
-        if (allChatBoxes.length - chatBoxLimit > 1) {
+        if (allChatBoxes.length > chatBoxLimit) {
           $scope.oldChatBoxes = true;
           $scope.hideShowMore = false;
         } else {
@@ -429,10 +429,7 @@ angular
                 ) {
                   defaultHints[tipIndex].sent = true;
                 } else {
-                  console.log(
-                    `Skipping invalid or outdated tipIndex (${tipIndex}) from chatLine`,
-                    chatLine.message
-                  );
+                  console.log(`Skipping invalid or outdated tipIndex (${tipIndex}) from chatLine`, chatLine.message);
                 }
               });
             }

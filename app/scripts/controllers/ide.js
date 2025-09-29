@@ -772,14 +772,52 @@ app.controller('IdeCtrl', [
             $scope.title = 'Super gemacht!';
             $scope.textBeforeResult =
               'Gratulation! Dein Programm hat alle Tests bestanden und du hast die maximale Punktzahl erhalten.';
-            $scope.textAfterResult = 'Du kannst dir nun die Musterlösung ansehen.';
+            // reset the text because a sample solution is not always available
+            $scope.textAfterResult = '';
 
             $scope.avatar = '../../../images/avatars/Avatar_RobyCoder_RZ_thumb-up_2020.svg';
 
             projectData.projectCompleted = true;
-            // we have to set the lastSubmissionHasReview to false because the user submitted a new solution
-            projectData.lastSubmissionHasReview = false;
 
+            // --- sample solution part
+            // we also have to set the completion status globally
+            ProjectFactory.setCompletionStatus(projectData.projectCompleted);
+
+            var url = '/api/projects/' + $routeParams.projectId + '/sampleSolution';
+
+            // check if courseId is available
+            if ($routeParams.courseId) {
+              url += '?courseId=' + $routeParams.courseId;
+            }
+
+            // check if there is already a solution available if student
+            // make multiple submissions in one "session" (reduce api calls)
+            const hasSolution = ProjectFactory.hasSampleSolution();
+
+            // if there is no solution available fetch it from the db otherwise we don't need
+            // to do anything because it is already set and available
+            if (!hasSolution) {
+              try {
+                var res = await $http.get(url);
+                ProjectFactory.setSampleSolution(res.data);
+                $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen.';
+
+                // trigger digest cycle to update the UI (otherwise "Musterlösung" button is not shown)
+                $timeout(function () {});
+              } catch (err) {
+                // if the sample solution is not available, we indicate
+                // that in the ProjectFactory
+                if (err.status === 404) {
+                  ProjectFactory.setSampleSolution('');
+                } else {
+                  console.log('Error while fetching sample solution!', err);
+                }
+              }
+            } else {
+              $scope.textAfterResult = 'Du kannst dir nun die Musterlösung anzeigen lassen.';
+            }
+
+            // --- code-review part
             // code-review part (only if enabled)
             if (!$scope.isActionHidden('codeReview')) {
               try {
@@ -791,6 +829,12 @@ app.controller('IdeCtrl', [
                   $scope.reviewIsLoading = false;
                   $scope.codeReview = res.answer;
                   projectData.lastSubmissionHasReview = true;
+
+                  // we have to set the lastSubmissionHasReview to true because the project was reviewed
+                  // in the current implementation this is not needed since reviews are started automatically
+                  // in previous version where reviews could be loaded manually, this was needed
+                  // to ensure that for a single submission only one review can be started
+                  ProjectFactory.setReviewStatus(projectData.lastSubmissionHasReview);
 
                   // save the code review in the backend
                   await ChatSrv.addChatLine(res.answer, null, 'Roby', 'codeReview');
@@ -808,35 +852,9 @@ app.controller('IdeCtrl', [
               }
             }
 
-            // we also have to set the completion and review status globally
-            ProjectFactory.setCompletionStatus(projectData.projectCompleted);
-            ProjectFactory.setReviewStatus(projectData.lastSubmissionHasReview);
-
-            var url = '/api/projects/' + $routeParams.projectId + '/sampleSolution';
-
-            // check if courseId is available
-            if ($routeParams.courseId) {
-              url += '?courseId=' + $routeParams.courseId;
-            }
-
-            // check if there is already a solution available if student make multiple submissions in one "session" (reduce api calls)
-            const existingSolution = ProjectFactory.getSampleSolution();
-
-            // if there is no solution available fetch it from the db otherwise we don't need to do anything
-            // because it is already set and available
-            if (!existingSolution) {
-              try {
-                var res = await $http.get(url);
-                ProjectFactory.setSampleSolution(res.data);
-
-                // trigger digest cycle to update the UI (otherwise "Musterlösung" button is not shown)
-                $timeout(function () {});
-              } catch (err) {
-                console.log('Error while fetching sample solution!' + err);
-              }
-            }
-
             // trigger the event to indicate a successful submission
+            // this will initialize the code-review tab to load the latest review
+            // and display the "Musterlösung" tab if a sample solution is available
             let req = IdeMsgService.msgSuccessfulSubmission();
             $rootScope.$broadcast(req.msg);
           };
@@ -997,6 +1015,7 @@ app.controller('IdeCtrl', [
        * this call as we don't need to access any data from the modal)
        */
       $uibModal.open({
+        backdrop: 'static',
         appendTo: angular.element(document.querySelector('#modalAppendTo')),
         templateUrl: 'ideSubmitModal.html',
         controller: submitModalInstanceCtrl,
@@ -1085,6 +1104,7 @@ app.controller('IdeCtrl', [
 
       // call the function to open the modal (we ignore the modalInstance returned by this call as we don't need to access any data from the modal)
       $uibModal.open({
+        backdrop: 'static',
         templateUrl: 'ideConfirmResetModal.html',
         controller: confirmResetModalInstanceCtrl,
         appendTo: angular.element(document.querySelector('#modalAppendTo')),
@@ -1342,14 +1362,6 @@ app.controller('IdeCtrl', [
           // $log.debug('Project uses testing framework: ' + result);
           return _toolIsSupported;
           */
-    };
-
-    /**
-     * Returns true if the project has a sample solution
-     * @return {boolean}
-     */
-    $scope.isSampleSolutionSupported = function () {
-      return ProjectFactory.hasSampleSolution();
     };
 
     /**
