@@ -146,7 +146,8 @@ angular
       const addChatBoxToList = function (chatLine) {
         // parse the message for all chatlines except for the help request answers
         // because those chatlines are not a chatline card
-        if (chatLine.type !== 'helpRequestAnswer') {
+        if (chatLine.type !== 'helpRequestAnswer' && chatLine.message.startsWith('{')) {
+          // parse json string to object
           chatLine.message = JSON.parse(chatLine.message);
         }
 
